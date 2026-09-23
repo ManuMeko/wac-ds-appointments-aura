@@ -1,0 +1,405 @@
+/* apps/web/app/globals.css */
+
+@import "tailwindcss";
+
+/* =========================================================
+   WAC DS · MODEL 01 · APPOINTMENTS
+   Aura Studio · Global foundation
+========================================================= */
+
+:root {
+  /* -------------------------------------------------------
+     BRAND / SURFACES
+  ------------------------------------------------------- */
+  --background: #f8f5f0;
+  --foreground: #25211e;
+
+  --surface: #ffffff;
+  --surface-soft: #f3ede6;
+  --surface-muted: #ebe1d8;
+  --surface-dark: #25211e;
+
+  /* -------------------------------------------------------
+     TEXT
+  ------------------------------------------------------- */
+  --text-primary: #25211e;
+  --text-secondary: #665a52;
+  --text-muted: #8b7d73;
+  --text-on-dark: #f6efe9;
+
+  /* -------------------------------------------------------
+     BRAND COLORS
+  ------------------------------------------------------- */
+  --brand-primary: #8b6d59;
+  --brand-primary-hover: #755a49;
+
+  --brand-secondary: #d8c3b2;
+  --brand-soft: #eee5dc;
+
+  /* -------------------------------------------------------
+     BORDERS
+  ------------------------------------------------------- */
+  --border-soft: rgba(47, 41, 37, 0.1);
+  --border-medium: rgba(47, 41, 37, 0.16);
+
+  /* -------------------------------------------------------
+     SHADOWS
+  ------------------------------------------------------- */
+  --shadow-soft:
+    0 24px 70px rgba(54, 43, 35, 0.08);
+
+  --shadow-medium:
+    0 30px 90px rgba(54, 43, 35, 0.14);
+
+  /* -------------------------------------------------------
+     RADII
+  ------------------------------------------------------- */
+  --radius-sm: 0.75rem;
+  --radius-md: 1.25rem;
+  --radius-lg: 1.75rem;
+  --radius-xl: 2rem;
+  --radius-pill: 999px;
+
+  /* -------------------------------------------------------
+     MOTION
+  ------------------------------------------------------- */
+  --transition-fast: 160ms;
+  --transition-base: 240ms;
+  --transition-slow: 420ms;
+
+  /* -------------------------------------------------------
+     LAYOUT
+  ------------------------------------------------------- */
+  --container-max: 1440px;
+}
+
+/* =========================================================
+   TAILWIND THEME TOKENS
+========================================================= */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-surface: var(--surface);
+  --color-surface-soft: var(--surface-soft);
+  --color-surface-muted: var(--surface-muted);
+
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-secondary: var(--brand-secondary);
+
+  --font-sans: var(--font-geist-sans);
+  --font-serif: var(--font-aura-serif);
+}
+
+/* =========================================================
+   RESET / BASE
+========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--background);
+  color-scheme: light;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+
+  background: var(--background);
+  color: var(--foreground);
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  line-height: 1.5;
+}
+
+/* =========================================================
+   TYPOGRAPHY
+========================================================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+.font-serif {
+  font-family:
+    var(--font-aura-serif),
+    Georgia,
+    "Times New Roman",
+    Times,
+    serif;
+}
+
+/* =========================================================
+   LINKS / BUTTONS
+========================================================= */
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* =========================================================
+   MEDIA
+========================================================= */
+
+img,
+svg,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+/* =========================================================
+   FORM ELEMENTS
+========================================================= */
+
+input,
+textarea,
+select {
+  border-radius: 0;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(75, 65, 58, 0.5);
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* =========================================================
+   SELECTION
+========================================================= */
+
+::selection {
+  background: #c9ae99;
+  color: #211c19;
+}
+
+/* =========================================================
+   ACCESSIBILITY / FOCUS
+========================================================= */
+
+:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 4px;
+}
+
+a:focus-visible,
+button:focus-visible {
+  border-radius: 0.35rem;
+}
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #a78e7b #eee7e0;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #eee7e0;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #a78e7b;
+  border: 2px solid #eee7e0;
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #8b725f;
+}
+
+/* =========================================================
+   ANCHOR OFFSET
+   Evita que el header sticky tape las secciones
+========================================================= */
+
+[id] {
+  scroll-margin-top: 96px;
+}
+
+/* =========================================================
+   PREMIUM HELPERS
+========================================================= */
+
+.aura-container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+.aura-eyebrow {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.27em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+}
+
+.aura-surface {
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+}
+
+.aura-shadow-soft {
+  box-shadow: var(--shadow-soft);
+}
+
+.aura-shadow-medium {
+  box-shadow: var(--shadow-medium);
+}
+
+/* =========================================================
+   MOTION
+========================================================= */
+
+@keyframes aura-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes aura-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes aura-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.aura-fade-up {
+  animation: aura-fade-up 700ms ease both;
+}
+
+.aura-fade-in {
+  animation: aura-fade-in 700ms ease both;
+}
+
+.aura-scale-in {
+  animation: aura-scale-in 750ms ease both;
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (min-width: 640px) {
+  .aura-container {
+    padding-inline: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .aura-container {
+    padding-inline: 3rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .aura-container {
+    padding-inline: 4rem;
+  }
+}
