@@ -134,6 +134,95 @@ type BusinessFormState = {
   publicBookingEnabled: boolean;
 };
 
+type BusinessSettingsResponse = {
+  id: number;
+  businessId: number;
+
+  minimumBookingNoticeMinutes: number;
+  bookingHorizonDays: number;
+  slotIntervalMinutes: number;
+
+  defaultBufferBeforeMinutes: number;
+  defaultBufferAfterMinutes: number;
+
+  autoConfirmAppointments: boolean;
+
+  onlineCancellationEnabled: boolean;
+  minimumCancellationNoticeMinutes: number;
+
+  onlineReschedulingEnabled: boolean;
+  minimumRescheduleNoticeMinutes: number;
+
+  remindersEnabled: boolean;
+  firstReminderMinutesBefore: number;
+  secondReminderEnabled: boolean;
+  secondReminderMinutesBefore: number;
+
+  version: number;
+
+  createdAt: string;
+  updatedAt: string;
+};
+
+type BusinessSettingsUpdateRequest = {
+  minimumBookingNoticeMinutes: number;
+  bookingHorizonDays: number;
+  slotIntervalMinutes: number;
+
+  defaultBufferBeforeMinutes: number;
+  defaultBufferAfterMinutes: number;
+
+  autoConfirmAppointments: boolean;
+
+  onlineCancellationEnabled: boolean;
+  minimumCancellationNoticeMinutes: number;
+
+  onlineReschedulingEnabled: boolean;
+  minimumRescheduleNoticeMinutes: number;
+
+  remindersEnabled: boolean;
+  firstReminderMinutesBefore: number;
+  secondReminderEnabled: boolean;
+  secondReminderMinutesBefore: number;
+
+  version: number;
+};
+
+type OperationalNumericKey =
+  | "minimumBookingNoticeMinutes"
+  | "bookingHorizonDays"
+  | "slotIntervalMinutes"
+  | "defaultBufferBeforeMinutes"
+  | "defaultBufferAfterMinutes"
+  | "minimumCancellationNoticeMinutes"
+  | "minimumRescheduleNoticeMinutes"
+  | "firstReminderMinutesBefore"
+  | "secondReminderMinutesBefore";
+
+type OperationalSettingsForm = {
+  minimumBookingNoticeMinutes: string;
+  bookingHorizonDays: string;
+  slotIntervalMinutes: string;
+
+  defaultBufferBeforeMinutes: string;
+  defaultBufferAfterMinutes: string;
+
+  autoConfirmAppointments: boolean;
+
+  onlineCancellationEnabled: boolean;
+  minimumCancellationNoticeMinutes: string;
+
+  onlineReschedulingEnabled: boolean;
+  minimumRescheduleNoticeMinutes: string;
+
+  remindersEnabled: boolean;
+  firstReminderMinutesBefore: string;
+  secondReminderEnabled: boolean;
+  secondReminderMinutesBefore: string;
+
+  version: number;
+};
+
 /* =========================================================
    CONSTANTS
 ========================================================= */
@@ -276,6 +365,125 @@ const countryOptions = [
       "Estados Unidos",
   },
 ];
+
+const operationalNumberLimits: Record<
+  OperationalNumericKey,
+  {
+    min: number;
+    max: number;
+    belowMin: string;
+    aboveMax: string;
+  }
+> = {
+  minimumBookingNoticeMinutes: {
+    min: 0,
+    max: 525600,
+    belowMin:
+      "minimumBookingNoticeMinutes no puede ser negativo.",
+    aboveMax:
+      "minimumBookingNoticeMinutes no puede superar 525600 minutos.",
+  },
+  bookingHorizonDays: {
+    min: 1,
+    max: 730,
+    belowMin:
+      "bookingHorizonDays debe ser al menos 1.",
+    aboveMax:
+      "bookingHorizonDays no puede superar 730 días.",
+  },
+  slotIntervalMinutes: {
+    min: 5,
+    max: 240,
+    belowMin:
+      "slotIntervalMinutes debe ser como mínimo 5.",
+    aboveMax:
+      "slotIntervalMinutes no puede superar 240 minutos.",
+  },
+  defaultBufferBeforeMinutes: {
+    min: 0,
+    max: 240,
+    belowMin:
+      "defaultBufferBeforeMinutes no puede ser negativo.",
+    aboveMax:
+      "defaultBufferBeforeMinutes no puede superar 240 minutos.",
+  },
+  defaultBufferAfterMinutes: {
+    min: 0,
+    max: 240,
+    belowMin:
+      "defaultBufferAfterMinutes no puede ser negativo.",
+    aboveMax:
+      "defaultBufferAfterMinutes no puede superar 240 minutos.",
+  },
+  minimumCancellationNoticeMinutes: {
+    min: 0,
+    max: 525600,
+    belowMin:
+      "minimumCancellationNoticeMinutes no puede ser negativo.",
+    aboveMax:
+      "minimumCancellationNoticeMinutes no puede superar 525600 minutos.",
+  },
+  minimumRescheduleNoticeMinutes: {
+    min: 0,
+    max: 525600,
+    belowMin:
+      "minimumRescheduleNoticeMinutes no puede ser negativo.",
+    aboveMax:
+      "minimumRescheduleNoticeMinutes no puede superar 525600 minutos.",
+  },
+  firstReminderMinutesBefore: {
+    min: 1,
+    max: 525600,
+    belowMin:
+      "firstReminderMinutesBefore debe ser mayor que 0.",
+    aboveMax:
+      "firstReminderMinutesBefore no puede superar 525600 minutos.",
+  },
+  secondReminderMinutesBefore: {
+    min: 1,
+    max: 525600,
+    belowMin:
+      "secondReminderMinutesBefore debe ser mayor que 0.",
+    aboveMax:
+      "secondReminderMinutesBefore no puede superar 525600 minutos.",
+  },
+};
+
+const operationalFieldLabels: Record<
+  string,
+  string
+> = {
+  minimumBookingNoticeMinutes:
+    "Antelación mínima para reservar",
+  bookingHorizonDays:
+    "Horizonte de reserva",
+  slotIntervalMinutes:
+    "Intervalo entre huecos",
+  defaultBufferBeforeMinutes:
+    "Margen antes de la cita",
+  defaultBufferAfterMinutes:
+    "Margen después de la cita",
+  autoConfirmAppointments:
+    "Confirmación automática",
+  onlineCancellationEnabled:
+    "Cancelación online",
+  minimumCancellationNoticeMinutes:
+    "Antelación mínima para cancelar",
+  onlineReschedulingEnabled:
+    "Reprogramación online",
+  minimumRescheduleNoticeMinutes:
+    "Antelación mínima para reprogramar",
+  remindersEnabled:
+    "Recordatorios",
+  firstReminderMinutesBefore:
+    "Primer recordatorio",
+  secondReminderEnabled:
+    "Segundo recordatorio",
+  secondReminderMinutesBefore:
+    "Antelación del segundo recordatorio",
+  version:
+    "Versión",
+};
 
 /* =========================================================
    STORAGE
@@ -471,6 +679,257 @@ function businessToForm(
   };
 }
 
+function settingsToForm(
+  settings: BusinessSettingsResponse,
+): OperationalSettingsForm {
+  return {
+    minimumBookingNoticeMinutes:
+      String(
+        settings.minimumBookingNoticeMinutes,
+      ),
+
+    bookingHorizonDays:
+      String(
+        settings.bookingHorizonDays,
+      ),
+
+    slotIntervalMinutes:
+      String(
+        settings.slotIntervalMinutes,
+      ),
+
+    defaultBufferBeforeMinutes:
+      String(
+        settings.defaultBufferBeforeMinutes,
+      ),
+
+    defaultBufferAfterMinutes:
+      String(
+        settings.defaultBufferAfterMinutes,
+      ),
+
+    autoConfirmAppointments:
+      settings.autoConfirmAppointments,
+
+    onlineCancellationEnabled:
+      settings.onlineCancellationEnabled,
+
+    minimumCancellationNoticeMinutes:
+      String(
+        settings.minimumCancellationNoticeMinutes,
+      ),
+
+    onlineReschedulingEnabled:
+      settings.onlineReschedulingEnabled,
+
+    minimumRescheduleNoticeMinutes:
+      String(
+        settings.minimumRescheduleNoticeMinutes,
+      ),
+
+    remindersEnabled:
+      settings.remindersEnabled,
+
+    firstReminderMinutesBefore:
+      String(
+        settings.firstReminderMinutesBefore,
+      ),
+
+    secondReminderEnabled:
+      settings.remindersEnabled
+      && settings.secondReminderEnabled,
+
+    secondReminderMinutesBefore:
+      String(
+        settings.secondReminderMinutesBefore,
+      ),
+
+    version:
+      settings.version,
+  };
+}
+
+function parseIntegerField(
+  value: string,
+): number | null {
+  const trimmed =
+    value.trim();
+
+  if (
+    !/^-?\d+$/.test(
+      trimmed,
+    )
+  ) {
+    return null;
+  }
+
+  const parsed =
+    Number(
+      trimmed,
+    );
+
+  if (
+    !Number.isSafeInteger(
+      parsed,
+    )
+  ) {
+    return null;
+  }
+
+  return parsed;
+}
+
+function validateOperationalForm(
+  form: OperationalSettingsForm,
+): Record<
+  string,
+  string
+> {
+  const fieldErrors: Record<
+    string,
+    string
+  > = {};
+
+  const parsed: Partial<
+    Record<
+      OperationalNumericKey,
+      number
+    >
+  > = {};
+
+  (
+    Object.keys(
+      operationalNumberLimits,
+    ) as OperationalNumericKey[]
+  ).forEach(
+    (
+      field,
+    ) => {
+      const limits =
+        operationalNumberLimits[
+          field
+        ];
+
+      const value =
+        parseIntegerField(
+          form[field],
+        );
+
+      if (
+        value == null
+      ) {
+        fieldErrors[field] =
+          "Introduce un número entero.";
+
+        return;
+      }
+
+      if (
+        value < limits.min
+      ) {
+        fieldErrors[field] =
+          limits.belowMin;
+
+        return;
+      }
+
+      if (
+        value > limits.max
+      ) {
+        fieldErrors[field] =
+          limits.aboveMax;
+
+        return;
+      }
+
+      parsed[field] =
+        value;
+    },
+  );
+
+  const firstReminder =
+    parsed.firstReminderMinutesBefore;
+
+  const secondReminder =
+    parsed.secondReminderMinutesBefore;
+
+  if (
+    form.remindersEnabled
+    && form.secondReminderEnabled
+    && firstReminder != null
+    && secondReminder != null
+    && secondReminder >= firstReminder
+  ) {
+    fieldErrors.secondReminderMinutesBefore =
+      "El segundo recordatorio debe ejecutarse más cerca de la cita que el primero.";
+  }
+
+  if (
+    !Number.isSafeInteger(
+      form.version,
+    )
+    || form.version < 0
+  ) {
+    fieldErrors.version =
+      "version no puede ser negativa.";
+  }
+
+  return fieldErrors;
+}
+
+function readValidationErrors(
+  payload: unknown,
+): Record<
+  string,
+  string
+> {
+  if (
+    typeof payload !== "object"
+    || payload === null
+    || !(
+      "validationErrors" in payload
+    )
+  ) {
+    return {};
+  }
+
+  const validationErrors =
+    payload.validationErrors;
+
+  if (
+    typeof validationErrors !== "object"
+    || validationErrors === null
+  ) {
+    return {};
+  }
+
+  const fieldErrors: Record<
+    string,
+    string
+  > = {};
+
+  Object.entries(
+    validationErrors,
+  ).forEach(
+    (
+      [
+        field,
+        message,
+      ],
+    ) => {
+      if (
+        typeof message === "string"
+        && message.trim() !== ""
+      ) {
+        fieldErrors[field] =
+          message.trim();
+      }
+    },
+  );
+
+  return fieldErrors;
+}
+
 /* =========================================================
    ERROR
 ========================================================= */
@@ -516,6 +975,93 @@ function resolveApiError(
   }
 
   return "No se ha podido conectar con la API Business.";
+}
+
+function resolveOperationalError(
+  error: unknown,
+): {
+  message: string;
+  fieldErrors: Record<
+    string,
+    string
+  >;
+} {
+  if (
+    error instanceof ApiError
+  ) {
+    const fieldErrors =
+      readValidationErrors(
+        error.payload,
+      );
+
+    if (
+      error.status === 401
+    ) {
+      return {
+        message:
+          "La sesión Business ha caducado. Vuelve a iniciar sesión.",
+        fieldErrors,
+      };
+    }
+
+    if (
+      error.status === 403
+    ) {
+      return {
+        message:
+          "No tienes permisos para consultar o modificar los recordatorios y las reservas.",
+        fieldErrors,
+      };
+    }
+
+    if (
+      error.status === 409
+    ) {
+      return {
+        message:
+          error.message
+          || "La configuración ha cambiado desde que fue cargada.",
+        fieldErrors,
+      };
+    }
+
+    return {
+      message:
+        error.message
+        || "No se ha podido completar la operación.",
+      fieldErrors,
+    };
+  }
+
+  return {
+    message:
+      resolveApiError(
+        error,
+      ),
+    fieldErrors: {},
+  };
+}
+
+function requireSessionBusinessId(): number {
+  const storedSession =
+    readStoredBusinessSession();
+
+  const businessId =
+    storedSession?.businessId;
+
+  if (
+    typeof businessId !== "number"
+    || !Number.isInteger(
+      businessId,
+    )
+    || businessId <= 0
+  ) {
+    throw new Error(
+      "La sesión actual no contiene un negocio válido.",
+    );
+  }
+
+  return businessId;
 }
 
 /* =========================================================
@@ -637,6 +1183,77 @@ export default function BusinessSettingsPage() {
       true,
     );
 
+  const [
+    operationalSettings,
+    setOperationalSettings,
+  ] =
+    useState<
+      BusinessSettingsResponse
+      | null
+    >(
+      null,
+    );
+
+  const [
+    operationalForm,
+    setOperationalForm,
+  ] =
+    useState<
+      OperationalSettingsForm
+      | null
+    >(
+      null,
+    );
+
+  const [
+    operationalLoading,
+    setOperationalLoading,
+  ] =
+    useState(
+      true,
+    );
+
+  const [
+    operationalSaving,
+    setOperationalSaving,
+  ] =
+    useState(
+      false,
+    );
+
+  const [
+    operationalError,
+    setOperationalError,
+  ] =
+    useState<
+      string | null
+    >(
+      null,
+    );
+
+  const [
+    operationalFieldErrors,
+    setOperationalFieldErrors,
+  ] =
+    useState<
+      Record<
+        string,
+        string
+      >
+    >(
+      {},
+    );
+
+  const [
+    operationalSuccess,
+    setOperationalSuccess,
+  ] =
+    useState<
+      string | null
+    >(
+      null,
+    );
+
   /* =======================================================
      PERMISSIONS
   ======================================================= */
@@ -712,6 +1329,87 @@ export default function BusinessSettingsPage() {
       [],
     );
 
+  const loadOperationalSettings =
+    useCallback(
+      async () => {
+        setOperationalLoading(
+          true,
+        );
+
+        setOperationalError(
+          null,
+        );
+
+        setOperationalFieldErrors(
+          {},
+        );
+
+        try {
+          const accessToken =
+            getStoredAccessToken();
+
+          if (
+            !accessToken
+          ) {
+            throw new Error(
+              "No existe una sesión Business válida.",
+            );
+          }
+
+          const businessId =
+            requireSessionBusinessId();
+
+          const response =
+            await apiGet<
+              BusinessSettingsResponse
+            >(
+              `/api/v1/businesses/${businessId}/settings`,
+              {
+                accessToken,
+              },
+            );
+
+          setOperationalSettings(
+            response,
+          );
+
+          setOperationalForm(
+            settingsToForm(
+              response,
+            ),
+          );
+        } catch (
+          requestError
+        ) {
+          const resolved =
+            resolveOperationalError(
+              requestError,
+            );
+
+          setOperationalSettings(
+            null,
+          );
+
+          setOperationalForm(
+            null,
+          );
+
+          setOperationalError(
+            resolved.message,
+          );
+
+          setOperationalFieldErrors(
+            resolved.fieldErrors,
+          );
+        } finally {
+          setOperationalLoading(
+            false,
+          );
+        }
+      },
+      [],
+    );
+
   useEffect(
     () => {
       setSession(
@@ -719,9 +1417,12 @@ export default function BusinessSettingsPage() {
       );
 
       void loadBusiness();
+
+      void loadOperationalSettings();
     },
     [
       loadBusiness,
+      loadOperationalSettings,
     ],
   );
 
@@ -758,6 +1459,35 @@ export default function BusinessSettingsPage() {
     ],
   );
 
+  useEffect(
+    () => {
+      if (
+        !operationalSuccess
+      ) {
+        return;
+      }
+
+      const timeout =
+        window.setTimeout(
+          () => {
+            setOperationalSuccess(
+              null,
+            );
+          },
+          3500,
+        );
+
+      return () => {
+        window.clearTimeout(
+          timeout,
+        );
+      };
+    },
+    [
+      operationalSuccess,
+    ],
+  );
+
   /* =======================================================
      DIRTY STATE
   ======================================================= */
@@ -789,6 +1519,33 @@ export default function BusinessSettingsPage() {
       ],
     );
 
+  const operationalDirty =
+    useMemo(
+      () => {
+        if (
+          !operationalSettings
+          || !operationalForm
+        ) {
+          return false;
+        }
+
+        return (
+          JSON.stringify(
+            settingsToForm(
+              operationalSettings,
+            ),
+          )
+          !== JSON.stringify(
+            operationalForm,
+          )
+        );
+      },
+      [
+        operationalSettings,
+        operationalForm,
+      ],
+    );
+
   /* =======================================================
      RESET
   ======================================================= */
@@ -812,6 +1569,57 @@ export default function BusinessSettingsPage() {
 
     setSuccessMessage(
       null,
+    );
+  }
+
+  function resetOperationalForm() {
+    if (
+      !operationalSettings
+    ) {
+      return;
+    }
+
+    setOperationalForm(
+      settingsToForm(
+        operationalSettings,
+      ),
+    );
+
+    setOperationalError(
+      null,
+    );
+
+    setOperationalFieldErrors(
+      {},
+    );
+
+    setOperationalSuccess(
+      null,
+    );
+  }
+
+  function updateOperationalForm(
+    patch: Partial<
+      OperationalSettingsForm
+    >,
+  ) {
+    setOperationalForm(
+      (
+        current,
+      ) => current
+        ? {
+            ...current,
+            ...patch,
+          }
+        : current,
+    );
+
+    setOperationalError(
+      null,
+    );
+
+    setOperationalFieldErrors(
+      {},
     );
   }
 
@@ -1045,6 +1853,203 @@ export default function BusinessSettingsPage() {
   }
 
   /* =======================================================
+     SAVE OPERATIONAL SETTINGS
+  ======================================================= */
+
+  async function saveOperationalSettings() {
+    if (
+      !operationalForm
+      || operationalSaving
+      || !canEdit
+    ) {
+      return;
+    }
+
+    const fieldErrors =
+      validateOperationalForm(
+        operationalForm,
+      );
+
+    if (
+      Object.keys(
+        fieldErrors,
+      ).length > 0
+    ) {
+      setOperationalFieldErrors(
+        fieldErrors,
+      );
+
+      setOperationalError(
+        "Revisa los campos antes de guardar.",
+      );
+
+      setOperationalSuccess(
+        null,
+      );
+
+      return;
+    }
+
+    setOperationalSaving(
+      true,
+    );
+
+    setOperationalError(
+      null,
+    );
+
+    setOperationalFieldErrors(
+      {},
+    );
+
+    try {
+      const accessToken =
+        getStoredAccessToken();
+
+      if (
+        !accessToken
+      ) {
+        throw new Error(
+          "No existe una sesión Business válida.",
+        );
+      }
+
+      const businessId =
+        requireSessionBusinessId();
+
+      const minimumBookingNoticeMinutes =
+        parseIntegerField(
+          operationalForm.minimumBookingNoticeMinutes,
+        );
+
+      const bookingHorizonDays =
+        parseIntegerField(
+          operationalForm.bookingHorizonDays,
+        );
+
+      const slotIntervalMinutes =
+        parseIntegerField(
+          operationalForm.slotIntervalMinutes,
+        );
+
+      const defaultBufferBeforeMinutes =
+        parseIntegerField(
+          operationalForm.defaultBufferBeforeMinutes,
+        );
+
+      const defaultBufferAfterMinutes =
+        parseIntegerField(
+          operationalForm.defaultBufferAfterMinutes,
+        );
+
+      const minimumCancellationNoticeMinutes =
+        parseIntegerField(
+          operationalForm.minimumCancellationNoticeMinutes,
+        );
+
+      const minimumRescheduleNoticeMinutes =
+        parseIntegerField(
+          operationalForm.minimumRescheduleNoticeMinutes,
+        );
+
+      const firstReminderMinutesBefore =
+        parseIntegerField(
+          operationalForm.firstReminderMinutesBefore,
+        );
+
+      const secondReminderMinutesBefore =
+        parseIntegerField(
+          operationalForm.secondReminderMinutesBefore,
+        );
+
+      if (
+        minimumBookingNoticeMinutes == null
+        || bookingHorizonDays == null
+        || slotIntervalMinutes == null
+        || defaultBufferBeforeMinutes == null
+        || defaultBufferAfterMinutes == null
+        || minimumCancellationNoticeMinutes == null
+        || minimumRescheduleNoticeMinutes == null
+        || firstReminderMinutesBefore == null
+        || secondReminderMinutesBefore == null
+      ) {
+        throw new Error(
+          "Revisa los campos numéricos antes de guardar.",
+        );
+      }
+
+      const payload: BusinessSettingsUpdateRequest = {
+        minimumBookingNoticeMinutes,
+        bookingHorizonDays,
+        slotIntervalMinutes,
+        defaultBufferBeforeMinutes,
+        defaultBufferAfterMinutes,
+        autoConfirmAppointments:
+          operationalForm.autoConfirmAppointments,
+        onlineCancellationEnabled:
+          operationalForm.onlineCancellationEnabled,
+        minimumCancellationNoticeMinutes,
+        onlineReschedulingEnabled:
+          operationalForm.onlineReschedulingEnabled,
+        minimumRescheduleNoticeMinutes,
+        remindersEnabled:
+          operationalForm.remindersEnabled,
+        firstReminderMinutesBefore,
+        secondReminderEnabled:
+          operationalForm.remindersEnabled
+          && operationalForm.secondReminderEnabled,
+        secondReminderMinutesBefore,
+        version:
+          operationalForm.version,
+      };
+
+      const response =
+        await apiPatch<
+          BusinessSettingsResponse
+        >(
+          `/api/v1/businesses/${businessId}/settings`,
+          payload,
+          {
+            accessToken,
+          },
+        );
+
+      setOperationalSettings(
+        response,
+      );
+
+      setOperationalForm(
+        settingsToForm(
+          response,
+        ),
+      );
+
+      setOperationalSuccess(
+        "Recordatorios y reservas guardados correctamente.",
+      );
+    } catch (
+      requestError
+    ) {
+      const resolved =
+        resolveOperationalError(
+          requestError,
+        );
+
+      setOperationalError(
+        resolved.message,
+      );
+
+      setOperationalFieldErrors(
+        resolved.fieldErrors,
+      );
+    } finally {
+      setOperationalSaving(
+        false,
+      );
+    }
+  }
+
+  /* =======================================================
      LOADING
   ======================================================= */
 
@@ -1086,9 +2091,10 @@ export default function BusinessSettingsPage() {
 
         <button
           type="button"
-          onClick={() =>
-            void loadBusiness()
-          }
+          onClick={() => {
+            void loadBusiness();
+            void loadOperationalSettings();
+          }}
           className="mt-5 rounded-full bg-[#342d28] px-5 py-2.5 text-sm font-semibold text-white"
         >
           Reintentar
@@ -2116,6 +3122,573 @@ export default function BusinessSettingsPage() {
       </SettingsSection>
 
       {/* ===================================================
+          REMINDERS AND BOOKING POLICIES
+      =================================================== */}
+
+      <SettingsSection
+        title="Recordatorios y reservas"
+        description="Antelación, horizonte, huecos, márgenes, cancelación, reprogramación y recordatorios."
+      >
+        {operationalLoading && (
+          <div className="space-y-4">
+            <div className="h-24 animate-pulse rounded-[22px] bg-[#f6f2ee]" />
+            <div className="h-24 animate-pulse rounded-[22px] bg-[#f6f2ee]" />
+            <div className="h-40 animate-pulse rounded-[22px] bg-[#f6f2ee]" />
+          </div>
+        )}
+
+        {!operationalLoading
+        && (
+          !operationalSettings
+          || !operationalForm
+        ) && (
+          <div className="rounded-[22px] border border-[#ead3d3] bg-[#fbf1f1] p-5">
+            <div className="text-sm font-semibold text-[#744d4d]">
+              No se ha podido cargar la configuración de recordatorios y reservas
+            </div>
+
+            <p className="mt-2 text-sm leading-6 text-[#946f6f]">
+              {operationalError
+              || "No existen datos disponibles."}
+            </p>
+
+            <button
+              type="button"
+              onClick={() =>
+                void loadOperationalSettings()
+              }
+              className="mt-5 rounded-full bg-[#342d28] px-5 py-2.5 text-sm font-semibold text-white"
+            >
+              Reintentar
+            </button>
+          </div>
+        )}
+
+        {!operationalLoading
+        && operationalSettings
+        && operationalForm && (
+          <div className="space-y-7">
+
+            {operationalSuccess && (
+              <section className="rounded-[20px] border border-[#dce8dd] bg-[#f1f7f1] px-5 py-4 text-sm font-medium text-[#55705a]">
+                {operationalSuccess}
+              </section>
+            )}
+
+            {operationalError && (
+              <section className="rounded-[20px] border border-[#ead3d3] bg-[#fbf1f1] px-5 py-4 text-sm text-[#8f5f5f]">
+                <p>
+                  {operationalError}
+                </p>
+
+                {Object.keys(
+                  operationalFieldErrors,
+                ).length > 0 && (
+                  <ul className="mt-3 list-disc space-y-1 pl-5">
+                    {Object.entries(
+                      operationalFieldErrors,
+                    ).map(
+                      (
+                        [
+                          field,
+                          message,
+                        ],
+                      ) => (
+                        <li
+                          key={
+                            field
+                          }
+                        >
+                          {operationalFieldLabels[field]
+                          ?? field}
+                          {": "}
+                          {message}
+                        </li>
+                      ),
+                    )}
+                  </ul>
+                )}
+              </section>
+            )}
+
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9a897d]">
+                Ventana de reserva
+              </div>
+
+              <div className="mt-4 grid gap-5 md:grid-cols-2">
+                <OperationalNumberField
+                  label="Antelación mínima para reservar"
+                  description="Minutos exigidos para crear una reserva. 0 permite reservar de inmediato. Máximo 525600."
+                  value={
+                    operationalForm.minimumBookingNoticeMinutes
+                  }
+                  min={
+                    operationalNumberLimits.minimumBookingNoticeMinutes.min
+                  }
+                  max={
+                    operationalNumberLimits.minimumBookingNoticeMinutes.max
+                  }
+                  disabled={
+                    !canEdit
+                    || operationalSaving
+                  }
+                  error={
+                    operationalFieldErrors.minimumBookingNoticeMinutes
+                  }
+                  onChange={
+                    (
+                      value,
+                    ) =>
+                      updateOperationalForm(
+                        {
+                          minimumBookingNoticeMinutes:
+                            value,
+                        },
+                      )
+                  }
+                />
+
+                <OperationalNumberField
+                  label="Horizonte de reserva"
+                  description="Días hacia el futuro en los que se puede reservar. Entre 1 y 730."
+                  value={
+                    operationalForm.bookingHorizonDays
+                  }
+                  min={
+                    operationalNumberLimits.bookingHorizonDays.min
+                  }
+                  max={
+                    operationalNumberLimits.bookingHorizonDays.max
+                  }
+                  disabled={
+                    !canEdit
+                    || operationalSaving
+                  }
+                  error={
+                    operationalFieldErrors.bookingHorizonDays
+                  }
+                  onChange={
+                    (
+                      value,
+                    ) =>
+                      updateOperationalForm(
+                        {
+                          bookingHorizonDays:
+                            value,
+                        },
+                      )
+                  }
+                />
+              </div>
+            </div>
+
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9a897d]">
+                Huecos y márgenes
+              </div>
+
+              <div className="mt-4 grid gap-5 md:grid-cols-3">
+                <OperationalNumberField
+                  label="Intervalo entre huecos"
+                  description="Minutos entre horas de inicio posibles. Entre 5 y 240."
+                  value={
+                    operationalForm.slotIntervalMinutes
+                  }
+                  min={
+                    operationalNumberLimits.slotIntervalMinutes.min
+                  }
+                  max={
+                    operationalNumberLimits.slotIntervalMinutes.max
+                  }
+                  disabled={
+                    !canEdit
+                    || operationalSaving
+                  }
+                  error={
+                    operationalFieldErrors.slotIntervalMinutes
+                  }
+                  onChange={
+                    (
+                      value,
+                    ) =>
+                      updateOperationalForm(
+                        {
+                          slotIntervalMinutes:
+                            value,
+                        },
+                      )
+                  }
+                />
+
+                <OperationalNumberField
+                  label="Margen antes de la cita"
+                  description="Minutos de ocupación previa. Entre 0 y 240."
+                  value={
+                    operationalForm.defaultBufferBeforeMinutes
+                  }
+                  min={
+                    operationalNumberLimits.defaultBufferBeforeMinutes.min
+                  }
+                  max={
+                    operationalNumberLimits.defaultBufferBeforeMinutes.max
+                  }
+                  disabled={
+                    !canEdit
+                    || operationalSaving
+                  }
+                  error={
+                    operationalFieldErrors.defaultBufferBeforeMinutes
+                  }
+                  onChange={
+                    (
+                      value,
+                    ) =>
+                      updateOperationalForm(
+                        {
+                          defaultBufferBeforeMinutes:
+                            value,
+                        },
+                      )
+                  }
+                />
+
+                <OperationalNumberField
+                  label="Margen después de la cita"
+                  description="Minutos de ocupación posterior. Entre 0 y 240."
+                  value={
+                    operationalForm.defaultBufferAfterMinutes
+                  }
+                  min={
+                    operationalNumberLimits.defaultBufferAfterMinutes.min
+                  }
+                  max={
+                    operationalNumberLimits.defaultBufferAfterMinutes.max
+                  }
+                  disabled={
+                    !canEdit
+                    || operationalSaving
+                  }
+                  error={
+                    operationalFieldErrors.defaultBufferAfterMinutes
+                  }
+                  onChange={
+                    (
+                      value,
+                    ) =>
+                      updateOperationalForm(
+                        {
+                          defaultBufferAfterMinutes:
+                            value,
+                        },
+                      )
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9a897d]">
+                Confirmación, cancelación y reprogramación
+              </div>
+
+              <PolicyToggle
+                title="Confirmar citas automáticamente"
+                description="Si está activo, las nuevas reservas quedan confirmadas. Si no, pueden permanecer pendientes."
+                active={
+                  operationalForm.autoConfirmAppointments
+                }
+                disabled={
+                  !canEdit
+                  || operationalSaving
+                }
+                onClick={() =>
+                  updateOperationalForm(
+                    {
+                      autoConfirmAppointments:
+                        !operationalForm.autoConfirmAppointments,
+                    },
+                  )
+                }
+              />
+
+              <PolicyToggle
+                title="Permitir cancelación online"
+                description="El cliente puede cancelar una cita desde el flujo público."
+                active={
+                  operationalForm.onlineCancellationEnabled
+                }
+                disabled={
+                  !canEdit
+                  || operationalSaving
+                }
+                onClick={() =>
+                  updateOperationalForm(
+                    {
+                      onlineCancellationEnabled:
+                        !operationalForm.onlineCancellationEnabled,
+                    },
+                  )
+                }
+              />
+
+              <OperationalNumberField
+                label="Antelación mínima para cancelar"
+                description="Minutos de antelación exigidos para cancelar online. Entre 0 y 525600."
+                value={
+                  operationalForm.minimumCancellationNoticeMinutes
+                }
+                min={
+                  operationalNumberLimits.minimumCancellationNoticeMinutes.min
+                }
+                max={
+                  operationalNumberLimits.minimumCancellationNoticeMinutes.max
+                }
+                disabled={
+                  !canEdit
+                  || operationalSaving
+                }
+                error={
+                  operationalFieldErrors.minimumCancellationNoticeMinutes
+                }
+                onChange={
+                  (
+                    value,
+                  ) =>
+                    updateOperationalForm(
+                      {
+                        minimumCancellationNoticeMinutes:
+                          value,
+                      },
+                    )
+                }
+              />
+
+              <PolicyToggle
+                title="Permitir reprogramación online"
+                description="El cliente puede cambiar la fecha de una cita desde el flujo público."
+                active={
+                  operationalForm.onlineReschedulingEnabled
+                }
+                disabled={
+                  !canEdit
+                  || operationalSaving
+                }
+                onClick={() =>
+                  updateOperationalForm(
+                    {
+                      onlineReschedulingEnabled:
+                        !operationalForm.onlineReschedulingEnabled,
+                    },
+                  )
+                }
+              />
+
+              <OperationalNumberField
+                label="Antelación mínima para reprogramar"
+                description="Minutos de antelación exigidos para reprogramar online. Entre 0 y 525600."
+                value={
+                  operationalForm.minimumRescheduleNoticeMinutes
+                }
+                min={
+                  operationalNumberLimits.minimumRescheduleNoticeMinutes.min
+                }
+                max={
+                  operationalNumberLimits.minimumRescheduleNoticeMinutes.max
+                }
+                disabled={
+                  !canEdit
+                  || operationalSaving
+                }
+                error={
+                  operationalFieldErrors.minimumRescheduleNoticeMinutes
+                }
+                onChange={
+                  (
+                    value,
+                  ) =>
+                    updateOperationalForm(
+                      {
+                        minimumRescheduleNoticeMinutes:
+                          value,
+                      },
+                    )
+                }
+              />
+            </div>
+
+            <div className="space-y-4">
+              <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9a897d]">
+                Recordatorios
+              </div>
+
+              <PolicyToggle
+                title="Activar recordatorios"
+                description="Controla el sistema general de recordatorios de citas."
+                active={
+                  operationalForm.remindersEnabled
+                }
+                disabled={
+                  !canEdit
+                  || operationalSaving
+                }
+                onClick={() =>
+                  updateOperationalForm(
+                    {
+                      remindersEnabled:
+                        !operationalForm.remindersEnabled,
+
+                      secondReminderEnabled:
+                        operationalForm.remindersEnabled
+                          ? false
+                          : operationalForm.secondReminderEnabled,
+                    },
+                  )
+                }
+              />
+
+              <div className="grid gap-5 md:grid-cols-2">
+                <OperationalNumberField
+                  label="Primer recordatorio"
+                  description="Minutos antes de la cita. Entre 1 y 525600."
+                  value={
+                    operationalForm.firstReminderMinutesBefore
+                  }
+                  min={
+                    operationalNumberLimits.firstReminderMinutesBefore.min
+                  }
+                  max={
+                    operationalNumberLimits.firstReminderMinutesBefore.max
+                  }
+                  disabled={
+                    !canEdit
+                    || operationalSaving
+                  }
+                  error={
+                    operationalFieldErrors.firstReminderMinutesBefore
+                  }
+                  onChange={
+                    (
+                      value,
+                    ) =>
+                      updateOperationalForm(
+                        {
+                          firstReminderMinutesBefore:
+                            value,
+                        },
+                      )
+                  }
+                />
+
+                <OperationalNumberField
+                  label="Segundo recordatorio"
+                  description="Minutos antes de la cita. Debe quedar más cerca que el primero. Entre 1 y 525600."
+                  value={
+                    operationalForm.secondReminderMinutesBefore
+                  }
+                  min={
+                    operationalNumberLimits.secondReminderMinutesBefore.min
+                  }
+                  max={
+                    operationalNumberLimits.secondReminderMinutesBefore.max
+                  }
+                  disabled={
+                    !canEdit
+                    || operationalSaving
+                  }
+                  error={
+                    operationalFieldErrors.secondReminderMinutesBefore
+                  }
+                  onChange={
+                    (
+                      value,
+                    ) =>
+                      updateOperationalForm(
+                        {
+                          secondReminderMinutesBefore:
+                            value,
+                        },
+                      )
+                  }
+                />
+              </div>
+
+              <PolicyToggle
+                title="Activar segundo recordatorio"
+                description="Solo tiene efecto cuando los recordatorios generales están activos. Se envía más cerca de la cita que el primero."
+                active={
+                  operationalForm.remindersEnabled
+                  && operationalForm.secondReminderEnabled
+                }
+                disabled={
+                  !canEdit
+                  || operationalSaving
+                  || !operationalForm.remindersEnabled
+                }
+                onClick={() =>
+                  updateOperationalForm(
+                    {
+                      secondReminderEnabled:
+                        !operationalForm.secondReminderEnabled,
+                    },
+                  )
+                }
+              />
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <InfoCard
+                label="Creada"
+                value={formatDateTime(
+                  operationalSettings.createdAt,
+                )}
+              />
+
+              <InfoCard
+                label="Actualizada"
+                value={formatDateTime(
+                  operationalSettings.updatedAt,
+                )}
+              />
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={
+                  resetOperationalForm
+                }
+                disabled={
+                  !operationalDirty
+                  || operationalSaving
+                }
+                className="rounded-full border border-[#d8cec6] bg-white px-5 py-3 text-sm font-semibold text-[#62564f] transition hover:bg-[#f7f3ef] disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Descartar cambios
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
+                  void saveOperationalSettings()
+                }
+                disabled={
+                  !operationalDirty
+                  || operationalSaving
+                  || !canEdit
+                }
+                className="rounded-full bg-[#342d28] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#211c18] disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {operationalSaving
+                  ? "Guardando..."
+                  : "Guardar recordatorios y reservas"}
+              </button>
+            </div>
+          </div>
+        )}
+      </SettingsSection>
+
+      {/* ===================================================
           SYSTEM INFO
       =================================================== */}
 
@@ -2265,6 +3838,7 @@ type FieldProps = {
   label: string;
   required?: boolean;
   description?: string;
+  error?: string;
   className?: string;
   children: React.ReactNode;
 };
@@ -2273,6 +3847,7 @@ function Field({
   label,
   required = false,
   description,
+  error,
   className = "",
   children,
 }: FieldProps) {
@@ -2297,6 +3872,12 @@ function Field({
       {description && (
         <p className="mt-2 text-xs leading-5 text-[#998a80]">
           {description}
+        </p>
+      )}
+
+      {error && (
+        <p className="mt-2 text-xs leading-5 text-[#9c6969]">
+          {error}
         </p>
       )}
     </label>
@@ -2457,6 +4038,124 @@ type ToggleSwitchProps = {
   disabled?: boolean;
   onClick: () => void;
 };
+
+type OperationalNumberFieldProps = {
+  label: string;
+  description: string;
+  value: string;
+  min: number;
+  max: number;
+  disabled: boolean;
+  error?: string;
+  onChange: (
+    value: string,
+  ) => void;
+};
+
+function OperationalNumberField({
+  label,
+  description,
+  value,
+  min,
+  max,
+  disabled,
+  error,
+  onChange,
+}: OperationalNumberFieldProps) {
+
+  return (
+    <Field
+      label={
+        label
+      }
+      description={
+        description
+      }
+      error={
+        error
+      }
+      required
+    >
+      <input
+        type="number"
+        inputMode="numeric"
+        min={
+          min
+        }
+        max={
+          max
+        }
+        step={
+          1
+        }
+        value={
+          value
+        }
+        disabled={
+          disabled
+        }
+        aria-invalid={
+          Boolean(
+            error,
+          )
+        }
+        onChange={
+          (
+            event,
+          ) =>
+            onChange(
+              event.target.value,
+            )
+        }
+        className={inputClassName}
+      />
+    </Field>
+  );
+}
+
+type PolicyToggleProps = {
+  title: string;
+  description: string;
+  active: boolean;
+  disabled: boolean;
+  onClick: () => void;
+};
+
+function PolicyToggle({
+  title,
+  description,
+  active,
+  disabled,
+  onClick,
+}: PolicyToggleProps) {
+
+  return (
+    <div className="flex flex-col gap-5 rounded-[22px] border border-[#e5ddd5] bg-[#f8f5f1] p-5 sm:flex-row sm:items-center sm:justify-between">
+
+      <div>
+        <div className="text-sm font-semibold text-[#342e2a]">
+          {title}
+        </div>
+
+        <p className="mt-1 max-w-2xl text-sm leading-6 text-[#82746b]">
+          {description}
+        </p>
+      </div>
+
+      <ToggleSwitch
+        active={
+          active
+        }
+        disabled={
+          disabled
+        }
+        onClick={
+          onClick
+        }
+      />
+    </div>
+  );
+}
 
 function ToggleSwitch({
   active,
