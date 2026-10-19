@@ -6,6 +6,7 @@ import type {
 
 import {
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -14,6 +15,12 @@ import Link from "next/link";
 import {
   usePathname,
 } from "next/navigation";
+
+import {
+  apiPost,
+  clearBusinessSession,
+  getCurrentRefreshToken,
+} from "@/lib/api";
 
 /* =========================================================
    TYPES
@@ -371,6 +378,66 @@ export default function BusinessLayout({
       null,
     );
 
+  const [
+    loggingOut,
+    setLoggingOut,
+  ] =
+    useState(
+      false,
+    );
+
+  const loggingOutRef =
+    useRef(
+      false,
+    );
+
+  async function handleLogout() {
+    if (
+      loggingOutRef.current
+    ) {
+      return;
+    }
+
+    loggingOutRef.current =
+      true;
+
+    setLoggingOut(
+      true,
+    );
+
+    try {
+      const refreshToken =
+        getCurrentRefreshToken();
+
+      if (
+        refreshToken
+      ) {
+        await apiPost<null>(
+          "/api/v1/auth/logout",
+          {
+            refreshToken,
+          },
+          {
+            skipAuthRefresh:
+              true,
+          },
+        );
+      }
+    } catch {
+      /*
+       * El cierre local no depende de la respuesta.
+       * Un 401, un token ya revocado o el API caído
+       * deben dejar igualmente la sesión cerrada.
+       */
+    } finally {
+      clearBusinessSession();
+
+      window.location.replace(
+        "/business/login",
+      );
+    }
+  }
+
   /* =======================================================
      SESSION SYNC
   ======================================================= */
@@ -573,7 +640,25 @@ export default function BusinessLayout({
 
               {/* USER */}
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    void handleLogout();
+                  }}
+                  disabled={
+                    loggingOut
+                  }
+                  aria-busy={
+                    loggingOut
+                  }
+                  className="inline-flex shrink-0 items-center justify-center rounded-full border border-[#ddd2c8] bg-white px-3.5 py-2 text-xs font-semibold text-[#62564f] transition hover:border-[#cfc3b8] hover:bg-[#f3ece6] hover:text-[#342d28] disabled:cursor-not-allowed disabled:opacity-60 sm:px-4"
+                >
+                  {loggingOut
+                    ? "Cerrando..."
+                    : "Cerrar sesión"}
+                </button>
+
                 <div className="hidden text-right sm:block">
                   <div className="max-w-[240px] truncate text-sm font-semibold text-[#332d29]">
                     {userName}

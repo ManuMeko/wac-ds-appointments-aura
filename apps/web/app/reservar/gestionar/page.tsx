@@ -12,6 +12,7 @@ import {
 
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { getApiBaseUrl } from "@/lib/api";
 
 /* =========================================================
    WAC D.S. · MODEL 01 · APPOINTMENTS
@@ -19,10 +20,7 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
    Secure appointment-scoped token handling
 ========================================================= */
 
-const API_BASE_URL = (
-  process.env.NEXT_PUBLIC_API_URL ??
-  "http://localhost:8080"
-).replace(/\/$/, "");
+const API_BASE_URL = getApiBaseUrl().replace(/\/$/, "");
 
 const MANAGEMENT_HEADER = "X-Booking-Management-Token";
 const STORAGE_PREFIX = "wacds_booking_management_";

@@ -10,6 +10,7 @@ import {
 
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { getApiBaseUrl } from "@/lib/api";
 
 /* =========================================================
    WAC DS · MODEL 01 · APPOINTMENTS
@@ -18,9 +19,7 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 
 const BUSINESS_SLUG = "aura-studio";
 
-const API_BASE_URL = (
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080"
-).replace(/\/$/, "");
+const API_BASE_URL = getApiBaseUrl().replace(/\/$/, "");
 
 /* =========================================================
    TYPES
