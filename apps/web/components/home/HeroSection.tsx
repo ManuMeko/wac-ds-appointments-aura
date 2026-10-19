@@ -10,6 +10,8 @@ import { auraBrand, auraHero, auraStats } from "@/data/aura";
    Aura Studio · Hero Section
 ========================================================= */
 
+const PUBLIC_BOOKING_HREF = "/reservar";
+
 export function HeroSection() {
   return (
     <section
@@ -59,7 +61,7 @@ export function HeroSection() {
             ================================================== */}
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <a
-                href={auraHero.primaryCta.href}
+                href={PUBLIC_BOOKING_HREF}
                 className="group inline-flex h-14 items-center justify-center gap-3 rounded-full bg-[#2b2521] px-8 text-[11px] font-semibold uppercase tracking-[0.2em] !text-[#fffaf6] shadow-[0_12px_30px_rgba(43,37,33,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#4c3f36] hover:shadow-[0_16px_36px_rgba(43,37,33,0.20)]"
               >
                 {auraHero.primaryCta.label}
@@ -141,7 +143,7 @@ export function HeroSection() {
                 </div>
 
                 <a
-                  href={auraHero.primaryCta.href}
+                  href={PUBLIC_BOOKING_HREF}
                   aria-label={auraHero.primaryCta.label}
                   className="group flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#2d2723] !text-[#fffaf6] shadow-[0_10px_24px_rgba(45,39,35,0.18)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#4b3d34]"
                 >
@@ -179,6 +181,17 @@ export function HeroSection() {
               <p className="mt-2 max-w-[280px] font-serif text-2xl leading-tight text-[#322b26]">
                 {auraBrand.signature.title}
               </p>
+
+              <a
+                href={PUBLIC_BOOKING_HREF}
+                className="group mt-5 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#2d2723] px-6 text-[10px] font-semibold uppercase tracking-[0.18em] !text-[#fffaf6] shadow-[0_10px_24px_rgba(45,39,35,0.16)] transition-all duration-300 hover:bg-[#4b3d34]"
+              >
+                {auraHero.primaryCta.label}
+
+                <span className="transition-transform duration-300 group-hover:translate-x-0.5">
+                  <ArrowIcon />
+                </span>
+              </a>
             </div>
           </div>
         </div>

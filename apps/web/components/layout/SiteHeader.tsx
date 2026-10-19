@@ -12,6 +12,8 @@ import { ArrowIcon } from "@/components/ui/ArrowIcon";
    Aura Studio · Site Header
 ========================================================= */
 
+const PUBLIC_BOOKING_HREF = "/reservar";
+
 function MenuIcon() {
   return (
     <svg
@@ -104,7 +106,7 @@ export function SiteHeader() {
         ====================================================== */}
         <div className="hidden items-center gap-3 sm:flex">
           <a
-            href="#contacto"
+            href={PUBLIC_BOOKING_HREF}
             className="group inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#2c2622] px-6 text-[11px] font-semibold uppercase tracking-[0.18em] !text-[#fffaf6] shadow-[0_8px_24px_rgba(44,38,34,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#4b3d34] hover:shadow-[0_12px_30px_rgba(44,38,34,0.20)]"
           >
             Pedir cita
@@ -166,7 +168,7 @@ export function SiteHeader() {
           </nav>
 
           <a
-            href="#contacto"
+            href={PUBLIC_BOOKING_HREF}
             onClick={closeMobileMenu}
             className="group mt-6 inline-flex h-14 w-full items-center justify-center gap-3 rounded-full bg-[#2c2622] px-7 text-[11px] font-semibold uppercase tracking-[0.18em] !text-[#fffaf6] shadow-[0_10px_28px_rgba(44,38,34,0.14)] transition-all duration-300 hover:bg-[#4b3d34]"
           >

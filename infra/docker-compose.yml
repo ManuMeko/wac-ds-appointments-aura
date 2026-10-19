@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: wac-ds-appointments-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: wac_ds_appointments
+      POSTGRES_USER: wacds
+      POSTGRES_PASSWORD: wacds_dev_password
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - wac_ds_appointments_pgdata:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wacds -d wac_ds_appointments"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  wac_ds_appointments_pgdata:

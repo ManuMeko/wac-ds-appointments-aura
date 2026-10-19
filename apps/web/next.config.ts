@@ -15,48 +15,70 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
 
   /* =======================================================
-     STATIC EXPORT
+     RUNTIME DEPLOYMENT
 
-     Aura Studio Essential V1 se desplegará inicialmente
-     como demo estática.
+     El proyecto ya no es únicamente una demo estática.
 
-     Esto hace que `next build` genere:
-     apps/web/out/
+     El panel Business utiliza:
+
+     - autenticación JWT;
+     - rutas dinámicas;
+     - datos reales;
+     - navegación a recursos por ID;
+     - futura gestión de citas en tiempo real.
+
+     Por tanto NO utilizamos:
+
+     output: "export"
+
+     Esto permite rutas dinámicas como:
+
+     /business/appointments/19
+     /business/appointments/25
+     /business/appointments/103
   ======================================================= */
-
-  output: "export",
 
   /* =======================================================
      IMAGES
 
-     En un export estático no tendremos el optimizador
-     de imágenes de Next.js ejecutándose en servidor.
+     Dejamos habilitado el optimizador de Next.js porque
+     el proyecto se desplegará con runtime Next.js.
 
-     Por eso desactivamos la optimización runtime.
+     También declaramos explícitamente las calidades que
+     ya utiliza Aura Studio para evitar warnings como:
+
+     quality "90" is not configured
+     quality "92" is not configured
   ======================================================= */
 
   images: {
-    unoptimized: true,
+    qualities: [
+      75,
+      90,
+      92,
+    ],
   },
 
   /* =======================================================
      TRAILING SLASH
 
-     Facilita la compatibilidad con hosting estático y
-     generación de rutas como:
+     Ya no necesitamos forzar trailingSlash para un hosting
+     estático basado en carpetas.
 
-     /aviso-legal/
-     /privacidad/
-     /cookies/
+     Las rutas Business dinámicas funcionarán de forma normal:
+
+     /business/appointments/19
   ======================================================= */
 
-  trailingSlash: true,
+  trailingSlash: false,
 
   /* =======================================================
      BUILD QUALITY
 
-     No ocultamos errores de TypeScript ni ESLint.
-     Si algo falla, queremos que el build falle también.
+     No ocultamos errores de TypeScript.
+
+     Si existe un error real de tipado, queremos que el build
+     falle antes de desplegar.
   ======================================================= */
 
   typescript: {
