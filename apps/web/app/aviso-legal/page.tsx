@@ -6,10 +6,7 @@ import Link from "next/link";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
-import {
-  auraBrand,
-  auraContact,
-} from "@/data/aura";
+import { business } from "@/config/business";
 
 /* =========================================================
    WAC DS · MODEL 01 · APPOINTMENTS
@@ -19,11 +16,11 @@ import {
 export const metadata: Metadata = {
   title: "Aviso legal",
   description:
-    "Información legal y condiciones generales de acceso y utilización del sitio web de Aura Studio.",
+    `Información legal y condiciones generales de acceso y utilización del sitio web de ${business.brand.name}.`,
 
   robots: {
-    index: false,
-    follow: false,
+    index: business.seo.robots.index,
+    follow: business.seo.robots.follow,
   },
 };
 
@@ -39,12 +36,12 @@ export const metadata: Metadata = {
 ========================================================= */
 
 const legalOwner = {
-  businessName: "Aura Studio",
+  businessName: business.brand.name,
   legalName: "[RAZÓN SOCIAL / NOMBRE COMPLETO DEL TITULAR]",
   taxId: "[NIF / CIF]",
   registeredAddress: "[DOMICILIO FISCAL / SOCIAL]",
   registryInformation: "[DATOS REGISTRALES, SI PROCEDE]",
-  contactEmail: auraContact.email,
+  contactEmail: business.contact.email,
 };
 
 const sections = [
@@ -113,7 +110,7 @@ export default function LegalNoticePage() {
                 <ArrowIcon />
               </span>
 
-              Volver a {auraBrand.shortName}
+              Volver a {business.brand.shortName}
             </Link>
 
             <div className="mt-12 grid gap-10 lg:grid-cols-[0.72fr_1.28fr]">
@@ -144,11 +141,11 @@ export default function LegalNoticePage() {
           <div className="mx-auto w-full max-w-[1440px] px-5 pt-12 sm:px-8 lg:px-12 xl:px-16">
             <div className="rounded-[1.4rem] border border-[#9b775e]/20 bg-[#efe4da] p-5 sm:p-6">
               <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[#8b6d59]">
-                Demo comercial WAC DS
+                {business.demo.label}
               </p>
 
               <p className="mt-3 max-w-[900px] text-sm leading-6 text-[#66584f]">
-                Aura Studio es una empresa ficticia utilizada como demostración
+                {business.brand.name} es una empresa ficticia utilizada como demostración
                 del Modelo 01 · Appointments de WAC DS. Los datos jurídicos que
                 aparecen entre corchetes deben sustituirse por los datos reales
                 del titular antes de publicar este proyecto para un cliente.
@@ -263,7 +260,7 @@ export default function LegalNoticePage() {
                 <div className="mt-6 space-y-5 text-base leading-8 text-[#6c5f56]">
                   <p>
                     El sitio web tiene como finalidad ofrecer información sobre
-                    {` ${auraBrand.name}`}, sus servicios, tratamientos,
+                    {` ${business.brand.name}`}, sus servicios, tratamientos,
                     profesionales, horarios, medios de contacto y otras
                     cuestiones relacionadas con su actividad.
                   </p>
@@ -455,7 +452,7 @@ export default function LegalNoticePage() {
             <div className="flex flex-col justify-between gap-8 rounded-[1.8rem] border border-white/25 bg-[#f3ebe3] p-7 sm:p-9 lg:flex-row lg:items-center">
               <div>
                 <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[#967a66]">
-                  Aura Studio
+                  {business.brand.name}
                 </p>
 
                 <p className="mt-3 max-w-[540px] font-serif text-3xl leading-tight text-[#302925]">

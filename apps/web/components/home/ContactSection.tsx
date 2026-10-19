@@ -1,11 +1,7 @@
 // apps/web/components/home/ContactSection.tsx
 
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
-import {
-  auraContact,
-  auraContactSection,
-  auraOpeningHours,
-} from "@/data/aura";
+import { business } from "@/config/business";
 
 /* =========================================================
    WAC DS · MODEL 01 · APPOINTMENTS
@@ -84,9 +80,9 @@ function ClockIcon() {
 }
 
 export function ContactSection() {
-  const whatsappHref = `https://wa.me/${auraContact.whatsappNumber}`;
-  const phoneHref = `tel:${auraContact.phoneHref}`;
-  const emailHref = `mailto:${auraContact.email}`;
+  const whatsappHref = `https://wa.me/${business.contact.whatsappNumber}`;
+  const phoneHref = `tel:${business.contact.phoneHref}`;
+  const emailHref = `mailto:${business.contact.email}`;
 
   return (
     <section
@@ -112,15 +108,15 @@ export function ContactSection() {
               ================================================== */}
               <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.27em] text-[#947862]">
-                  {auraContactSection.eyebrow}
+                  {business.contactSection.eyebrow}
                 </p>
 
                 <h2 className="mt-5 max-w-[650px] font-serif text-5xl leading-[0.95] tracking-[-0.04em] text-[#2d2723] sm:text-6xl">
-                  {auraContactSection.title}
+                  {business.contactSection.title}
                 </h2>
 
                 <p className="mt-7 max-w-[560px] text-base leading-8 text-[#72645a]">
-                  {auraContactSection.description}
+                  {business.contactSection.description}
                 </p>
 
                 {/* =============================================
@@ -133,7 +129,7 @@ export function ContactSection() {
                     rel="noopener noreferrer"
                     className="group inline-flex h-14 items-center justify-center gap-3 rounded-full bg-[#2e2824] px-8 text-[11px] font-semibold uppercase tracking-[0.18em] !text-[#fffaf6] shadow-[0_12px_30px_rgba(46,40,36,0.12)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#4b3e35] hover:shadow-[0_16px_36px_rgba(46,40,36,0.18)]"
                   >
-                    {auraContactSection.whatsappCta.label}
+                    {business.contactSection.whatsappCta.label}
 
                     <span className="transition-transform duration-300 group-hover:translate-x-1">
                       <ArrowIcon />
@@ -146,7 +142,7 @@ export function ContactSection() {
                   >
                     <PhoneIcon />
 
-                    {auraContactSection.phoneCta.label}
+                    {business.contactSection.phoneCta.label}
                   </a>
                 </div>
 
@@ -167,7 +163,7 @@ export function ContactSection() {
                     </div>
 
                     <p className="mt-3 text-sm font-medium text-[#443932]">
-                      {auraContact.phoneDisplay}
+                      {business.contact.phoneDisplay}
                     </p>
                   </a>
 
@@ -184,7 +180,7 @@ export function ContactSection() {
                     </div>
 
                     <p className="mt-3 break-all text-sm font-medium text-[#443932]">
-                      {auraContact.email}
+                      {business.contact.email}
                     </p>
                   </a>
                 </div>
@@ -220,13 +216,13 @@ export function ContactSection() {
                   </div>
 
                   <p className="mt-4 font-serif text-2xl leading-8 text-[#332c27]">
-                    {auraContact.addressLine1}
+                    {business.contact.addressLine1}
                     <br />
-                    {auraContact.addressLine2}
+                    {business.contact.addressLine2}
                   </p>
 
                   <p className="mt-2 text-sm text-[#74665c]">
-                    {auraContact.city} · {auraContact.country}
+                    {business.contact.city} · {business.contact.country}
                   </p>
                 </div>
 
@@ -245,7 +241,7 @@ export function ContactSection() {
                   </div>
 
                   <div className="mt-5 space-y-3 text-sm">
-                    {auraOpeningHours.map((item) => (
+                    {business.openingHours.map((item) => (
                       <div
                         key={`${item.days}-${item.hours}`}
                         className="flex items-center justify-between gap-5 border-b border-[#3c332d]/[0.07] pb-3 last:border-b-0 last:pb-0"
@@ -279,7 +275,7 @@ export function ContactSection() {
                     >
                       <PhoneIcon />
 
-                      {auraContact.phoneDisplay}
+                      {business.contact.phoneDisplay}
                     </a>
 
                     <a
@@ -288,7 +284,7 @@ export function ContactSection() {
                     >
                       <MailIcon />
 
-                      {auraContact.email}
+                      {business.contact.email}
                     </a>
                   </div>
                 </div>

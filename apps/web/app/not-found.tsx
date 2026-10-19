@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
-import { auraBrand } from "@/data/aura";
+import { business } from "@/config/business";
 
 /* =========================================================
    WAC DS · MODEL 01 · APPOINTMENTS
@@ -76,11 +76,11 @@ export default function NotFound() {
 
                 <div className="mt-12 border-t border-[#332b26]/10 pt-7">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9a806d]">
-                    {auraBrand.name}
+                    {business.brand.name}
                   </p>
 
                   <p className="mt-3 max-w-[460px] font-serif text-xl leading-7 text-[#625248]">
-                    {auraBrand.description}
+                    {business.brand.description}
                   </p>
                 </div>
               </div>

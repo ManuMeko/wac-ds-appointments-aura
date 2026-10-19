@@ -1,7 +1,7 @@
 // apps/web/components/home/ServicesSection.tsx
 
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
-import { auraServices, auraServicesIntro } from "@/data/aura";
+import { business } from "@/config/business";
 
 /* =========================================================
    WAC DS · MODEL 01 · APPOINTMENTS
@@ -18,15 +18,15 @@ export function ServicesSection() {
           ====================================================== */}
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.27em] text-[#8b725f]">
-              {auraServicesIntro.eyebrow}
+              {business.servicesIntro.eyebrow}
             </p>
 
             <h2 className="mt-5 max-w-[430px] font-serif text-5xl leading-[0.96] tracking-[-0.035em] text-[#29231f] sm:text-6xl">
-              {auraServicesIntro.title}
+              {business.servicesIntro.title}
             </h2>
 
             <p className="mt-7 max-w-[430px] text-sm leading-7 text-[#72665e]">
-              {auraServicesIntro.description}
+              {business.servicesIntro.description}
             </p>
           </div>
 
@@ -34,7 +34,7 @@ export function ServicesSection() {
               SERVICES LIST
           ====================================================== */}
           <div className="border-t border-[#342d28]/15">
-            {auraServices.map((service) => (
+            {business.services.map((service) => (
               <article
                 key={service.id}
                 className="group grid gap-5 border-b border-[#342d28]/15 py-7 transition-all duration-300 sm:grid-cols-[60px_1fr_auto] sm:items-center"
@@ -84,10 +84,10 @@ export function ServicesSection() {
                 CTA
             ================================================== */}
             <a
-              href={auraServicesIntro.cta.href}
+              href={business.servicesIntro.cta.href}
               className="group mt-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#463a32] transition-colors duration-300 hover:text-[#8b6e59]"
             >
-              {auraServicesIntro.cta.label}
+              {business.servicesIntro.cta.label}
 
               <span className="transition-transform duration-300 group-hover:translate-x-1">
                 <ArrowIcon />

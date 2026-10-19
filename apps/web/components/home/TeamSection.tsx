@@ -2,21 +2,12 @@
 
 import Image from "next/image";
 
-import {
-  auraProfessionals,
-  auraTeamIntro,
-} from "@/data/aura";
+import { business } from "@/config/business";
 
 /* =========================================================
    WAC DS · MODEL 01 · APPOINTMENTS
    Aura Studio · Team Section
 ========================================================= */
-
-const professionalImages: Record<string, string> = {
-  "laura-martin": "/images/aura/team/laura-martin.png",
-  "andrea-lopez": "/images/aura/team/andrea-lopez.png",
-  "sofia-garcia": "/images/aura/team/sofia-garcia.png",
-};
 
 export function TeamSection() {
   return (
@@ -28,16 +19,16 @@ export function TeamSection() {
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.27em] text-[#89715f]">
-              {auraTeamIntro.eyebrow}
+              {business.teamIntro.eyebrow}
             </p>
 
             <h2 className="mt-5 max-w-[650px] font-serif text-5xl leading-[0.97] tracking-[-0.035em] text-[#2d2723] sm:text-6xl">
-              {auraTeamIntro.title}
+              {business.teamIntro.title}
             </h2>
           </div>
 
           <p className="max-w-[440px] text-sm leading-7 text-[#74685f]">
-            {auraTeamIntro.description}
+            {business.teamIntro.description}
           </p>
         </div>
 
@@ -45,8 +36,9 @@ export function TeamSection() {
             PROFESSIONALS GRID
         ====================================================== */}
         <div className="mt-14 grid gap-6 md:grid-cols-3">
-          {auraProfessionals.map((professional) => {
-            const imageSrc = professionalImages[professional.id];
+          {business.professionals.map((professional) => {
+            const imageSrc =
+              business.teamImagesByProfessionalId[professional.id];
 
             return (
               <article
@@ -60,7 +52,7 @@ export function TeamSection() {
                   {imageSrc ? (
                     <Image
                       src={imageSrc}
-                      alt={`${professional.name}, ${professional.role} en Aura Studio`}
+                      alt={`${professional.name}, ${professional.role} en ${business.brand.name}`}
                       fill
                       quality={90}
                       sizes="(min-width: 768px) 33vw, 100vw"

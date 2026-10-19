@@ -1,12 +1,6 @@
 // apps/web/components/layout/SiteFooter.tsx
 
-import {
-  auraBrand,
-  auraFooter,
-  auraLegalLinks,
-  auraNavigation,
-  auraSocialLinks,
-} from "@/data/aura";
+import { business } from "@/config/business";
 
 /* =========================================================
    WAC DS · MODEL 01 · APPOINTMENTS
@@ -25,30 +19,30 @@ export function SiteFooter() {
           <div className="max-w-[430px]">
             <a
               href="#inicio"
-              aria-label={`${auraBrand.name} - Inicio`}
+              aria-label={`${business.brand.name} - Inicio`}
               className="group inline-flex items-center gap-3"
             >
               <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] font-serif text-xl text-[#d6c0ae] transition-all duration-300 group-hover:border-white/25 group-hover:bg-white/[0.07]">
-                {auraBrand.monogram}
+                {business.brand.monogram}
               </span>
 
               <span className="leading-none">
                 <span className="block font-serif text-[22px] tracking-[0.14em] text-[#f0e7df]">
-                  {auraBrand.shortName.toUpperCase()}
+                  {business.brand.shortName.toUpperCase()}
                 </span>
 
                 <span className="mt-1 block text-[9px] font-medium uppercase tracking-[0.34em] text-[#8e837c]">
-                  Studio
+                  {business.brandSuffix}
                 </span>
               </span>
             </a>
 
             <p className="mt-5 max-w-[390px] text-sm leading-6 text-[#948a84]">
-              {auraBrand.description}
+              {business.brand.description}
             </p>
 
             <p className="mt-5 text-[10px] font-semibold uppercase tracking-[0.23em] text-[#766d68]">
-              {auraBrand.locationLabel}
+              {business.brand.locationLabel}
             </p>
           </div>
 
@@ -63,7 +57,7 @@ export function SiteFooter() {
                 aria-label="Navegación del pie de página"
                 className="mt-5 flex flex-col gap-3"
               >
-                {auraNavigation.map((item) => (
+                {business.navigation.map((item) => (
                   <a
                     key={item.href}
                     href={item.href}
@@ -81,7 +75,7 @@ export function SiteFooter() {
               </p>
 
               <div className="mt-5 flex flex-col gap-3">
-                {auraSocialLinks.map((item) => (
+                {business.socialLinks.map((item) => (
                   <a
                     key={item.name}
                     href={item.href}
@@ -99,10 +93,10 @@ export function SiteFooter() {
             LEGAL / COPYRIGHT
         ====================================================== */}
         <div className="flex flex-col justify-between gap-5 pt-7 text-[11px] text-[#776f6a] sm:flex-row sm:items-center">
-          <p>{auraFooter.copyright}</p>
+          <p>{business.footer.copyright}</p>
 
           <div className="flex flex-wrap gap-x-5 gap-y-2">
-            {auraLegalLinks.map((item) => (
+            {business.legalLinks.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
@@ -120,7 +114,7 @@ export function SiteFooter() {
         <div className="mt-7 border-t border-white/10 pt-7">
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
             <p className="text-[10px] uppercase tracking-[0.2em] text-[#625b57]">
-              {auraFooter.credit}
+              {business.footer.credit}
             </p>
 
             <p className="text-[10px] uppercase tracking-[0.18em] text-[#4f4945]">

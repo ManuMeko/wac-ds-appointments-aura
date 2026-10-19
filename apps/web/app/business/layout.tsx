@@ -16,6 +16,7 @@ import {
   usePathname,
 } from "next/navigation";
 
+import { business } from "@/config/business";
 import {
   apiPost,
   clearBusinessSession,
@@ -281,7 +282,7 @@ function getBusinessDisplayName(
 ): string {
   return (
     session?.businessName?.trim()
-    || "Aura Studio"
+    || business.brand.name
   );
 }
 

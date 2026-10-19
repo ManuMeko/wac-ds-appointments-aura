@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 
+import { business } from "@/config/business";
 import {
   ApiError,
   apiGet,
@@ -237,7 +238,7 @@ function getStoredBusinessName(): string {
   if (
     typeof window === "undefined"
   ) {
-    return "Aura Studio";
+    return business.brand.name;
   }
 
   const raw =
@@ -248,7 +249,7 @@ function getStoredBusinessName(): string {
   if (
     !raw
   ) {
-    return "Aura Studio";
+    return business.brand.name;
   }
 
   try {
@@ -269,9 +270,9 @@ function getStoredBusinessName(): string {
     }
 
     if (
-      parsed.businessSlug === "aura-studio"
+      parsed.businessSlug === business.slug
     ) {
-      return "Aura Studio";
+      return business.brand.name;
     }
 
   } catch {
@@ -279,7 +280,7 @@ function getStoredBusinessName(): string {
     // Mantener fallback.
   }
 
-  return "Aura Studio";
+  return business.brand.name;
 }
 
 /* =========================================================
@@ -515,8 +516,8 @@ export default function BusinessDashboardPage() {
     businessName,
     setBusinessName,
   ] =
-    useState(
-      "Aura Studio",
+    useState<string>(
+      business.brand.name,
     );
 
   const [

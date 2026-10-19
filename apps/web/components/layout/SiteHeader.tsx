@@ -4,7 +4,7 @@
 
 import { useState } from "react";
 
-import { auraBrand, auraNavigation } from "@/data/aura";
+import { business } from "@/config/business";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
 
 /* =========================================================
@@ -64,21 +64,21 @@ export function SiteHeader() {
         ====================================================== */}
         <a
           href="#inicio"
-          aria-label={`${auraBrand.name} - Inicio`}
+          aria-label={`${business.brand.name} - Inicio`}
           className="group flex shrink-0 items-center gap-3"
           onClick={closeMobileMenu}
         >
           <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#7c6654]/30 bg-[#eee5db] font-serif text-lg text-[#665143] transition-transform duration-300 group-hover:scale-105">
-            {auraBrand.monogram}
+            {business.brand.monogram}
           </span>
 
           <span className="leading-none">
             <span className="block font-serif text-[19px] tracking-[0.16em] text-[#2b2521]">
-              {auraBrand.shortName.toUpperCase()}
+              {business.brand.shortName.toUpperCase()}
             </span>
 
             <span className="mt-1 block text-[9px] font-medium uppercase tracking-[0.34em] text-[#8a7565]">
-              Studio
+              {business.brandSuffix}
             </span>
           </span>
         </a>
@@ -90,7 +90,7 @@ export function SiteHeader() {
           className="hidden items-center gap-8 text-[13px] font-medium text-[#62574f] lg:flex"
           aria-label="Navegación principal"
         >
-          {auraNavigation.map((item) => (
+          {business.navigation.map((item) => (
             <a
               key={item.href}
               href={item.href}
@@ -153,7 +153,7 @@ export function SiteHeader() {
             aria-label="Navegación móvil"
             className="flex flex-col"
           >
-            {auraNavigation.map((item) => (
+            {business.navigation.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
@@ -181,11 +181,11 @@ export function SiteHeader() {
 
           <div className="mt-6 border-t border-[#332b26]/10 pt-5">
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9a806d]">
-              {auraBrand.tagline}
+              {business.brand.tagline}
             </p>
 
             <p className="mt-2 text-sm leading-6 text-[#756a61]">
-              {auraBrand.description}
+              {business.brand.description}
             </p>
           </div>
         </div>

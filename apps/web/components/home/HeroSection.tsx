@@ -3,7 +3,7 @@
 import Image from "next/image";
 
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
-import { auraBrand, auraHero, auraStats } from "@/data/aura";
+import { business } from "@/config/business";
 
 /* =========================================================
    WAC DS · MODEL 01 · APPOINTMENTS
@@ -38,22 +38,22 @@ export function HeroSection() {
               <span className="h-px w-12 bg-[#8b7463]" />
 
               <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#7d695a]">
-                {auraHero.eyebrow}
+                {business.hero.eyebrow}
               </p>
             </div>
 
             {/* Heading */}
             <h1 className="max-w-[660px] font-serif text-[clamp(3.5rem,7vw,6.8rem)] leading-[0.88] tracking-[-0.055em] text-[#29231f]">
-              {auraHero.title}
+              {business.hero.title}
 
               <span className="block italic text-[#8b6d59]">
-                {auraHero.highlightedTitle}
+                {business.hero.highlightedTitle}
               </span>
             </h1>
 
             {/* Description */}
             <p className="mt-8 max-w-[560px] text-base leading-7 text-[#655a52] sm:text-lg sm:leading-8">
-              {auraHero.description}
+              {business.hero.description}
             </p>
 
             {/* =================================================
@@ -64,7 +64,7 @@ export function HeroSection() {
                 href={PUBLIC_BOOKING_HREF}
                 className="group inline-flex h-14 items-center justify-center gap-3 rounded-full bg-[#2b2521] px-8 text-[11px] font-semibold uppercase tracking-[0.2em] !text-[#fffaf6] shadow-[0_12px_30px_rgba(43,37,33,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#4c3f36] hover:shadow-[0_16px_36px_rgba(43,37,33,0.20)]"
               >
-                {auraHero.primaryCta.label}
+                {business.hero.primaryCta.label}
 
                 <span className="transition-transform duration-300 group-hover:translate-x-1">
                   <ArrowIcon />
@@ -72,10 +72,10 @@ export function HeroSection() {
               </a>
 
               <a
-                href={auraHero.secondaryCta.href}
+                href={business.hero.secondaryCta.href}
                 className="inline-flex h-14 items-center justify-center rounded-full border border-[#3b332e]/20 bg-white/10 px-8 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#332c27] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#3b332e]/35 hover:bg-white/40"
               >
-                {auraHero.secondaryCta.label}
+                {business.hero.secondaryCta.label}
               </a>
             </div>
 
@@ -83,7 +83,7 @@ export function HeroSection() {
                 STATS
             ================================================== */}
             <div className="mt-14 grid max-w-[560px] grid-cols-2 gap-x-6 gap-y-5 border-t border-[#3b332e]/15 pt-7 sm:grid-cols-4">
-              {auraStats.map((stat) => (
+              {business.stats.map((stat) => (
                 <div key={`${stat.value}-${stat.label}`}>
                   <strong className="block font-serif text-2xl font-normal text-[#332c27]">
                     {stat.value}
@@ -104,8 +104,8 @@ export function HeroSection() {
         <div className="hidden items-center px-8 py-12 lg:flex xl:px-10">
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[2rem] border border-white/30 bg-[#bda693] shadow-[0_40px_100px_rgba(52,43,36,0.18)]">
             <Image
-              src="/images/aura/hero-aura-studio.png"
-              alt="Cabina premium de Aura Studio con camilla de tratamiento, iluminación cálida y elementos de bienestar"
+              src={business.assets.hero}
+              alt={business.imageAlts.hero}
               fill
               priority
               quality={92}
@@ -123,7 +123,7 @@ export function HeroSection() {
             ================================================== */}
             <div className="absolute right-6 top-6 z-10 rounded-full border border-white/35 bg-[#372b23]/20 px-4 py-2 shadow-sm backdrop-blur-md">
               <span className="text-[10px] font-semibold uppercase tracking-[0.16em] !text-white">
-                {auraBrand.locationLabel}
+                {business.brand.locationLabel}
               </span>
             </div>
 
@@ -134,17 +134,17 @@ export function HeroSection() {
               <div className="flex items-end justify-between gap-6">
                 <div>
                   <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8c7565]">
-                    {auraBrand.signature.eyebrow}
+                    {business.brand.signature.eyebrow}
                   </p>
 
                   <p className="mt-2 max-w-[320px] font-serif text-2xl leading-tight text-[#322b26]">
-                    {auraBrand.signature.title}
+                    {business.brand.signature.title}
                   </p>
                 </div>
 
                 <a
                   href={PUBLIC_BOOKING_HREF}
-                  aria-label={auraHero.primaryCta.label}
+                  aria-label={business.hero.primaryCta.label}
                   className="group flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#2d2723] !text-[#fffaf6] shadow-[0_10px_24px_rgba(45,39,35,0.18)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#4b3d34]"
                 >
                   <span className="transition-transform duration-300 group-hover:translate-x-0.5">
@@ -162,8 +162,8 @@ export function HeroSection() {
         <div className="px-5 pb-16 sm:px-8 lg:hidden">
           <div className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] border border-white/30 bg-[#bda693] shadow-[0_24px_70px_rgba(52,43,36,0.16)]">
             <Image
-              src="/images/aura/hero-aura-studio.png"
-              alt="Cabina premium de Aura Studio con camilla de tratamiento, iluminación cálida y elementos de bienestar"
+              src={business.assets.hero}
+              alt={business.imageAlts.hero}
               fill
               priority
               quality={90}
@@ -175,18 +175,18 @@ export function HeroSection() {
 
             <div className="absolute bottom-5 left-5 right-5 rounded-[1.25rem] border border-white/25 bg-[#f8f1e9]/88 p-5 shadow-[0_14px_40px_rgba(45,34,27,0.14)] backdrop-blur-xl">
               <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#8c7565]">
-                {auraBrand.signature.eyebrow}
+                {business.brand.signature.eyebrow}
               </p>
 
               <p className="mt-2 max-w-[280px] font-serif text-2xl leading-tight text-[#322b26]">
-                {auraBrand.signature.title}
+                {business.brand.signature.title}
               </p>
 
               <a
                 href={PUBLIC_BOOKING_HREF}
                 className="group mt-5 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#2d2723] px-6 text-[10px] font-semibold uppercase tracking-[0.18em] !text-[#fffaf6] shadow-[0_10px_24px_rgba(45,39,35,0.16)] transition-all duration-300 hover:bg-[#4b3d34]"
               >
-                {auraHero.primaryCta.label}
+                {business.hero.primaryCta.label}
 
                 <span className="transition-transform duration-300 group-hover:translate-x-0.5">
                   <ArrowIcon />

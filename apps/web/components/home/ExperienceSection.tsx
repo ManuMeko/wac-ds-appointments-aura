@@ -3,7 +3,7 @@
 import Image from "next/image";
 
 import { CheckIcon } from "@/components/ui/CheckIcon";
-import { auraBenefits, auraExperience } from "@/data/aura";
+import { business } from "@/config/business";
 
 /* =========================================================
    WAC DS · MODEL 01 · APPOINTMENTS
@@ -20,8 +20,8 @@ export function ExperienceSection() {
         <div className="relative">
           <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/25 bg-[#bda693] shadow-[0_30px_80px_rgba(72,56,45,0.14)] sm:aspect-[4/3] lg:aspect-[4/5] xl:aspect-[5/6]">
             <Image
-              src="/images/aura/experience-aura-studio.png"
-              alt="Detalle de la experiencia Aura Studio con productos de bienestar, textiles suaves y ambiente de tratamiento premium"
+              src={business.assets.experience}
+              alt={business.imageAlts.experience}
               fill
               quality={92}
               sizes="(min-width: 1280px) 560px, (min-width: 1024px) 45vw, 100vw"
@@ -38,7 +38,7 @@ export function ExperienceSection() {
             ================================================== */}
             <div className="absolute left-5 top-5 z-10 rounded-full border border-white/25 bg-[#3b2e26]/20 px-4 py-2 backdrop-blur-md sm:left-6 sm:top-6">
               <span className="text-[9px] font-semibold uppercase tracking-[0.2em] !text-white sm:text-[10px]">
-                Ritual Aura
+                {business.experienceBadge}
               </span>
             </div>
 
@@ -47,11 +47,11 @@ export function ExperienceSection() {
             ================================================== */}
             <div className="absolute bottom-5 left-5 right-5 z-10 rounded-[1.4rem] border border-white/30 bg-[#f6ede4]/88 p-5 shadow-[0_16px_45px_rgba(45,34,27,0.14)] backdrop-blur-xl sm:bottom-7 sm:left-7 sm:right-7 sm:p-7">
               <p className="max-w-[390px] font-serif text-3xl leading-[1.02] tracking-[-0.025em] text-[#302925] sm:text-4xl">
-                {auraExperience.visualTitle}
+                {business.experience.visualTitle}
               </p>
 
               <p className="mt-4 max-w-md text-sm leading-6 text-[#685a51]">
-                {auraExperience.visualDescription}
+                {business.experience.visualDescription}
               </p>
             </div>
           </div>
@@ -71,24 +71,24 @@ export function ExperienceSection() {
           <div className="w-full">
             {/* Eyebrow */}
             <p className="text-[10px] font-semibold uppercase tracking-[0.27em] text-[#89705e]">
-              {auraExperience.eyebrow}
+              {business.experience.eyebrow}
             </p>
 
             {/* Heading */}
             <h2 className="mt-5 max-w-[600px] font-serif text-5xl leading-[0.97] tracking-[-0.035em] text-[#2d2723] sm:text-6xl">
-              {auraExperience.title}
+              {business.experience.title}
             </h2>
 
             {/* Description */}
             <p className="mt-7 max-w-[590px] text-base leading-8 text-[#70635b]">
-              {auraExperience.description}
+              {business.experience.description}
             </p>
 
             {/* =================================================
                 BENEFITS
             ================================================== */}
             <div className="mt-10 grid gap-5 sm:grid-cols-2">
-              {auraBenefits.map((benefit) => (
+              {business.benefits.map((benefit) => (
                 <div
                   key={benefit.id}
                   className="group flex items-center gap-3 border-t border-[#41372f]/15 pt-5"

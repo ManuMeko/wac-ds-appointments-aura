@@ -1,10 +1,7 @@
 // apps/web/components/home/ReviewsSection.tsx
 
 import { StarIcon } from "@/components/ui/StarIcon";
-import {
-  auraReviews,
-  auraReviewsIntro,
-} from "@/data/aura";
+import { business } from "@/config/business";
 
 /* =========================================================
    WAC DS · MODEL 01 · APPOINTMENTS
@@ -31,11 +28,11 @@ export function ReviewsSection() {
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
           <div className="max-w-[760px]">
             <p className="text-[10px] font-semibold uppercase tracking-[0.27em] text-[#c1a189]">
-              {auraReviewsIntro.eyebrow}
+              {business.reviewsIntro.eyebrow}
             </p>
 
             <h2 className="mt-5 font-serif text-5xl leading-[0.97] tracking-[-0.035em] text-[#f5eee8] sm:text-6xl">
-              {auraReviewsIntro.title}
+              {business.reviewsIntro.title}
             </h2>
           </div>
 
@@ -49,7 +46,7 @@ export function ReviewsSection() {
             REVIEWS GRID
         ====================================================== */}
         <div className="mt-14 grid gap-4 lg:grid-cols-3">
-          {auraReviews.map((review, index) => (
+          {business.reviews.map((review, index) => (
             <article
               key={review.id}
               className="group relative flex min-h-[320px] flex-col justify-between overflow-hidden rounded-[1.6rem] border border-white/10 bg-[#342e2a] p-7 shadow-[0_20px_60px_rgba(0,0,0,0.10)] transition-all duration-300 hover:-translate-y-1 hover:border-white/15 hover:bg-[#39322d] hover:shadow-[0_28px_80px_rgba(0,0,0,0.16)] sm:p-9"

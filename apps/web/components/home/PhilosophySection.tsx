@@ -1,6 +1,6 @@
 // apps/web/components/home/PhilosophySection.tsx
 
-import { auraPhilosophy } from "@/data/aura";
+import { business } from "@/config/business";
 
 /* =========================================================
    WAC DS · MODEL 01 · APPOINTMENTS
@@ -19,7 +19,7 @@ export function PhilosophySection() {
         ====================================================== */}
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.27em] text-[#c8a992]">
-            {auraPhilosophy.eyebrow}
+            {business.philosophy.eyebrow}
           </p>
         </div>
 
@@ -28,16 +28,16 @@ export function PhilosophySection() {
         ====================================================== */}
         <div>
           <h2 className="max-w-[840px] font-serif text-4xl leading-[1.05] tracking-[-0.03em] text-[#f3ece5] sm:text-5xl lg:text-6xl">
-            {auraPhilosophy.title}
+            {business.philosophy.title}
 
             <span className="text-[#bda08a]">
               {" "}
-              {auraPhilosophy.highlightedTitle}
+              {business.philosophy.highlightedTitle}
             </span>
           </h2>
 
           <p className="mt-8 max-w-[720px] text-base leading-8 text-[#bfb4ac]">
-            {auraPhilosophy.description}
+            {business.philosophy.description}
           </p>
         </div>
       </div>

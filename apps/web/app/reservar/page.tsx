@@ -10,6 +10,7 @@ import {
 
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { business } from "@/config/business";
 import { getApiBaseUrl } from "@/lib/api";
 
 /* =========================================================
@@ -17,7 +18,7 @@ import { getApiBaseUrl } from "@/lib/api";
    Aura Studio · Public Booking
 ========================================================= */
 
-const BUSINESS_SLUG = "aura-studio";
+const BUSINESS_SLUG = business.slug;
 
 const API_BASE_URL = getApiBaseUrl().replace(/\/$/, "");
 
@@ -1518,7 +1519,7 @@ export default function PublicBookingPage() {
                 ←
               </span>
 
-              Volver a Aura Studio
+              Volver a {business.brand.name}
             </Link>
 
             <div className="mt-8 max-w-[760px]">
@@ -2506,7 +2507,7 @@ export default function PublicBookingPage() {
                       href="/"
                       className="inline-flex h-13 items-center justify-center rounded-full px-7 text-xs font-semibold uppercase tracking-[0.15em] text-[#6f6259] transition hover:bg-[#eee4da]/70 hover:text-[#302924]"
                     >
-                      Volver a Aura
+                      Volver a {business.brand.shortName}
                     </Link>
                   </div>
                 </div>

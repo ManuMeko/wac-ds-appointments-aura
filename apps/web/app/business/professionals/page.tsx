@@ -14,6 +14,7 @@ import {
   useState,
 } from "react";
 
+import { business } from "@/config/business";
 import {
   ApiError,
   apiGet,
@@ -2219,7 +2220,7 @@ function ProfessionalModal({
                       }),
                     )
                 }
-                placeholder="Laura"
+                placeholder={business.placeholders.professionalFirstName}
                 className="mt-2 w-full rounded-2xl border border-[#ddd3cb] bg-white px-4 py-3 text-sm text-[#352f2b] outline-none transition focus:border-[#b9a89c] focus:ring-2 focus:ring-[#ded3cb]/50"
               />
 
@@ -2250,7 +2251,7 @@ function ProfessionalModal({
                       }),
                     )
                 }
-                placeholder="Martín"
+                placeholder={business.placeholders.professionalLastName}
                 className="mt-2 w-full rounded-2xl border border-[#ddd3cb] bg-white px-4 py-3 text-sm text-[#352f2b] outline-none transition focus:border-[#b9a89c] focus:ring-2 focus:ring-[#ded3cb]/50"
               />
 
@@ -2285,7 +2286,7 @@ function ProfessionalModal({
                     }),
                   )
               }
-              placeholder="Ej. Laura · Especialista facial"
+              placeholder={business.placeholders.professionalDisplayName}
               className="mt-2 w-full rounded-2xl border border-[#ddd3cb] bg-white px-4 py-3 text-sm text-[#352f2b] outline-none transition focus:border-[#b9a89c] focus:ring-2 focus:ring-[#ded3cb]/50"
             />
 
@@ -2324,7 +2325,7 @@ function ProfessionalModal({
                       }),
                     )
                 }
-                placeholder="profesional@aurastudio.es"
+                placeholder={business.placeholders.professionalEmail}
                 className="mt-2 w-full rounded-2xl border border-[#ddd3cb] bg-white px-4 py-3 text-sm text-[#352f2b] outline-none transition focus:border-[#b9a89c] focus:ring-2 focus:ring-[#ded3cb]/50"
               />
 
@@ -2355,7 +2356,7 @@ function ProfessionalModal({
                       }),
                     )
                 }
-                placeholder="600 000 000"
+                placeholder={business.placeholders.professionalPhone}
                 className="mt-2 w-full rounded-2xl border border-[#ddd3cb] bg-white px-4 py-3 text-sm text-[#352f2b] outline-none transition focus:border-[#b9a89c] focus:ring-2 focus:ring-[#ded3cb]/50"
               />
 

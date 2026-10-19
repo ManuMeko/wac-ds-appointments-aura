@@ -12,6 +12,7 @@ import {
 
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { business } from "@/config/business";
 import { getApiBaseUrl } from "@/lib/api";
 
 /* =========================================================
@@ -1580,7 +1581,7 @@ export default function ManageBookingPage() {
                       href="/"
                       className="inline-flex h-12 min-w-[168px] items-center justify-center rounded-full border border-[#3b332e]/15 bg-white px-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#4f433b] transition hover:bg-[#f8f3ee]"
                     >
-                      Volver a Aura
+                      Volver a {business.brand.shortName}
                     </Link>
 
                     <Link
