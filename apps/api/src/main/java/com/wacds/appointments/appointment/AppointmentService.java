@@ -19,6 +19,8 @@ import com.wacds.appointments.professional.ProfessionalRepository;
 import com.wacds.appointments.professionalservice.ProfessionalServiceAssignmentId;
 import com.wacds.appointments.professionalservice.ProfessionalServiceAssignmentRepository;
 import com.wacds.appointments.reminder.AppointmentReminderService;
+import com.wacds.appointments.publicbooking.management.AppointmentManagementToken;
+import com.wacds.appointments.publicbooking.management.AppointmentManagementTokenService;
 import com.wacds.appointments.scheduleexception.ScheduleException;
 import com.wacds.appointments.scheduleexception.ScheduleExceptionRepository;
 import com.wacds.appointments.service.Service;
@@ -26,6 +28,7 @@ import com.wacds.appointments.service.ServiceRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -81,6 +84,12 @@ public class AppointmentService {
 
     private final AppointmentReminderService
         appointmentReminderService;
+
+    private final AppointmentManagementTokenService
+        appointmentManagementTokenService;
+
+    private final ApplicationEventPublisher
+        applicationEventPublisher;
 
     // =========================================================
     // CREATE
@@ -254,6 +263,9 @@ public class AppointmentService {
                 saved
             );
 
+        String businessName =
+            business.getName();
+
         /*
          * Misma sincronización que PublicBookingService:
          * la respuesta se materializa antes porque una
@@ -261,6 +273,14 @@ public class AppointmentService {
          */
         synchronizeReminders(
             saved
+        );
+
+        notifyCustomer(
+            AppointmentCustomerEmailKind.CONFIRMATION,
+            saved.getId(),
+            saved.getStatus(),
+            response,
+            businessName
         );
 
         return response;
@@ -328,6 +348,9 @@ public class AppointmentService {
                 saved
             );
 
+        String businessName =
+            saved.getBusiness().getName();
+
         /*
          * PENDING -> CONFIRMED mantiene o actualiza reminders.
          * CANCELLED, COMPLETED y NO_SHOW cancelan los activos
@@ -337,6 +360,20 @@ public class AppointmentService {
         synchronizeReminders(
             saved
         );
+
+        if (
+            newStatus
+                == Appointment.AppointmentStatus.CANCELLED
+        ) {
+
+            notifyCustomer(
+                AppointmentCustomerEmailKind.CANCELLATION,
+                saved.getId(),
+                saved.getStatus(),
+                response,
+                businessName
+            );
+        }
 
         return response;
     }
@@ -469,6 +506,9 @@ public class AppointmentService {
                 saved
             );
 
+        String businessName =
+            business.getName();
+
         /*
          * Igual que la reprogramación pública: cancela los
          * reminders activos del horario anterior y prepara
@@ -476,6 +516,14 @@ public class AppointmentService {
          */
         synchronizeReminders(
             saved
+        );
+
+        notifyCustomer(
+            AppointmentCustomerEmailKind.RESCHEDULE,
+            saved.getId(),
+            saved.getStatus(),
+            response,
+            businessName
         );
 
         return response;
@@ -514,6 +562,114 @@ public class AppointmentService {
         appointmentReminderService
             .cancelActiveReminders(
                 appointment.getId()
+            );
+    }
+
+    // =========================================================
+    // CUSTOMER EMAIL
+    // =========================================================
+
+    /**
+     * Publica el aviso al cliente dentro de la transacción
+     * que ya guardó la cita.
+     *
+     * El envío real ocurre AFTER_COMMIT, en
+     * AppointmentCustomerEmailListener, con el mismo
+     * ResendEmailReminderDeliveryService que la reserva
+     * pública. Un fallo posterior del correo no revierte
+     * esta operación.
+     *
+     * El token en claro solo existe en el momento de
+     * emitirlo. No se puede reconstruir desde el hash, así
+     * que el enlace se incluye cuando esta operación emite
+     * la credencial. Si ya hay una vigente, se conserva y
+     * no se rota: el aviso sale igual, sin repetir el secreto.
+     */
+    private void notifyCustomer(
+        AppointmentCustomerEmailKind kind,
+        Long appointmentId,
+        Appointment.AppointmentStatus status,
+        AppointmentResponse response,
+        String businessName
+    ) {
+
+        if (
+            response == null
+                || response.customerEmail() == null
+                || response.customerEmail().isBlank()
+        ) {
+            return;
+        }
+
+        String managementToken =
+            resolveManagementToken(
+                kind,
+                appointmentId,
+                status
+            );
+
+        applicationEventPublisher.publishEvent(
+            new AppointmentCustomerEmailEvent(
+                kind,
+                response.id(),
+                businessName,
+                response.customerName(),
+                response.customerEmail().trim(),
+                response.serviceName(),
+                response.professionalName(),
+                response.startAt(),
+                response.timezone(),
+                managementToken
+            )
+        );
+    }
+
+    private String resolveManagementToken(
+        AppointmentCustomerEmailKind kind,
+        Long appointmentId,
+        Appointment.AppointmentStatus status
+    ) {
+
+        if (
+            kind
+                == AppointmentCustomerEmailKind.CANCELLATION
+                || status
+                == Appointment.AppointmentStatus.CANCELLED
+                || appointmentId == null
+        ) {
+            return null;
+        }
+
+        List<AppointmentManagementToken> usable =
+            appointmentManagementTokenService
+                .findUsableByAppointmentId(
+                    appointmentId
+                );
+
+        if (
+            usable != null
+                && !usable.isEmpty()
+        ) {
+            return null;
+        }
+
+        Appointment appointment =
+            appointmentRepository
+                .findById(
+                    appointmentId
+                )
+                .orElseThrow(() ->
+                    new IllegalStateException(
+                        "No se pudo preparar la credencial "
+                            + "de gestión de la cita "
+                            + appointmentId
+                            + "."
+                    )
+                );
+
+        return appointmentManagementTokenService
+            .issueToken(
+                appointment
             );
     }
 
@@ -2017,5 +2173,56 @@ public class AppointmentService {
         OffsetDateTime fromInclusive,
         OffsetDateTime toExclusive
     ) {
+    }
+
+    // =========================================================
+    // CUSTOMER EMAIL EVENT
+    // =========================================================
+
+    /**
+     * Aviso interno al cliente tras crear, reprogramar
+     * o cancelar una cita desde el panel.
+     *
+     * El listener lo procesa AFTER_COMMIT.
+     *
+     * managementToken es secreto:
+     * no forma parte de toString, logs ni de la
+     * idempotency key.
+     */
+    public enum AppointmentCustomerEmailKind {
+        CONFIRMATION,
+        RESCHEDULE,
+        CANCELLATION
+    }
+
+    public record AppointmentCustomerEmailEvent(
+        AppointmentCustomerEmailKind kind,
+        Long appointmentId,
+        String businessName,
+        String customerName,
+        String customerEmail,
+        String serviceName,
+        String professionalName,
+        OffsetDateTime startAt,
+        String timezone,
+        String managementToken
+    ) {
+
+        @Override
+        public String toString() {
+
+            boolean tokenPresent =
+                managementToken != null
+                    && !managementToken.isBlank();
+
+            return "AppointmentCustomerEmailEvent["
+                + "kind="
+                + kind
+                + ", appointmentId="
+                + appointmentId
+                + ", managementTokenPresent="
+                + tokenPresent
+                + "]";
+        }
     }
 }
