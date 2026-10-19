@@ -1201,7 +1201,7 @@ export default function BusinessDashboardPage() {
 
               <Link
                 href="/business/appointments"
-                className="mt-5 inline-flex rounded-full bg-[#342d28] px-4 py-2 text-xs font-semibold text-white"
+                className="mt-5 inline-flex items-center justify-center rounded-full bg-[#342d28] px-4 py-2 text-xs font-semibold !text-white transition hover:bg-[#211c18] hover:!text-white"
               >
                 Abrir agenda
               </Link>

@@ -9,12 +9,16 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
 import {
   ApiError,
   apiGet,
+  apiPatch,
+  apiPut,
+  getCurrentAccessToken,
 } from "@/lib/api";
 
 // ============================================================
@@ -48,6 +52,30 @@ type CustomerResponse = {
   createdAt: string | null;
 
   updatedAt: string | null;
+};
+
+type CustomerRequest = {
+  firstName: string;
+
+  lastName: string | null;
+
+  email: string | null;
+
+  phone: string | null;
+
+  notes: string | null;
+};
+
+type CustomerFormState = {
+  firstName: string;
+
+  lastName: string;
+
+  email: string;
+
+  phone: string;
+
+  notes: string;
 };
 
 type AppointmentResponse = {
@@ -98,11 +126,23 @@ type HistoryFilter =
 // CONSTANTS
 // ============================================================
 
-const ACCESS_TOKEN_STORAGE_KEY =
-  "wacds_access_token";
-
 const DEFAULT_TIMEZONE =
   "Europe/Madrid";
+
+const EMAIL_PATTERN =
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const emptyCustomerForm: CustomerFormState = {
+  firstName: "",
+
+  lastName: "",
+
+  email: "",
+
+  phone: "",
+
+  notes: "",
+};
 
 const statusLabels: Record<
   AppointmentStatus,
@@ -140,29 +180,170 @@ const filterLabels: Record<
 // HELPERS
 // ============================================================
 
-function getStoredAccessToken():
-  | string
-  | null {
+function customerToForm(
+  customer: CustomerResponse,
+): CustomerFormState {
+
+  return {
+    firstName:
+      customer.firstName
+      ?? "",
+
+    lastName:
+      customer.lastName
+      ?? "",
+
+    email:
+      customer.email
+      ?? "",
+
+    phone:
+      customer.phone
+      ?? "",
+
+    notes:
+      customer.notes
+      ?? "",
+  };
+}
+
+function normalizeNullableText(
+  value: string,
+): string | null {
+
+  const normalized =
+    value.trim();
+
+  return normalized === ""
+    ? null
+    : normalized;
+}
+
+function validateCustomerForm(
+  form: CustomerFormState,
+): Record<
+  string,
+  string
+> {
+
+  const fieldErrors: Record<
+    string,
+    string
+  > = {};
+
+  const firstName =
+    form.firstName.trim();
 
   if (
-    typeof window === "undefined"
+    firstName === ""
   ) {
-    return null;
+    fieldErrors.firstName =
+      "El nombre del cliente es obligatorio.";
+  } else if (
+    firstName.length > 100
+  ) {
+    fieldErrors.firstName =
+      "El nombre no puede superar los 100 caracteres.";
   }
-
-  const token =
-    window.localStorage.getItem(
-      ACCESS_TOKEN_STORAGE_KEY,
-    );
 
   if (
-    token == null
-      || token.trim() === ""
+    form.lastName.trim().length
+      > 150
   ) {
-    return null;
+    fieldErrors.lastName =
+      "Los apellidos no pueden superar los 150 caracteres.";
   }
 
-  return token.trim();
+  const email =
+    form.email.trim();
+
+  if (
+    email.length > 180
+  ) {
+    fieldErrors.email =
+      "El email no puede superar los 180 caracteres.";
+  } else if (
+    email !== ""
+      && !EMAIL_PATTERN.test(
+        email,
+      )
+  ) {
+    fieldErrors.email =
+      "El email del cliente no tiene un formato válido.";
+  }
+
+  if (
+    form.phone.trim().length
+      > 40
+  ) {
+    fieldErrors.phone =
+      "El teléfono no puede superar los 40 caracteres.";
+  }
+
+  if (
+    form.notes.trim().length
+      > 5000
+  ) {
+    fieldErrors.notes =
+      "Las notas no pueden superar los 5000 caracteres.";
+  }
+
+  return fieldErrors;
+}
+
+function readValidationErrors(
+  payload: unknown,
+): Record<
+  string,
+  string
+> {
+
+  if (
+    typeof payload !== "object"
+      || payload === null
+      || !(
+        "validationErrors" in payload
+      )
+  ) {
+    return {};
+  }
+
+  const validationErrors =
+    payload.validationErrors;
+
+  if (
+    typeof validationErrors !== "object"
+      || validationErrors === null
+  ) {
+    return {};
+  }
+
+  const fieldErrors: Record<
+    string,
+    string
+  > = {};
+
+  Object.entries(
+    validationErrors,
+  ).forEach(
+    (
+      [
+        field,
+        message,
+      ],
+    ) => {
+
+      if (
+        typeof message === "string"
+          && message.trim() !== ""
+      ) {
+        fieldErrors[field] =
+          message.trim();
+      }
+    },
+  );
+
+  return fieldErrors;
 }
 
 function getStatusClass(
@@ -622,6 +803,87 @@ export default function CustomerDetailPage() {
       "ALL",
     );
 
+  const [
+    form,
+    setForm,
+  ] =
+    useState<CustomerFormState>(
+      emptyCustomerForm,
+    );
+
+  const [
+    editing,
+    setEditing,
+  ] =
+    useState(
+      false,
+    );
+
+  const editingRef =
+    useRef(
+      false,
+    );
+
+  editingRef.current =
+    editing;
+
+  const [
+    saving,
+    setSaving,
+  ] =
+    useState(
+      false,
+    );
+
+  const [
+    saveError,
+    setSaveError,
+  ] =
+    useState<
+      string | null
+    >(
+      null,
+    );
+
+  const [
+    fieldErrors,
+    setFieldErrors,
+  ] =
+    useState<
+      Record<
+        string,
+        string
+      >
+    >(
+      {},
+    );
+
+  const [
+    successMessage,
+    setSuccessMessage,
+  ] =
+    useState<
+      string | null
+    >(
+      null,
+    );
+
+  const [
+    statusConfirmOpen,
+    setStatusConfirmOpen,
+  ] =
+    useState(
+      false,
+    );
+
+  const [
+    statusChanging,
+    setStatusChanging,
+  ] =
+    useState(
+      false,
+    );
+
   // ==========================================================
   // LOAD
   // ==========================================================
@@ -656,7 +918,7 @@ export default function CustomerDetailPage() {
         }
 
         const accessToken =
-          getStoredAccessToken();
+          getCurrentAccessToken();
 
         if (!accessToken) {
 
@@ -736,6 +998,16 @@ export default function CustomerDetailPage() {
             customerResponse,
           );
 
+          if (
+            !editingRef.current
+          ) {
+            setForm(
+              customerToForm(
+                customerResponse,
+              ),
+            );
+          }
+
           setAppointments(
             Array.isArray(
               appointmentResponse,
@@ -791,6 +1063,391 @@ export default function CustomerDetailPage() {
       loadCustomer,
     ],
   );
+
+  // ==========================================================
+  // EDIT
+  // ==========================================================
+
+  function updateField<
+    K extends keyof CustomerFormState
+  >(
+    key: K,
+    value: CustomerFormState[K],
+  ) {
+
+    setForm(
+      current => ({
+        ...current,
+
+        [key]:
+          value,
+      }),
+    );
+
+    setFieldErrors(
+      current => {
+
+        if (
+          !(
+            key in current
+          )
+        ) {
+          return current;
+        }
+
+        const next = {
+          ...current,
+        };
+
+        delete next[key];
+
+        return next;
+      },
+    );
+  }
+
+  function startEditing() {
+
+    if (
+      !customer
+        || saving
+        || statusChanging
+    ) {
+      return;
+    }
+
+    setForm(
+      customerToForm(
+        customer,
+      ),
+    );
+
+    setFieldErrors(
+      {},
+    );
+
+    setSaveError(
+      null,
+    );
+
+    setSuccessMessage(
+      null,
+    );
+
+    setEditing(
+      true,
+    );
+  }
+
+  function cancelEditing() {
+
+    if (
+      !customer
+        || saving
+    ) {
+      return;
+    }
+
+    setForm(
+      customerToForm(
+        customer,
+      ),
+    );
+
+    setFieldErrors(
+      {},
+    );
+
+    setSaveError(
+      null,
+    );
+
+    setEditing(
+      false,
+    );
+  }
+
+  async function saveCustomer() {
+
+    if (
+      customerId == null
+        || !customer
+        || saving
+        || statusChanging
+    ) {
+      return;
+    }
+
+    const nextFieldErrors =
+      validateCustomerForm(
+        form,
+      );
+
+    if (
+      Object.keys(
+        nextFieldErrors,
+      ).length > 0
+    ) {
+
+      setFieldErrors(
+        nextFieldErrors,
+      );
+
+      setSaveError(
+        "Revisa los datos del cliente antes de guardar.",
+      );
+
+      setSuccessMessage(
+        null,
+      );
+
+      return;
+    }
+
+    const accessToken =
+      getCurrentAccessToken();
+
+    if (!accessToken) {
+
+      setMissingSession(
+        true,
+      );
+
+      setSaveError(
+        "No existe una sesión Business válida.",
+      );
+
+      return;
+    }
+
+    setSaving(
+      true,
+    );
+
+    setSaveError(
+      null,
+    );
+
+    setFieldErrors(
+      {},
+    );
+
+    setSuccessMessage(
+      null,
+    );
+
+    const payload: CustomerRequest = {
+      firstName:
+        form.firstName.trim(),
+
+      lastName:
+        normalizeNullableText(
+          form.lastName,
+        ),
+
+      email:
+        normalizeNullableText(
+          form.email,
+        ),
+
+      phone:
+        normalizeNullableText(
+          form.phone,
+        ),
+
+      notes:
+        normalizeNullableText(
+          form.notes,
+        ),
+    };
+
+    try {
+
+      const updated =
+        await apiPut<
+          CustomerResponse
+        >(
+          `/api/v1/customers/${customerId}`,
+          payload,
+          {
+            accessToken,
+          },
+        );
+
+      setCustomer(
+        updated,
+      );
+
+      setForm(
+        customerToForm(
+          updated,
+        ),
+      );
+
+      setEditing(
+        false,
+      );
+
+      setSuccessMessage(
+        "Cliente actualizado correctamente.",
+      );
+
+    } catch (
+      saveFailure
+    ) {
+
+      setFieldErrors(
+        readValidationErrors(
+          saveFailure instanceof ApiError
+            ? saveFailure.payload
+            : null,
+        ),
+      );
+
+      setSaveError(
+        getErrorMessage(
+          saveFailure,
+          "No se ha podido guardar el cliente.",
+        ),
+      );
+
+      if (
+        saveFailure instanceof ApiError
+          && (
+            saveFailure.status === 401
+              || saveFailure.status === 403
+          )
+      ) {
+        setMissingSession(
+          true,
+        );
+      }
+
+    } finally {
+
+      setSaving(
+        false,
+      );
+    }
+  }
+
+  async function confirmStatusChange() {
+
+    if (
+      customerId == null
+        || !customer
+        || statusChanging
+        || saving
+    ) {
+      return;
+    }
+
+    const nextActive =
+      !customer.active;
+
+    const accessToken =
+      getCurrentAccessToken();
+
+    if (!accessToken) {
+
+      setMissingSession(
+        true,
+      );
+
+      setStatusConfirmOpen(
+        false,
+      );
+
+      setSaveError(
+        "No existe una sesión Business válida.",
+      );
+
+      return;
+    }
+
+    setStatusChanging(
+      true,
+    );
+
+    setSaveError(
+      null,
+    );
+
+    setSuccessMessage(
+      null,
+    );
+
+    try {
+
+      const updated =
+        await apiPatch<
+          CustomerResponse
+        >(
+          `/api/v1/customers/${customerId}/active?active=${String(
+            nextActive,
+          )}`,
+          undefined,
+          {
+            accessToken,
+          },
+        );
+
+      setCustomer(
+        updated,
+      );
+
+      setStatusConfirmOpen(
+        false,
+      );
+
+      setSuccessMessage(
+        nextActive
+          ? "Cliente reactivado correctamente."
+          : "Cliente desactivado correctamente.",
+      );
+
+    } catch (
+      statusFailure
+    ) {
+
+      setFieldErrors(
+        readValidationErrors(
+          statusFailure instanceof ApiError
+            ? statusFailure.payload
+            : null,
+        ),
+      );
+
+      setSaveError(
+        getErrorMessage(
+          statusFailure,
+          "No se ha podido cambiar el estado del cliente.",
+        ),
+      );
+
+      setStatusConfirmOpen(
+        false,
+      );
+
+      if (
+        statusFailure instanceof ApiError
+          && (
+            statusFailure.status === 401
+              || statusFailure.status === 403
+          )
+      ) {
+        setMissingSession(
+          true,
+        );
+      }
+
+    } finally {
+
+      setStatusChanging(
+        false,
+      );
+    }
+  }
 
   // ==========================================================
   // DERIVED DATA
@@ -1124,6 +1781,64 @@ export default function CustomerDetailPage() {
 
       </div>
 
+      {successMessage && (
+        <div
+          role="status"
+          className="mb-5 rounded-[22px] border border-[#dce8dd] bg-[#f1f7f1] px-5 py-4 text-sm font-medium text-[#55705a]"
+        >
+          {successMessage}
+        </div>
+      )}
+
+      {saveError && (
+        <div
+          role="alert"
+          className="mb-5 rounded-[22px] border border-[#ead3d3] bg-[#fbf1f1] px-5 py-4"
+        >
+
+          <p className="text-sm font-semibold text-[#8f5555]">
+            No se ha podido completar la operación
+          </p>
+
+          <p className="mt-1 text-sm leading-6 text-[#946f6f]">
+            {saveError}
+          </p>
+
+          {Object.keys(
+            fieldErrors,
+          ).length > 0 && (
+            <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-[#946f6f]">
+
+              {Object.entries(
+                fieldErrors,
+              ).map(
+                (
+                  [
+                    field,
+                    message,
+                  ],
+                ) => (
+                  <li key={field}>
+                    {message}
+                  </li>
+                ),
+              )}
+
+            </ul>
+          )}
+
+          {missingSession && (
+            <Link
+              href="/business/login"
+              className="mt-4 inline-flex rounded-full border border-[#ddc5c5] bg-white px-4 py-2 text-xs font-semibold text-[#7e5858]"
+            >
+              Iniciar sesión
+            </Link>
+          )}
+
+        </div>
+      )}
+
       {/* =================================================== */}
       {/* CUSTOMER HERO */}
       {/* =================================================== */}
@@ -1202,6 +1917,71 @@ export default function CustomerDetailPage() {
 
             <div className="flex flex-wrap gap-3">
 
+              {editing ? (
+                <button
+                  type="button"
+                  onClick={
+                    cancelEditing
+                  }
+                  disabled={
+                    saving
+                  }
+                  className="inline-flex items-center justify-center rounded-full border border-[#ddd4ca] bg-white px-5 py-2.5 text-sm font-medium text-[#62574e] transition hover:border-[#cfc2b7] hover:bg-[#faf8f5] disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Cancelar
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={
+                    startEditing
+                  }
+                  disabled={
+                    saving
+                      || statusChanging
+                  }
+                  className="inline-flex items-center justify-center rounded-full border border-[#ddd4ca] bg-white px-5 py-2.5 text-sm font-medium text-[#62574e] transition hover:border-[#cfc2b7] hover:bg-[#faf8f5] disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Editar datos
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSaveError(
+                    null,
+                  );
+
+                  setSuccessMessage(
+                    null,
+                  );
+
+                  setStatusConfirmOpen(
+                    true,
+                  );
+                }}
+                disabled={
+                  saving
+                    || statusChanging
+                }
+                className={[
+                  "inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50",
+
+                  customer.active
+                    ? "border border-[#e4cece] bg-[#fffafa] text-[#925d5d] hover:bg-[#f9eeee]"
+                    : "border border-[#cfded1] bg-[#f4f8f4] text-[#55705a] hover:bg-[#eaf2eb]",
+                ].join(
+                  " ",
+                )}
+              >
+                {statusChanging
+                  ? "Guardando..."
+                  : customer.active
+                    ? "Desactivar"
+                    : "Reactivar"}
+              </button>
+
               <Link
                 href="/business/appointments"
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-[#ddd4ca] bg-white px-5 py-2.5 text-sm font-medium text-[#62574e] transition hover:border-[#cfc2b7] hover:bg-[#faf8f5]"
@@ -1278,37 +2058,142 @@ export default function CustomerDetailPage() {
 
             <div className="mt-5 space-y-5">
 
-              <DetailItem
-                label="Nombre"
-                value={
-                  customer.firstName
-                  || "—"
-                }
-              />
+              {editing ? (
+                <>
+                  <FormField
+                    id="customer-first-name"
+                    label="Nombre"
+                    value={
+                      form.firstName
+                    }
+                    maxLength={
+                      100
+                    }
+                    required
+                    disabled={
+                      saving
+                    }
+                    error={
+                      fieldErrors.firstName
+                    }
+                    onChange={
+                      value =>
+                        updateField(
+                          "firstName",
+                          value,
+                        )
+                    }
+                  />
 
-              <DetailItem
-                label="Apellidos"
-                value={
-                  customer.lastName
-                  || "—"
-                }
-              />
+                  <FormField
+                    id="customer-last-name"
+                    label="Apellidos"
+                    value={
+                      form.lastName
+                    }
+                    maxLength={
+                      150
+                    }
+                    disabled={
+                      saving
+                    }
+                    error={
+                      fieldErrors.lastName
+                    }
+                    onChange={
+                      value =>
+                        updateField(
+                          "lastName",
+                          value,
+                        )
+                    }
+                  />
 
-              <DetailItem
-                label="Email"
-                value={
-                  customer.email
-                  || "—"
-                }
-              />
+                  <FormField
+                    id="customer-email"
+                    label="Email"
+                    type="email"
+                    value={
+                      form.email
+                    }
+                    maxLength={
+                      180
+                    }
+                    disabled={
+                      saving
+                    }
+                    error={
+                      fieldErrors.email
+                    }
+                    onChange={
+                      value =>
+                        updateField(
+                          "email",
+                          value,
+                        )
+                    }
+                  />
 
-              <DetailItem
-                label="Teléfono"
-                value={
-                  customer.phone
-                  || "—"
-                }
-              />
+                  <FormField
+                    id="customer-phone"
+                    label="Teléfono"
+                    type="tel"
+                    value={
+                      form.phone
+                    }
+                    maxLength={
+                      40
+                    }
+                    disabled={
+                      saving
+                    }
+                    error={
+                      fieldErrors.phone
+                    }
+                    onChange={
+                      value =>
+                        updateField(
+                          "phone",
+                          value,
+                        )
+                    }
+                  />
+                </>
+              ) : (
+                <>
+                  <DetailItem
+                    label="Nombre"
+                    value={
+                      customer.firstName
+                      || "—"
+                    }
+                  />
+
+                  <DetailItem
+                    label="Apellidos"
+                    value={
+                      customer.lastName
+                      || "—"
+                    }
+                  />
+
+                  <DetailItem
+                    label="Email"
+                    value={
+                      customer.email
+                      || "—"
+                    }
+                  />
+
+                  <DetailItem
+                    label="Teléfono"
+                    value={
+                      customer.phone
+                      || "—"
+                    }
+                  />
+                </>
+              )}
 
             </div>
 
@@ -1320,10 +2205,74 @@ export default function CustomerDetailPage() {
               Notas
             </p>
 
-            <p className="mt-4 whitespace-pre-wrap text-sm leading-6 text-[#6c6158]">
-              {customer.notes?.trim()
-                || "No hay notas internas para este cliente."}
-            </p>
+            {editing ? (
+              <div className="mt-4">
+
+                <FormField
+                  id="customer-notes"
+                  label="Notas internas"
+                  value={
+                    form.notes
+                  }
+                  maxLength={
+                    5000
+                  }
+                  multiline
+                  disabled={
+                    saving
+                  }
+                  error={
+                    fieldErrors.notes
+                  }
+                  onChange={
+                    value =>
+                      updateField(
+                        "notes",
+                        value,
+                      )
+                  }
+                />
+
+                <div className="mt-5 flex flex-wrap justify-end gap-3">
+
+                  <button
+                    type="button"
+                    onClick={
+                      cancelEditing
+                    }
+                    disabled={
+                      saving
+                    }
+                    className="inline-flex items-center justify-center rounded-full border border-[#ddd4ca] bg-white px-5 py-2.5 text-sm font-medium text-[#62574e] transition hover:bg-[#faf8f5] disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    Cancelar
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      void saveCustomer()
+                    }
+                    disabled={
+                      saving
+                        || statusChanging
+                    }
+                    className="inline-flex items-center justify-center rounded-full bg-[#5f5147] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#4e433b] disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {saving
+                      ? "Guardando..."
+                      : "Guardar cambios"}
+                  </button>
+
+                </div>
+
+              </div>
+            ) : (
+              <p className="mt-4 whitespace-pre-wrap text-sm leading-6 text-[#6c6158]">
+                {customer.notes?.trim()
+                  || "No hay notas internas para este cliente."}
+              </p>
+            )}
 
           </section>
 
@@ -1617,6 +2566,95 @@ export default function CustomerDetailPage() {
 
       </div>
 
+      {statusConfirmOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#241f1b]/45 px-4"
+          onMouseDown={
+            event => {
+              if (
+                event.target
+                  === event.currentTarget
+                  && !statusChanging
+              ) {
+                setStatusConfirmOpen(
+                  false,
+                );
+              }
+            }
+          }
+        >
+
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="customer-status-title"
+            className="w-full max-w-md rounded-[28px] border border-[#e8e0d7] bg-white p-6 shadow-[0_24px_70px_rgba(74,61,51,0.16)] sm:p-7"
+          >
+
+            <h2
+              id="customer-status-title"
+              className="text-xl font-semibold tracking-[-0.03em] text-[#3e3731]"
+            >
+              {customer.active
+                ? "Desactivar cliente"
+                : "Reactivar cliente"}
+            </h2>
+
+            <p className="mt-3 text-sm leading-6 text-[#75685d]">
+              {customer.active
+                ? `¿Seguro que quieres desactivar a ${fullName}? Se conservará su historial, pero no estará disponible para nuevas reservas.`
+                : `¿Seguro que quieres reactivar a ${fullName}? Volverá a estar disponible para nuevas reservas.`}
+            </p>
+
+            <div className="mt-6 flex flex-wrap justify-end gap-3">
+
+              <button
+                type="button"
+                onClick={() =>
+                  setStatusConfirmOpen(
+                    false,
+                  )
+                }
+                disabled={
+                  statusChanging
+                }
+                className="inline-flex items-center justify-center rounded-full border border-[#ddd4ca] bg-white px-5 py-2.5 text-sm font-medium text-[#62574e] transition hover:bg-[#faf8f5] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
+                  void confirmStatusChange()
+                }
+                disabled={
+                  statusChanging
+                }
+                className={[
+                  "inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium text-white transition disabled:cursor-not-allowed disabled:opacity-50",
+
+                  customer.active
+                    ? "bg-[#8f5555] hover:bg-[#7a4848]"
+                    : "bg-[#55705a] hover:bg-[#46634b]",
+                ].join(
+                  " ",
+                )}
+              >
+                {statusChanging
+                  ? "Guardando..."
+                  : customer.active
+                    ? "Desactivar"
+                    : "Reactivar"}
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      )}
+
     </div>
   );
 }
@@ -1624,6 +2662,140 @@ export default function CustomerDetailPage() {
 // ============================================================
 // COMPONENTS
 // ============================================================
+
+function FormField({
+  id,
+  label,
+  value,
+  onChange,
+  error,
+  type = "text",
+  maxLength,
+  required = false,
+  disabled = false,
+  multiline = false,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (
+    value: string,
+  ) => void;
+  error?: string;
+  type?:
+    | "text"
+    | "email"
+    | "tel";
+  maxLength?: number;
+  required?: boolean;
+  disabled?: boolean;
+  multiline?: boolean;
+}) {
+
+  const fieldClass = [
+    "mt-2 w-full rounded-2xl border bg-[#fbf9f7] px-4 py-2.5 text-sm text-[#574e47] outline-none transition placeholder:text-[#b3a69c] focus:bg-white disabled:cursor-not-allowed disabled:opacity-60",
+
+    error
+      ? "border-[#e3b4b4] focus:border-[#c98989]"
+      : "border-[#e4dbd3] focus:border-[#c9b5a3]",
+  ].join(
+    " ",
+  );
+
+  return (
+    <div>
+
+      <label
+        htmlFor={id}
+        className="text-xs font-medium text-[#a09287]"
+      >
+        {label}
+
+        {required && (
+          <span className="text-[#aa7563]">
+            {" "}
+            *
+          </span>
+        )}
+      </label>
+
+      {multiline ? (
+        <textarea
+          id={id}
+          value={value}
+          maxLength={
+            maxLength
+          }
+          rows={5}
+          disabled={
+            disabled
+          }
+          aria-invalid={
+            Boolean(
+              error,
+            )
+          }
+          aria-describedby={
+            error
+              ? `${id}-error`
+              : undefined
+          }
+          onChange={
+            event =>
+              onChange(
+                event.target.value,
+              )
+          }
+          className={`${fieldClass} min-h-32 resize-y leading-6`}
+        />
+      ) : (
+        <input
+          id={id}
+          type={type}
+          value={value}
+          maxLength={
+            maxLength
+          }
+          required={
+            required
+          }
+          disabled={
+            disabled
+          }
+          aria-invalid={
+            Boolean(
+              error,
+            )
+          }
+          aria-describedby={
+            error
+              ? `${id}-error`
+              : undefined
+          }
+          onChange={
+            event =>
+              onChange(
+                event.target.value,
+              )
+          }
+          className={
+            fieldClass
+          }
+        />
+      )}
+
+      {error && (
+        <p
+          id={`${id}-error`}
+          className="mt-1.5 text-xs leading-5 text-[#9a5f5f]"
+        >
+          {error}
+        </p>
+      )}
+
+    </div>
+  );
+}
 
 function MetricCard({
   label,
