@@ -18,6 +18,7 @@ import com.wacds.appointments.professional.Professional;
 import com.wacds.appointments.professional.ProfessionalRepository;
 import com.wacds.appointments.professionalservice.ProfessionalServiceAssignmentId;
 import com.wacds.appointments.professionalservice.ProfessionalServiceAssignmentRepository;
+import com.wacds.appointments.reminder.AppointmentReminderService;
 import com.wacds.appointments.scheduleexception.ScheduleException;
 import com.wacds.appointments.scheduleexception.ScheduleExceptionRepository;
 import com.wacds.appointments.service.Service;
@@ -77,6 +78,9 @@ public class AppointmentService {
 
     private final BusinessMembershipService
         businessMembershipService;
+
+    private final AppointmentReminderService
+        appointmentReminderService;
 
     // =========================================================
     // CREATE
@@ -245,9 +249,21 @@ public class AppointmentService {
                 appointment
             );
 
-        return appointmentMapper.toResponse(
+        AppointmentResponse response =
+            appointmentMapper.toResponse(
+                saved
+            );
+
+        /*
+         * Misma sincronización que PublicBookingService:
+         * la respuesta se materializa antes porque una
+         * cancelación masiva limpia el contexto JPA.
+         */
+        synchronizeReminders(
             saved
         );
+
+        return response;
     }
 
     // =========================================================
@@ -307,9 +323,22 @@ public class AppointmentService {
                 appointment
             );
 
-        return appointmentMapper.toResponse(
+        AppointmentResponse response =
+            appointmentMapper.toResponse(
+                saved
+            );
+
+        /*
+         * PENDING -> CONFIRMED mantiene o actualiza reminders.
+         * CANCELLED, COMPLETED y NO_SHOW cancelan los activos
+         * y conservan los ya enviados, igual que la cancelación
+         * pública.
+         */
+        synchronizeReminders(
             saved
         );
+
+        return response;
     }
 
     // =========================================================
@@ -435,9 +464,57 @@ public class AppointmentService {
                 appointment
             );
 
-        return appointmentMapper.toResponse(
+        AppointmentResponse response =
+            appointmentMapper.toResponse(
+                saved
+            );
+
+        /*
+         * Igual que la reprogramación pública: cancela los
+         * reminders activos del horario anterior y prepara
+         * los de la nueva ocurrencia. SENT se conserva.
+         */
+        synchronizeReminders(
             saved
         );
+
+        return response;
+    }
+
+    // =========================================================
+    // REMINDERS
+    // =========================================================
+
+    /**
+     * Deja los recordatorios alineados con el estado actual
+     * de la cita, reutilizando AppointmentReminderService.
+     *
+     * PENDING y CONFIRMED se sincronizan.
+     * CANCELLED, COMPLETED y NO_SHOW solo cancelan activos.
+     */
+    private void synchronizeReminders(
+        Appointment appointment
+    ) {
+
+        if (
+            appointment.getStatus()
+                == Appointment.AppointmentStatus.PENDING
+                || appointment.getStatus()
+                == Appointment.AppointmentStatus.CONFIRMED
+        ) {
+
+            appointmentReminderService
+                .synchronizeForAppointment(
+                    appointment
+                );
+
+            return;
+        }
+
+        appointmentReminderService
+            .cancelActiveReminders(
+                appointment.getId()
+            );
     }
 
     // =========================================================

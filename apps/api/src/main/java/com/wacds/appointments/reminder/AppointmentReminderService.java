@@ -709,6 +709,77 @@ public class AppointmentReminderService {
     }
 
     // =========================================================
+    // DELIVERY RECHECK
+    // =========================================================
+
+    /**
+     * Última comprobación antes de entregar un recordatorio.
+     *
+     * El worker la ejecuta después de pasar a PROCESSING y
+     * antes de llamar al proveedor. Así no se envía un
+     * recordatorio si, desde que se programó:
+     *
+     * - la cita ya no está PENDING ni CONFIRMED;
+     * - o su startAt ya no coincide con el snapshot.
+     *
+     * Si ya no corresponde entregarlo y todavía no está
+     * SENT, pasa a CANCELLED para que no vuelva a entrar
+     * en el lote. SENT no se modifica.
+     *
+     * @return true solo cuando la cita sigue siendo válida
+     *         para este snapshot y el reminder puede enviarse
+     */
+    @Transactional
+    public boolean reminderStillMatchesAppointment(
+        Long reminderId
+    ) {
+
+        AppointmentReminder reminder =
+            lockForProcessing(
+                reminderId
+            );
+
+        if (
+            reminder.isSent()
+                || reminder.isCancelled()
+        ) {
+
+            return false;
+        }
+
+        Appointment appointment =
+            reminder.getAppointment();
+
+        boolean stillMatches =
+            appointment != null
+                && isReminderEligibleStatus(
+                    appointment.getStatus()
+                )
+                && appointment.getStartAt() != null
+                && reminder.getAppointmentStartAt() != null
+                && appointment
+                    .getStartAt()
+                    .isEqual(
+                        reminder.getAppointmentStartAt()
+                    );
+
+        if (
+            stillMatches
+        ) {
+
+            return true;
+        }
+
+        reminder.cancel();
+
+        appointmentReminderRepository.save(
+            reminder
+        );
+
+        return false;
+    }
+
+    // =========================================================
     // FIND REMINDERS BY APPOINTMENT
     // =========================================================
 

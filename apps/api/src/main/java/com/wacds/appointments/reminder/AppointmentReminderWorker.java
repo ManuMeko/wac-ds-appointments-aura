@@ -89,8 +89,13 @@ import java.util.List;
  * ocurrencias antiguas corresponde a
  * AppointmentReminderService.
  *
- * El worker únicamente procesa reminders que continúan
- * realmente activos.
+ * Antes de entregar, el worker vuelve a leer la cita:
+ *
+ * - si ya no está PENDING ni CONFIRMED, no envía;
+ * - si startAt ya no coincide con appointmentStartAt,
+ *   no envía.
+ *
+ * En ambos casos el reminder activo pasa a CANCELLED.
  *
  * =========================================================
  * PROVEEDORES
@@ -502,6 +507,35 @@ public class AppointmentReminderWorker {
                     + "reminderId={}, status={}",
                 reminderId,
                 currentStatus
+            );
+
+            return ProcessingResult.SKIPPED;
+        }
+
+        // -----------------------------------------------------
+        // APPOINTMENT STILL MATCHES
+        // -----------------------------------------------------
+
+        /*
+         * markProcessing ya dejó el reminder en PROCESSING.
+         *
+         * Antes de contactar al proveedor se vuelve a leer
+         * la cita. Una cancelación o un cambio de startAt
+         * que todavía no hubiera retirado este reminder
+         * no puede producir un envío.
+         */
+        if (
+            !appointmentReminderService
+                .reminderStillMatchesAppointment(
+                    reminderId
+                )
+        ) {
+
+            log.debug(
+                "Reminder skipped because the appointment was "
+                    + "cancelled or its start time changed. "
+                    + "reminderId={}",
+                reminderId
             );
 
             return ProcessingResult.SKIPPED;
