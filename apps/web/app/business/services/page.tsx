@@ -1387,7 +1387,7 @@ export default function ServicesPage() {
 
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
 
-        <article className="rounded-[24px] border border-[#e5ddd5] bg-white p-5 shadow-[0_10px_35px_rgba(62,49,41,0.04)]">
+        <article className="bp-metric rounded-[24px] border border-[#e5ddd5] bg-white p-5 shadow-[0_10px_35px_rgba(62,49,41,0.04)]">
           <div className="text-sm font-medium text-[#786b62]">
             Total servicios
           </div>
@@ -1401,7 +1401,7 @@ export default function ServicesPage() {
           </div>
         </article>
 
-        <article className="rounded-[24px] border border-[#e5ddd5] bg-white p-5 shadow-[0_10px_35px_rgba(62,49,41,0.04)]">
+        <article className="bp-metric rounded-[24px] border border-[#e5ddd5] bg-white p-5 shadow-[0_10px_35px_rgba(62,49,41,0.04)]">
           <div className="text-sm font-medium text-[#786b62]">
             Activos
           </div>
@@ -1415,7 +1415,7 @@ export default function ServicesPage() {
           </div>
         </article>
 
-        <article className="rounded-[24px] border border-[#e5ddd5] bg-white p-5 shadow-[0_10px_35px_rgba(62,49,41,0.04)]">
+        <article className="bp-metric rounded-[24px] border border-[#e5ddd5] bg-white p-5 shadow-[0_10px_35px_rgba(62,49,41,0.04)]">
           <div className="text-sm font-medium text-[#786b62]">
             Reservables
           </div>
@@ -1429,7 +1429,7 @@ export default function ServicesPage() {
           </div>
         </article>
 
-        <article className="rounded-[24px] border border-[#e5ddd5] bg-white p-5 shadow-[0_10px_35px_rgba(62,49,41,0.04)]">
+        <article className="bp-metric rounded-[24px] border border-[#e5ddd5] bg-white p-5 shadow-[0_10px_35px_rgba(62,49,41,0.04)]">
           <div className="text-sm font-medium text-[#786b62]">
             No reservables
           </div>
@@ -1439,7 +1439,7 @@ export default function ServicesPage() {
           </div>
 
           <div className="mt-2 text-xs text-[#9a8a7f]">
-            Pausados o inactivos
+            Sin nuevas reservas
           </div>
         </article>
       </section>
@@ -1601,7 +1601,7 @@ export default function ServicesPage() {
         {!loading
         && filteredServices.length === 0
         && (
-          <div className="px-6 py-16 text-center">
+          <div className="bp-empty px-6 py-16 text-center">
             <div className="text-base font-semibold text-[#3b342f]">
               No hay servicios que mostrar
             </div>

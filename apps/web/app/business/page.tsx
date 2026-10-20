@@ -1090,7 +1090,7 @@ export default function BusinessDashboardPage() {
               key={
                 metric.label
               }
-              className="rounded-[24px] border border-[#e5ddd5] bg-white p-6 shadow-[0_10px_35px_rgba(62,49,41,0.04)]"
+              className="bp-metric rounded-[24px] border border-[#e5ddd5] bg-white p-6 shadow-[0_10px_35px_rgba(62,49,41,0.04)]"
             >
 
               <div className="text-sm font-medium text-[#786b62]">
@@ -1189,7 +1189,7 @@ export default function BusinessDashboardPage() {
           && nextAppointments.length === 0
           && (
 
-            <div className="px-6 py-14 text-center md:px-7">
+            <div className="bp-empty px-6 py-14 text-center md:px-7">
 
               <div className="text-base font-semibold text-[#3b342f]">
                 No hay citas para hoy

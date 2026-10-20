@@ -2633,7 +2633,7 @@ export default function BusinessAppointmentsPage() {
         =================================================== */}
 
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <article className="rounded-[22px] border border-[#e5ddd5] bg-white p-5">
+          <article className="bp-metric rounded-[22px] border border-[#e5ddd5] bg-white p-5 shadow-[0_10px_28px_rgba(62,49,41,0.04)]">
             <div className="text-sm text-[#7d7067]">
               Citas del día
             </div>
@@ -2643,7 +2643,7 @@ export default function BusinessAppointmentsPage() {
             </div>
           </article>
 
-          <article className="rounded-[22px] border border-[#e5ddd5] bg-white p-5">
+          <article className="bp-metric rounded-[22px] border border-[#e5ddd5] bg-white p-5 shadow-[0_10px_28px_rgba(62,49,41,0.04)]">
             <div className="text-sm text-[#7d7067]">
               Confirmadas
             </div>
@@ -2653,7 +2653,7 @@ export default function BusinessAppointmentsPage() {
             </div>
           </article>
 
-          <article className="rounded-[22px] border border-[#e5ddd5] bg-white p-5">
+          <article className="bp-metric rounded-[22px] border border-[#e5ddd5] bg-white p-5 shadow-[0_10px_28px_rgba(62,49,41,0.04)]">
             <div className="text-sm text-[#7d7067]">
               Pendientes
             </div>
@@ -2663,7 +2663,7 @@ export default function BusinessAppointmentsPage() {
             </div>
           </article>
 
-          <article className="rounded-[22px] border border-[#e5ddd5] bg-white p-5">
+          <article className="bp-metric rounded-[22px] border border-[#e5ddd5] bg-white p-5 shadow-[0_10px_28px_rgba(62,49,41,0.04)]">
             <div className="text-sm text-[#7d7067]">
               Canceladas
             </div>
@@ -3020,7 +3020,7 @@ export default function BusinessAppointmentsPage() {
           && !error
           && filteredAppointments.length === 0
           && (
-            <div className="px-6 py-16 text-center">
+            <div className="bp-empty px-6 py-16 text-center">
               <div className="text-lg font-semibold text-[#342e2a]">
                 No hay citas que mostrar
               </div>
@@ -3030,7 +3030,7 @@ export default function BusinessAppointmentsPage() {
                 filtros seleccionados.
               </p>
 
-              {appointments.length > 0 && (
+              {appointments.length > 0 ? (
                 <button
                   type="button"
                   onClick={
@@ -3039,6 +3039,16 @@ export default function BusinessAppointmentsPage() {
                   className="mt-5 rounded-full border border-[#d8cec6] px-5 py-2.5 text-sm font-semibold text-[#62564f] transition hover:bg-[#f7f3ef]"
                 >
                   Limpiar filtros
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() =>
+                    void openCreateModal()
+                  }
+                  className="mt-5 rounded-full bg-[#342d28] px-5 py-2.5 text-sm font-semibold text-white"
+                >
+                  Nueva cita
                 </button>
               )}
             </div>

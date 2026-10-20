@@ -1068,7 +1068,7 @@ export default function CustomersPage() {
       setSuccessMessage(
         nextActive
           ? "Cliente activado correctamente."
-          : "Cliente archivado correctamente.",
+          : "Cliente desactivado correctamente.",
       );
 
       await loadCustomers();
@@ -1203,7 +1203,7 @@ export default function CustomersPage() {
 
       <section className="grid gap-4 sm:grid-cols-3">
 
-        <article className="rounded-[26px] border border-[#e8ded5] bg-white p-6 shadow-[0_14px_40px_rgba(62,49,41,0.055)] transition-shadow duration-300 hover:shadow-[0_18px_48px_rgba(62,49,41,0.085)]">
+        <article className="bp-metric rounded-[26px] border border-[#e8ded5] bg-white p-6 shadow-[0_14px_40px_rgba(62,49,41,0.055)]">
 
           <div className="text-sm font-medium text-[#786b62]">
             Total clientes
@@ -1215,7 +1215,7 @@ export default function CustomersPage() {
 
         </article>
 
-        <article className="rounded-[26px] border border-[#e8ded5] bg-white p-6 shadow-[0_14px_40px_rgba(62,49,41,0.055)] transition-shadow duration-300 hover:shadow-[0_18px_48px_rgba(62,49,41,0.085)]">
+        <article className="bp-metric rounded-[26px] border border-[#e8ded5] bg-white p-6 shadow-[0_14px_40px_rgba(62,49,41,0.055)]">
 
           <div className="text-sm font-medium text-[#786b62]">
             Activos
@@ -1227,7 +1227,7 @@ export default function CustomersPage() {
 
         </article>
 
-        <article className="rounded-[26px] border border-[#e8ded5] bg-white p-6 shadow-[0_14px_40px_rgba(62,49,41,0.055)] transition-shadow duration-300 hover:shadow-[0_18px_48px_rgba(62,49,41,0.085)]">
+        <article className="bp-metric rounded-[26px] border border-[#e8ded5] bg-white p-6 shadow-[0_14px_40px_rgba(62,49,41,0.055)]">
 
           <div className="text-sm font-medium text-[#786b62]">
             Inactivos
@@ -1401,7 +1401,7 @@ export default function CustomersPage() {
         && filteredCustomers.length === 0
         && (
 
-          <div className="px-6 py-16 text-center">
+          <div className="bp-empty px-6 py-16 text-center">
 
             <div className="text-base font-semibold text-[#3b342f]">
               No hay clientes que mostrar

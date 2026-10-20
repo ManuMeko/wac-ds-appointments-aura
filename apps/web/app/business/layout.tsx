@@ -501,7 +501,7 @@ export default function BusinessLayout({
   ======================================================= */
 
   return (
-    <div className="min-h-screen bg-[#f5f1ec] text-[#2f2925]">
+    <div className="business-panel min-h-screen bg-[#f6f2ed] text-[#241f1b]">
 
       <div className="flex min-h-screen">
 
@@ -509,7 +509,7 @@ export default function BusinessLayout({
             DESKTOP SIDEBAR
         =================================================== */}
 
-        <aside className="hidden w-[280px] shrink-0 border-r border-[#e5ddd5] bg-[#eee7df] lg:flex lg:flex-col">
+        <aside className="bp-sidebar hidden w-[272px] shrink-0 border-r lg:flex lg:flex-col">
 
           {/* BRAND */}
 
@@ -535,7 +535,7 @@ export default function BusinessLayout({
           {/* NAVIGATION */}
 
           <nav className="flex-1 px-4 py-6">
-            <div className="mb-3 px-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#a39084]">
+            <div className="mb-3 px-3 text-[13px] font-semibold uppercase tracking-[0.14em] text-[#5e534b]">
               Gestión
             </div>
 
@@ -559,11 +559,11 @@ export default function BusinessLayout({
                         item.href
                       }
                       className={[
-                        "flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-medium transition",
+                        "bp-nav-link",
 
                         active
-                          ? "bg-white text-[#2f2925] shadow-[0_8px_22px_rgba(62,49,41,0.05)]"
-                          : "text-[#62564f] hover:bg-white/70 hover:text-[#2f2925]",
+                          ? "bp-nav-link-active"
+                          : "",
                       ].join(
                         " ",
                       )}
@@ -573,7 +573,7 @@ export default function BusinessLayout({
                       </span>
 
                       {active && (
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#79675b]" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-white" />
                       )}
                     </Link>
                   );
@@ -620,9 +620,9 @@ export default function BusinessLayout({
               HEADER
           ================================================= */}
 
-          <header className="sticky top-0 z-30 border-b border-[#e7ded6] bg-[#f8f5f1]/95 backdrop-blur">
+          <header className="bp-header sticky top-0 z-30 border-b backdrop-blur">
 
-            <div className="flex h-[76px] items-center justify-between px-5 md:px-8 xl:px-10">
+            <div className="flex min-h-16 items-center justify-between gap-4 px-4 md:px-8 xl:px-10">
 
               {/* BUSINESS */}
 
@@ -630,11 +630,11 @@ export default function BusinessLayout({
                 href="/business"
                 className="min-w-0"
               >
-                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[#a08b7d]">
+                <div className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#5e534b]">
                   Espacio Business
                 </div>
 
-                <div className="mt-1 truncate text-base font-semibold text-[#332d29]">
+                <div className="mt-0.5 truncate text-base font-semibold text-[#241f1b]">
                   {businessName}
                 </div>
               </Link>
@@ -708,11 +708,11 @@ export default function BusinessLayout({
                             item.href
                           }
                           className={[
-                            "relative rounded-full px-4 py-2 text-xs font-semibold whitespace-nowrap transition",
+                            "relative whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition",
 
                             active
-                              ? "bg-[#342d28] text-white shadow-[0_5px_15px_rgba(52,45,40,0.15)]"
-                              : "text-[#72645b] hover:bg-[#eee7df] hover:text-[#342d28]",
+                              ? "bg-[#342d28] !text-white shadow-[0_5px_15px_rgba(52,45,40,0.15)]"
+                              : "text-[#5c5148] hover:bg-[#eee7df] hover:text-[#241f1b]",
                           ].join(
                             " ",
                           )}

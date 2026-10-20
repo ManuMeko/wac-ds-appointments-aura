@@ -2404,8 +2404,14 @@ export default function CustomerDetailPage() {
 
             ) : (
 
-              <div className="mt-5 rounded-[20px] border border-dashed border-[#dfd5cb] bg-[#fbf9f7] px-5 py-7 text-sm text-[#887b70]">
+              <div className="bp-empty mt-5 rounded-[20px] border border-dashed border-[#dfd5cb] bg-[#fbf9f7] px-5 py-7 text-center text-sm text-[#5e534b]">
                 Este cliente no tiene ninguna cita futura pendiente o confirmada.
+                <Link
+                  href="/business/appointments"
+                  className="mt-4 rounded-full bg-[#342d28] px-5 py-2.5 text-sm font-semibold !text-white"
+                >
+                  Ver agenda
+                </Link>
               </div>
 
             )}
@@ -2488,7 +2494,7 @@ export default function CustomerDetailPage() {
 
             {filteredAppointments.length === 0 ? (
 
-              <div className="px-6 py-14 text-center sm:px-7">
+              <div className="bp-empty px-6 py-14 text-center sm:px-7">
 
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#f4eee8] text-[#897769]">
                   <CalendarIcon />
@@ -2501,6 +2507,13 @@ export default function CustomerDetailPage() {
                 <p className="mt-1 text-sm text-[#988a7f]">
                   El historial aparecerá aquí cuando existan registros.
                 </p>
+
+                <Link
+                  href="/business/appointments"
+                  className="mt-4 rounded-full bg-[#342d28] px-5 py-2.5 text-sm font-semibold !text-white"
+                >
+                  Ver agenda
+                </Link>
 
               </div>
 
@@ -2808,7 +2821,7 @@ function MetricCard({
 }) {
 
   return (
-    <article className="rounded-[24px] border border-[#e8e1d8] bg-white px-5 py-5 shadow-[0_14px_40px_rgba(72,59,49,0.035)]">
+    <article className="bp-metric rounded-[24px] border border-[#e8e1d8] bg-white px-5 py-5 shadow-[0_14px_40px_rgba(72,59,49,0.035)]">
 
       <p className="text-xs font-medium uppercase tracking-[0.13em] text-[#a09287]">
         {label}

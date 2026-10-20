@@ -2668,8 +2668,14 @@ export default function ProfessionalDetailPage() {
 
             {services.length === 0 && (
 
-              <div className="rounded-2xl border border-[#e6ddd5] bg-[#faf8f5] p-5 text-sm text-[#807168]">
+              <div className="bp-empty rounded-2xl border border-[#e6ddd5] bg-[#faf8f5] p-5 text-center text-sm text-[#5e534b]">
                 No hay servicios creados en el negocio.
+                <Link
+                  href="/business/services"
+                  className="mt-4 rounded-full bg-[#342d28] px-5 py-2.5 text-sm font-semibold !text-white"
+                >
+                  Crear servicio
+                </Link>
               </div>
 
             )}

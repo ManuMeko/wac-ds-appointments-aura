@@ -1348,7 +1348,7 @@ export default function ProfessionalsPage() {
         <MetricCard
           label="No reservables"
           value={notBookableProfessionals.length}
-          description="Pausados o inactivos"
+          description="Sin nuevas reservas"
         />
 
       </section>
@@ -1508,7 +1508,7 @@ export default function ProfessionalsPage() {
         && filteredProfessionals.length === 0
         && (
 
-          <div className="px-6 py-16 text-center">
+          <div className="bp-empty px-6 py-16 text-center">
 
             <div className="text-base font-semibold text-[#3b342f]">
               No hay profesionales que mostrar
@@ -2073,7 +2073,7 @@ function MetricCard({
 }: MetricCardProps) {
 
   return (
-    <article className="rounded-[24px] border border-[#e5ddd5] bg-white p-5 shadow-[0_10px_35px_rgba(62,49,41,0.04)]">
+    <article className="bp-metric rounded-[24px] border border-[#e5ddd5] bg-white p-5 shadow-[0_10px_35px_rgba(62,49,41,0.04)]">
 
       <div className="text-sm font-medium text-[#786b62]">
         {label}
