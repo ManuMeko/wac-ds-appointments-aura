@@ -89,14 +89,14 @@ const sections = [
 
 export default function LegalNoticePage() {
   return (
-    <div className="min-h-screen bg-(--p-f8f5f0) text-(--p-25211e)">
+    <div className="min-h-screen bg-(--canvas) text-(--inverse)">
       <SiteHeader />
 
       <main>
         {/* =====================================================
             HERO
         ====================================================== */}
-        <section className="relative overflow-hidden border-b border-(--p-332b26)/10 bg-(--p-e9dfd4)">
+        <section className="relative overflow-hidden border-b border-(--heading)/10 bg-(--hero-bg)">
           <div className="pointer-events-none absolute -right-32 -top-48 h-[560px] w-[560px] rounded-full bg-(--p-d9c3ae)/55 blur-3xl" />
 
           <div className="pointer-events-none absolute -bottom-60 -left-40 h-[560px] w-[560px] rounded-full bg-white/30 blur-3xl" />
@@ -121,7 +121,7 @@ export default function LegalNoticePage() {
               </div>
 
               <div>
-                <h1 className="max-w-[850px] font-serif text-5xl leading-[0.95] tracking-[-0.04em] text-(--p-29231f) sm:text-6xl lg:text-7xl">
+                <h1 className="max-w-[850px] font-serif text-5xl leading-[0.95] tracking-[-0.04em] text-(--ink) sm:text-6xl lg:text-7xl">
                   Aviso legal
                 </h1>
 
@@ -137,10 +137,10 @@ export default function LegalNoticePage() {
         {/* =====================================================
             DEMO NOTICE
         ====================================================== */}
-        <section className="bg-(--p-f8f5f0)">
+        <section className="bg-(--canvas)">
           <div className="mx-auto w-full max-w-[1440px] px-5 pt-12 sm:px-8 lg:px-12 xl:px-16">
-            <div className="rounded-[1.4rem] border border-(--p-9b775e)/20 bg-(--p-efe4da) p-5 sm:p-6">
-              <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-(--p-8b6d59)">
+            <div className="rounded-[1.4rem] border border-(--p-9b775e)/20 bg-(--notice-bg) p-5 sm:p-6">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-(--accent)">
                 {business.demo.label}
               </p>
 
@@ -154,7 +154,7 @@ export default function LegalNoticePage() {
         {/* =====================================================
             LEGAL CONTENT
         ====================================================== */}
-        <section className="bg-(--p-f8f5f0)">
+        <section className="bg-(--canvas)">
           <div className="mx-auto grid w-full max-w-[1440px] gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[0.32fr_0.68fr] lg:px-12 lg:py-24 xl:px-16">
             {/* =================================================
                 INDEX
@@ -166,13 +166,13 @@ export default function LegalNoticePage() {
 
               <nav
                 aria-label="Índice del aviso legal"
-                className="mt-6 border-t border-(--p-332b26)/10"
+                className="mt-6 border-t border-(--heading)/10"
               >
                 {sections.map((section) => (
                   <a
                     key={section.id}
                     href={`#${section.id}`}
-                    className="group flex items-start gap-4 border-b border-(--p-332b26)/10 py-4"
+                    className="group flex items-start gap-4 border-b border-(--heading)/10 py-4"
                   >
                     <span className="font-serif text-sm text-(--p-a18a79)">
                       {section.number}
@@ -195,20 +195,20 @@ export default function LegalNoticePage() {
               ================================================ */}
               <section
                 id="titular"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 pb-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 pb-12"
               >
                 <LegalSectionHeader
                   number="01"
                   title="Identificación del titular"
                 />
 
-                <p className="mt-6 text-base leading-8 text-(--p-6c5f56)">
+                <p className="mt-6 text-base leading-8 text-(--ink-muted)">
                   En cumplimiento de la normativa aplicable, se informa a las
                   personas usuarias de los datos identificativos del titular
                   responsable de este sitio web.
                 </p>
 
-                <dl className="mt-8 overflow-hidden rounded-[1.4rem] border border-(--p-332b26)/10 bg-(--p-f1ebe4)">
+                <dl className="mt-8 overflow-hidden rounded-[1.4rem] border border-(--heading)/10 bg-(--p-f1ebe4)">
                   <LegalDataRow
                     label="Nombre comercial"
                     value={legalOwner.businessName}
@@ -247,14 +247,14 @@ export default function LegalNoticePage() {
               ================================================ */}
               <section
                 id="objeto"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="02"
                   title="Objeto del sitio web"
                 />
 
-                <div className="mt-6 space-y-5 text-base leading-8 text-(--p-6c5f56)">
+                <div className="mt-6 space-y-5 text-base leading-8 text-(--ink-muted)">
                   <p>{business.legalCopy.noticeObject}</p>
 
                   <p>
@@ -270,14 +270,14 @@ export default function LegalNoticePage() {
               ================================================ */}
               <section
                 id="usuarios"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="03"
                   title="Condiciones de acceso y utilización"
                 />
 
-                <div className="mt-6 space-y-5 text-base leading-8 text-(--p-6c5f56)">
+                <div className="mt-6 space-y-5 text-base leading-8 text-(--ink-muted)">
                   <p>
                     El acceso al sitio web implica la aceptación de las
                     condiciones recogidas en este aviso legal.
@@ -302,14 +302,14 @@ export default function LegalNoticePage() {
               ================================================ */}
               <section
                 id="propiedad-intelectual"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="04"
                   title="Propiedad intelectual e industrial"
                 />
 
-                <div className="mt-6 space-y-5 text-base leading-8 text-(--p-6c5f56)">
+                <div className="mt-6 space-y-5 text-base leading-8 text-(--ink-muted)">
                   <p>
                     Los contenidos del sitio web, incluyendo textos,
                     fotografías, imágenes, elementos gráficos, diseño,
@@ -333,14 +333,14 @@ export default function LegalNoticePage() {
               ================================================ */}
               <section
                 id="responsabilidad"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="05"
                   title="Responsabilidad"
                 />
 
-                <div className="mt-6 space-y-5 text-base leading-8 text-(--p-6c5f56)">
+                <div className="mt-6 space-y-5 text-base leading-8 text-(--ink-muted)">
                   <p>
                     El titular procura que la información publicada sea correcta
                     y se mantenga actualizada, aunque no puede garantizar la
@@ -361,14 +361,14 @@ export default function LegalNoticePage() {
               ================================================ */}
               <section
                 id="enlaces"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="06"
                   title="Enlaces externos"
                 />
 
-                <p className="mt-6 text-base leading-8 text-(--p-6c5f56)">
+                <p className="mt-6 text-base leading-8 text-(--ink-muted)">
                   El sitio web puede contener enlaces hacia plataformas o
                   servicios gestionados por terceros. El titular no controla
                   necesariamente el contenido, disponibilidad o funcionamiento
@@ -382,14 +382,14 @@ export default function LegalNoticePage() {
               ================================================ */}
               <section
                 id="modificaciones"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="07"
                   title="Modificaciones"
                 />
 
-                <p className="mt-6 text-base leading-8 text-(--p-6c5f56)">
+                <p className="mt-6 text-base leading-8 text-(--ink-muted)">
                   El titular podrá modificar este aviso legal cuando resulte
                   necesario para adaptarlo a cambios en el sitio web, en los
                   servicios ofrecidos o en la normativa aplicable.
@@ -408,7 +408,7 @@ export default function LegalNoticePage() {
                   title="Legislación aplicable"
                 />
 
-                <div className="mt-6 space-y-5 text-base leading-8 text-(--p-6c5f56)">
+                <div className="mt-6 space-y-5 text-base leading-8 text-(--ink-muted)">
                   <p>
                     Las relaciones derivadas del acceso y utilización de este
                     sitio web se regirán por la legislación que resulte
@@ -422,7 +422,7 @@ export default function LegalNoticePage() {
                   </p>
                 </div>
 
-                <div className="mt-12 rounded-[1.4rem] border border-(--p-332b26)/10 bg-(--p-eee5dc) p-6 sm:p-8">
+                <div className="mt-12 rounded-[1.4rem] border border-(--heading)/10 bg-(--section-warm) p-6 sm:p-8">
                   <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-(--p-967a66)">
                     Última actualización
                   </p>
@@ -439,7 +439,7 @@ export default function LegalNoticePage() {
         {/* =====================================================
             BACK CTA
         ====================================================== */}
-        <section className="bg-(--p-d8c3b2)">
+        <section className="bg-(--section-sand)">
           <div className="mx-auto w-full max-w-[1440px] px-5 py-16 sm:px-8 lg:px-12 xl:px-16">
             <div className="flex flex-col justify-between gap-8 rounded-[1.8rem] border border-white/25 bg-(--p-f3ebe3) p-7 sm:p-9 lg:flex-row lg:items-center">
               <div>
@@ -454,7 +454,7 @@ export default function LegalNoticePage() {
 
               <Link
                 href="/"
-                className="group inline-flex h-14 shrink-0 items-center justify-center gap-3 rounded-full bg-(--p-2e2824) px-8 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--p-fffaf6) transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4b3e35)"
+                className="group inline-flex h-14 shrink-0 items-center justify-center gap-3 rounded-full bg-(--p-2e2824) px-8 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--on-inverse) transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4b3e35)"
               >
                 Volver al inicio
 
@@ -513,7 +513,7 @@ function LegalDataRow({
     <div
       className={[
         "grid gap-2 px-5 py-4 sm:grid-cols-[190px_1fr] sm:gap-6 sm:px-6",
-        last ? "" : "border-b border-(--p-332b26)/10",
+        last ? "" : "border-b border-(--heading)/10",
       ].join(" ")}
     >
       <dt className="text-[9px] font-semibold uppercase tracking-[0.18em] text-(--p-9a806d)">

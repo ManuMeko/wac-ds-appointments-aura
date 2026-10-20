@@ -87,7 +87,7 @@ export function ContactSection() {
   return (
     <section
       id="contacto"
-      className="relative overflow-hidden bg-(--p-d8c3b2)"
+      className="relative overflow-hidden bg-(--section-sand)"
     >
       {/* =====================================================
           AMBIENT BACKGROUND
@@ -127,7 +127,7 @@ export function ContactSection() {
                     href={whatsappHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group inline-flex h-14 items-center justify-center gap-3 rounded-full bg-(--p-2e2824) px-8 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--p-fffaf6) shadow-[0_12px_30px_rgba(46,40,36,0.12)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4b3e35) hover:shadow-[0_16px_36px_rgba(46,40,36,0.18)]"
+                    className="group inline-flex h-14 items-center justify-center gap-3 rounded-full bg-(--p-2e2824) px-8 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--on-inverse) shadow-[0_12px_30px_rgba(46,40,36,0.12)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4b3e35) hover:shadow-[0_16px_36px_rgba(46,40,36,0.18)]"
                   >
                     {business.contactSection.whatsappCta.label}
 
@@ -191,7 +191,7 @@ export function ContactSection() {
                   En desktop se empuja hacia abajo para
                   equilibrar visualmente el panel derecho.
               ============================================== */}
-              <div className="mt-12 border-l border-(--p-8b6d59)/35 pl-5 lg:mt-auto lg:pt-8">
+              <div className="mt-12 border-l border-(--accent)/35 pl-5 lg:mt-auto lg:pt-8">
                 <p className="max-w-[510px] font-serif text-xl leading-7 text-(--p-5d4d42)">
                   {business.contactSection.closingNote}
                 </p>
@@ -271,7 +271,7 @@ export function ContactSection() {
                   <div className="mt-4 space-y-3 text-sm text-(--p-5f534a)">
                     <a
                       href={phoneHref}
-                      className="flex w-fit items-center gap-2 transition-colors duration-200 hover:text-(--p-8b6e59)"
+                      className="flex w-fit items-center gap-2 transition-colors duration-200 hover:text-(--accent-line)"
                     >
                       <PhoneIcon />
 
@@ -280,7 +280,7 @@ export function ContactSection() {
 
                     <a
                       href={emailHref}
-                      className="flex w-fit items-center gap-2 transition-colors duration-200 hover:text-(--p-8b6e59)"
+                      className="flex w-fit items-center gap-2 transition-colors duration-200 hover:text-(--accent-line)"
                     >
                       <MailIcon />
 
@@ -307,7 +307,7 @@ export function ContactSection() {
                     href={whatsappHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group mt-4 inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-(--p-4c4038) transition-colors duration-200 hover:text-(--p-8b6e59)"
+                    className="group mt-4 inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-(--p-4c4038) transition-colors duration-200 hover:text-(--accent-line)"
                   >
                     {business.contactSection.guidanceCta}
 

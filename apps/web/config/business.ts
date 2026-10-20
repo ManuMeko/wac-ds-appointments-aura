@@ -1,4 +1,5 @@
 import { auraConfig } from "@/data/aura";
+import { tallerConfig } from "@/data/taller";
 import type { DemoConfig, DemoId } from "@/data/types";
 
 /**
@@ -8,12 +9,13 @@ import type { DemoConfig, DemoId } from "@/data/types";
  * Cada demo declara su slug. NEXT_PUBLIC_BUSINESS_SLUG, si existe,
  * sustituye solo ese slug al hablar con el API.
  *
- * El taller todavía no tiene ficha: el hueco está en `demos.taller`.
+ * `demos.taller` es Motorline. Si la variable pide una demo
+ * que no está en el mapa, se usa Aura.
  */
 
 const demos: Record<DemoId, DemoConfig | null> = {
   aura: auraConfig,
-  taller: null,
+  taller: tallerConfig,
 };
 
 function selectDemo(): DemoConfig {

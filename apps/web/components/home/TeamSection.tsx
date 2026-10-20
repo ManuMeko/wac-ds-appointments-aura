@@ -11,7 +11,7 @@ import { business } from "@/config/business";
 
 export function TeamSection() {
   return (
-    <section id="equipo" className="bg-(--p-f8f5f0)">
+    <section id="equipo" className="bg-(--canvas)">
       <div className="mx-auto w-full max-w-[1440px] px-5 py-20 sm:px-8 lg:px-12 lg:py-28 xl:px-16">
         {/* =====================================================
             INTRO
@@ -53,6 +53,7 @@ export function TeamSection() {
                       src={imageSrc}
                       alt={`${professional.name}, ${professional.role} en ${business.brand.name}`}
                       fill
+                      unoptimized={imageSrc.endsWith(".svg")}
                       quality={90}
                       sizes="(min-width: 768px) 33vw, 100vw"
                       className="object-cover object-center transition-transform duration-700 group-hover:scale-[1.025]"
@@ -101,7 +102,7 @@ export function TeamSection() {
                     {professional.specialties.map((specialty) => (
                       <span
                         key={specialty}
-                        className="rounded-full border border-(--p-8b6e59)/15 bg-(--p-8b6e59)/[0.05] px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-(--p-856c59)"
+                        className="rounded-full border border-(--accent-line)/15 bg-(--accent-line)/[0.05] px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-(--p-856c59)"
                       >
                         {specialty}
                       </span>

@@ -17,7 +17,7 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 
 export default function Home() {
   return (
-    <div className="min-h-screen overflow-x-hidden bg-(--p-f8f5f0) text-(--p-25211e)">
+    <div className="min-h-screen overflow-x-hidden bg-(--canvas) text-(--inverse)">
       <SiteHeader />
 
       <main>

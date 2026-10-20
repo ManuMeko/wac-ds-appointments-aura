@@ -10,7 +10,7 @@ import { business } from "@/config/business";
 
 export function ServicesSection() {
   return (
-    <section id="servicios" className="bg-(--p-f8f5f0)">
+    <section id="servicios" className="bg-(--canvas)">
       <div className="mx-auto w-full max-w-[1440px] px-5 py-20 sm:px-8 lg:px-12 lg:py-28 xl:px-16">
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
           {/* =====================================================
@@ -21,7 +21,7 @@ export function ServicesSection() {
               {business.servicesIntro.eyebrow}
             </p>
 
-            <h2 className="mt-5 max-w-[430px] font-serif text-5xl leading-[0.96] tracking-[-0.035em] text-(--p-29231f) sm:text-6xl">
+            <h2 className="mt-5 max-w-[430px] font-serif text-5xl leading-[0.96] tracking-[-0.035em] text-(--ink) sm:text-6xl">
               {business.servicesIntro.title}
             </h2>
 
@@ -47,12 +47,12 @@ export function ServicesSection() {
                 {/* Service content */}
                 <div>
                   <div className="flex flex-wrap items-center gap-3">
-                    <h3 className="font-serif text-2xl text-(--p-2f2925) transition-colors duration-300 group-hover:text-(--p-8b6e59)">
+                    <h3 className="font-serif text-2xl text-(--p-2f2925) transition-colors duration-300 group-hover:text-(--accent-line)">
                       {service.name}
                     </h3>
 
                     {service.featured && (
-                      <span className="rounded-full border border-(--p-8b6e59)/20 bg-(--p-8b6e59)/[0.06] px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.14em] text-(--p-806652)">
+                      <span className="rounded-full border border-(--accent-line)/20 bg-(--accent-line)/[0.06] px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.14em] text-(--accent-strong)">
                         {business.servicesIntro.featuredLabel}
                       </span>
                     )}
@@ -85,7 +85,7 @@ export function ServicesSection() {
             ================================================== */}
             <a
               href={business.servicesIntro.cta.href}
-              className="group mt-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-(--p-463a32) transition-colors duration-300 hover:text-(--p-8b6e59)"
+              className="group mt-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-(--p-463a32) transition-colors duration-300 hover:text-(--accent-line)"
             >
               {business.servicesIntro.cta.label}
 

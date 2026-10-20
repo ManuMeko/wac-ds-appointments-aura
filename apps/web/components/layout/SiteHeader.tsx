@@ -57,7 +57,7 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-(--p-2d2824)/10 bg-(--p-f8f5f0)/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-(--p-2d2824)/10 bg-(--canvas)/90 backdrop-blur-xl">
       <div className="mx-auto flex h-[76px] w-full max-w-[1440px] items-center justify-between px-5 sm:px-8 lg:px-12 xl:px-16">
         {/* =====================================================
             BRAND
@@ -94,7 +94,7 @@ export function SiteHeader() {
             <a
               key={item.href}
               href={item.href}
-              className="relative transition-colors duration-200 hover:text-(--p-2a2420) after:absolute after:-bottom-2 after:left-0 after:h-px after:w-0 after:bg-(--p-8b6d59) after:transition-all after:duration-300 hover:after:w-full"
+              className="relative transition-colors duration-200 hover:text-(--p-2a2420) after:absolute after:-bottom-2 after:left-0 after:h-px after:w-0 after:bg-(--accent) after:transition-all after:duration-300 hover:after:w-full"
             >
               {item.label}
             </a>
@@ -107,7 +107,7 @@ export function SiteHeader() {
         <div className="hidden items-center gap-3 sm:flex">
           <a
             href={PUBLIC_BOOKING_HREF}
-            className="group inline-flex h-11 items-center justify-center gap-2 rounded-full bg-(--p-2c2622) px-6 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--p-fffaf6) shadow-[0_8px_24px_rgba(44,38,34,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4b3d34) hover:shadow-[0_12px_30px_rgba(44,38,34,0.20)]"
+            className="group inline-flex h-11 items-center justify-center gap-2 rounded-full bg-(--button-bg) px-6 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--button-text) shadow-[0_8px_24px_rgba(44,38,34,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4b3d34) hover:shadow-[0_12px_30px_rgba(44,38,34,0.20)]"
           >
             {business.header.bookingCta}
 
@@ -142,7 +142,7 @@ export function SiteHeader() {
       <div
         id="mobile-navigation"
         className={[
-          "overflow-hidden border-t border-(--p-2d2824)/10 bg-(--p-f8f5f0) transition-all duration-300 sm:hidden",
+          "overflow-hidden border-t border-(--p-2d2824)/10 bg-(--canvas) transition-all duration-300 sm:hidden",
           mobileMenuOpen
             ? "max-h-[520px] opacity-100"
             : "pointer-events-none max-h-0 opacity-0",
@@ -158,7 +158,7 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 onClick={closeMobileMenu}
-                className="flex items-center justify-between border-b border-(--p-332b26)/10 py-4 text-base font-medium text-(--p-40362f) transition-colors duration-200 hover:text-(--p-8b6d59)"
+                className="flex items-center justify-between border-b border-(--heading)/10 py-4 text-base font-medium text-(--p-40362f) transition-colors duration-200 hover:text-(--accent)"
               >
                 <span>{item.label}</span>
 
@@ -170,7 +170,7 @@ export function SiteHeader() {
           <a
             href={PUBLIC_BOOKING_HREF}
             onClick={closeMobileMenu}
-            className="group mt-6 inline-flex h-14 w-full items-center justify-center gap-3 rounded-full bg-(--p-2c2622) px-7 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--p-fffaf6) shadow-[0_10px_28px_rgba(44,38,34,0.14)] transition-all duration-300 hover:bg-(--p-4b3d34)"
+            className="group mt-6 inline-flex h-14 w-full items-center justify-center gap-3 rounded-full bg-(--button-bg) px-7 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--button-text) shadow-[0_10px_28px_rgba(44,38,34,0.14)] transition-all duration-300 hover:bg-(--p-4b3d34)"
           >
             {business.header.bookingCta}
 
@@ -179,7 +179,7 @@ export function SiteHeader() {
             </span>
           </a>
 
-          <div className="mt-6 border-t border-(--p-332b26)/10 pt-5">
+          <div className="mt-6 border-t border-(--heading)/10 pt-5">
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-(--p-9a806d)">
               {business.brand.tagline}
             </p>

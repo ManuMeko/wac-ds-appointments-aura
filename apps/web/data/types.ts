@@ -118,6 +118,13 @@ export type HeaderCopy = {
   bookingCta: string;
 };
 
+export type BookingExtraField = {
+  id: string;
+  label: string;
+  placeholder: string;
+  notesLabel: string;
+};
+
 export type LegalCopy = {
   noticeObject: string;
   noticeClosing: string;
@@ -290,6 +297,7 @@ export type DemoConfig = {
   imageAlts: ImageAlts;
   vocabulary: Vocabulary;
   header: HeaderCopy;
+  bookingExtraFields: readonly BookingExtraField[];
   legalCopy: LegalCopy;
   booking: BookingCopy;
   manageBooking: ManageBookingCopy;

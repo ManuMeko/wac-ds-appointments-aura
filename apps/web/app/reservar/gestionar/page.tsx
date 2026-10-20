@@ -1132,13 +1132,13 @@ export default function ManageBookingPage() {
     booking?.reschedulingAllowed === true;
 
   return (
-    <div className="min-h-screen bg-(--p-f8f5f0) text-(--p-2d2723)">
+    <div className="min-h-screen bg-(--canvas) text-(--p-2d2723)">
       <SiteHeader />
 
       <main>
         {/* HERO */}
 
-        <section className="border-b border-(--p-3a312c)/10 bg-(--p-e9dfd4)">
+        <section className="border-b border-(--p-3a312c)/10 bg-(--hero-bg)">
           <div className="mx-auto w-full max-w-[1180px] px-5 py-14 sm:px-8 sm:py-16 lg:px-12">
             <Link
               href="/reservar"
@@ -1148,13 +1148,13 @@ export default function ManageBookingPage() {
             </Link>
 
             <div className="mt-8 max-w-[760px]">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-(--p-8b6d59)">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-(--accent)">
                 {copy.eyebrow}
               </p>
 
               <h1 className="mt-4 font-serif text-[clamp(2.8rem,6vw,5.3rem)] leading-[0.95] tracking-[-0.04em] text-(--p-2b2521)">
                 {copy.titleLead}
-                <span className="block italic text-(--p-8b6d59)">
+                <span className="block italic text-(--accent)">
                   {copy.titleAccent}
                 </span>
               </h1>
@@ -1195,11 +1195,11 @@ export default function ManageBookingPage() {
             !showBooking &&
             ["missing", "invalid", "error"].includes(accessState) && (
               <div className="mx-auto max-w-[680px] rounded-[2rem] border border-(--p-3b332e)/10 bg-white/60 p-8 text-center shadow-[0_22px_60px_rgba(57,47,41,0.06)] sm:p-10">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-(--p-eee4da) text-xl text-(--p-5a493f)">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-(--surface-muted) text-xl text-(--p-5a493f)">
                   ◷
                 </div>
 
-                <h2 className="mt-6 font-serif text-3xl text-(--p-332b26)">
+                <h2 className="mt-6 font-serif text-3xl text-(--heading)">
                   {accessState === "missing"
                     ? copy.missingTitle
                     : accessState === "invalid"
@@ -1220,7 +1220,7 @@ export default function ManageBookingPage() {
                 <Link
                   href="/reservar"
                   className="mt-7 inline-flex min-h-13 items-center justify-center rounded-full bg-(--p-302924) px-7 py-3 text-xs font-semibold uppercase tracking-[0.15em] transition hover:bg-(--p-4b3d34)"
-                  style={{ color: "var(--p-ffffff)" }}
+                  style={{ color: "var(--surface)" }}
                 >
                   {copy.bookCta}
                 </Link>
@@ -1240,7 +1240,7 @@ export default function ManageBookingPage() {
                       {copy.summaryEyebrow}
                     </p>
 
-                    <h2 className="mt-3 font-serif text-3xl text-(--p-332b26) sm:text-4xl">
+                    <h2 className="mt-3 font-serif text-3xl text-(--heading) sm:text-4xl">
                       {booking.serviceName}
                     </h2>
 
@@ -1249,7 +1249,7 @@ export default function ManageBookingPage() {
                     </p>
                   </div>
 
-                  <span className="w-fit rounded-full bg-(--p-eee4da) px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-(--p-6f5b4d)">
+                  <span className="w-fit rounded-full bg-(--surface-muted) px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-(--p-6f5b4d)">
                     {getStatusLabel(booking.status)}
                   </span>
                 </div>
@@ -1555,7 +1555,7 @@ export default function ManageBookingPage() {
               {/* CANCELLED STATE */}
 
               {bookingIsCancelled && (
-                <div className="rounded-[1.75rem] border border-(--p-3b332e)/10 bg-(--p-eee4da) p-7 text-center shadow-[0_16px_40px_rgba(57,47,41,0.05)] sm:p-8">
+                <div className="rounded-[1.75rem] border border-(--p-3b332e)/10 bg-(--surface-muted) p-7 text-center shadow-[0_16px_40px_rgba(57,47,41,0.05)] sm:p-8">
                   <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white/75 text-lg font-semibold text-(--p-6f5b4d) shadow-sm">
                     ✓
                   </div>
@@ -1583,7 +1583,7 @@ export default function ManageBookingPage() {
                     <Link
                       href="/reservar"
                       className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-full bg-(--p-302924) px-6 text-[11px] font-semibold uppercase tracking-[0.14em] shadow-[0_10px_24px_rgba(48,41,36,0.16)] transition hover:bg-(--p-4b3d34)"
-                      style={{ color: "var(--p-ffffff)" }}
+                      style={{ color: "var(--surface)" }}
                     >
                       {copy.bookAnother}
                     </Link>

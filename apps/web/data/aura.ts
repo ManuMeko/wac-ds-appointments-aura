@@ -768,6 +768,8 @@ export const auraConfig: DemoConfig = {
 
   header: auraHeader,
 
+  bookingExtraFields: [],
+
   legalCopy: auraLegalCopy,
 
   booking: auraBooking,

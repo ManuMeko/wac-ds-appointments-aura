@@ -11,7 +11,7 @@ export function PhilosophySection() {
   return (
     <section
       id="experiencia"
-      className="border-y border-(--p-332b26)/10 bg-(--p-25211e) text-white"
+      className="border-y border-(--heading)/10 bg-(--inverse) text-white"
     >
       <div className="mx-auto grid w-full max-w-[1440px] grid-cols-1 gap-14 px-5 py-20 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:px-12 lg:py-28 xl:px-16">
         {/* =====================================================

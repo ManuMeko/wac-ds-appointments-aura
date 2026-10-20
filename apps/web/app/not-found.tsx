@@ -14,11 +14,11 @@ import { business } from "@/config/business";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-(--p-f8f5f0) text-(--p-25211e)">
+    <div className="min-h-screen bg-(--canvas) text-(--inverse)">
       <SiteHeader />
 
       <main>
-        <section className="relative isolate flex min-h-[calc(100vh-76px)] items-center overflow-hidden bg-(--p-e9dfd4)">
+        <section className="relative isolate flex min-h-[calc(100vh-76px)] items-center overflow-hidden bg-(--hero-bg)">
           {/* =====================================================
               AMBIENT BACKGROUND
           ====================================================== */}
@@ -57,7 +57,7 @@ export default function NotFound() {
                 <div className="mt-10 flex flex-col gap-3 sm:flex-row">
                   <Link
                     href="/"
-                    className="group inline-flex h-14 items-center justify-center gap-3 rounded-full bg-(--p-2d2723) px-8 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--p-fffaf6) shadow-[0_12px_30px_rgba(45,39,35,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4b3d34)"
+                    className="group inline-flex h-14 items-center justify-center gap-3 rounded-full bg-(--p-2d2723) px-8 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--on-inverse) shadow-[0_12px_30px_rgba(45,39,35,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4b3d34)"
                   >
                     Volver al inicio
 
@@ -74,7 +74,7 @@ export default function NotFound() {
                   </Link>
                 </div>
 
-                <div className="mt-12 border-t border-(--p-332b26)/10 pt-7">
+                <div className="mt-12 border-t border-(--heading)/10 pt-7">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-(--p-9a806d)">
                     {business.brand.name}
                   </p>

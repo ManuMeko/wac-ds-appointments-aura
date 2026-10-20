@@ -12,7 +12,7 @@ import { business } from "@/config/business";
 
 export function ExperienceSection() {
   return (
-    <section className="bg-(--p-eee5dc)">
+    <section className="bg-(--section-warm)">
       <div className="mx-auto grid w-full max-w-[1440px] gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center lg:gap-16 lg:px-12 lg:py-28 xl:px-16">
         {/* =====================================================
             VISUAL
@@ -23,6 +23,7 @@ export function ExperienceSection() {
               src={business.assets.experience}
               alt={business.imageAlts.experience}
               fill
+              unoptimized={business.assets.experience.endsWith(".svg")}
               quality={92}
               sizes="(min-width: 1280px) 560px, (min-width: 1024px) 45vw, 100vw"
               className="object-cover object-center"
@@ -59,7 +60,7 @@ export function ExperienceSection() {
           {/* =====================================================
               DECORATIVE DETAIL
           ====================================================== */}
-          <div className="pointer-events-none absolute -bottom-5 -right-5 -z-10 hidden h-28 w-28 rounded-full border border-(--p-8b6d59)/15 lg:block" />
+          <div className="pointer-events-none absolute -bottom-5 -right-5 -z-10 hidden h-28 w-28 rounded-full border border-(--accent)/15 lg:block" />
 
           <div className="pointer-events-none absolute -left-7 top-16 -z-10 hidden h-20 w-20 rounded-full bg-(--p-d6c0ad)/45 blur-2xl lg:block" />
         </div>
@@ -107,7 +108,7 @@ export function ExperienceSection() {
             {/* =================================================
                 SUPPORTING NOTE
             ================================================== */}
-            <div className="mt-10 border-l border-(--p-8b6d59)/35 pl-5">
+            <div className="mt-10 border-l border-(--accent)/35 pl-5">
               <p className="max-w-[510px] font-serif text-xl leading-7 text-(--p-5d4d42)">
                 {business.experience.note}
               </p>

@@ -21,7 +21,7 @@ export function HeroSection() {
       {/* =====================================================
           BACKGROUND
       ====================================================== */}
-      <div className="absolute inset-0 -z-20 bg-(--p-e9dfd4)" />
+      <div className="absolute inset-0 -z-20 bg-(--hero-bg)" />
 
       <div className="absolute -right-24 -top-48 -z-10 h-[640px] w-[640px] rounded-full bg-(--p-d9c3ae)/70 blur-3xl" />
 
@@ -43,10 +43,10 @@ export function HeroSection() {
             </div>
 
             {/* Heading */}
-            <h1 className="max-w-[660px] font-serif text-[clamp(3.5rem,7vw,6.8rem)] leading-[0.88] tracking-[-0.055em] text-(--p-29231f)">
+            <h1 className="max-w-[660px] font-serif text-[clamp(3.5rem,7vw,6.8rem)] leading-[0.88] tracking-[-0.055em] text-(--ink)">
               {business.hero.title}
 
-              <span className="block italic text-(--p-8b6d59)">
+              <span className="block italic text-(--accent)">
                 {business.hero.highlightedTitle}
               </span>
             </h1>
@@ -62,7 +62,7 @@ export function HeroSection() {
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <a
                 href={PUBLIC_BOOKING_HREF}
-                className="group inline-flex h-14 items-center justify-center gap-3 rounded-full bg-(--p-2b2521) px-8 text-[11px] font-semibold uppercase tracking-[0.2em] !text-(--p-fffaf6) shadow-[0_12px_30px_rgba(43,37,33,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4c3f36) hover:shadow-[0_16px_36px_rgba(43,37,33,0.20)]"
+                className="group inline-flex h-14 items-center justify-center gap-3 rounded-full bg-(--p-2b2521) px-8 text-[11px] font-semibold uppercase tracking-[0.2em] !text-(--on-inverse) shadow-[0_12px_30px_rgba(43,37,33,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4c3f36) hover:shadow-[0_16px_36px_rgba(43,37,33,0.20)]"
               >
                 {business.hero.primaryCta.label}
 
@@ -108,6 +108,7 @@ export function HeroSection() {
               alt={business.imageAlts.hero}
               fill
               priority
+              unoptimized={business.assets.hero.endsWith(".svg")}
               quality={92}
               sizes="(min-width: 1280px) 620px, (min-width: 1024px) 48vw, 100vw"
               className="object-cover object-center"
@@ -145,7 +146,7 @@ export function HeroSection() {
                 <a
                   href={PUBLIC_BOOKING_HREF}
                   aria-label={business.hero.primaryCta.label}
-                  className="group flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-(--p-2d2723) !text-(--p-fffaf6) shadow-[0_10px_24px_rgba(45,39,35,0.18)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4b3d34)"
+                  className="group flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-(--p-2d2723) !text-(--on-inverse) shadow-[0_10px_24px_rgba(45,39,35,0.18)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4b3d34)"
                 >
                   <span className="transition-transform duration-300 group-hover:translate-x-0.5">
                     <ArrowIcon />
@@ -166,6 +167,7 @@ export function HeroSection() {
               alt={business.imageAlts.hero}
               fill
               priority
+              unoptimized={business.assets.hero.endsWith(".svg")}
               quality={90}
               sizes="(max-width: 1023px) 100vw"
               className="object-cover object-center"
@@ -184,7 +186,7 @@ export function HeroSection() {
 
               <a
                 href={PUBLIC_BOOKING_HREF}
-                className="group mt-5 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-(--p-2d2723) px-6 text-[10px] font-semibold uppercase tracking-[0.18em] !text-(--p-fffaf6) shadow-[0_10px_24px_rgba(45,39,35,0.16)] transition-all duration-300 hover:bg-(--p-4b3d34)"
+                className="group mt-5 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-(--p-2d2723) px-6 text-[10px] font-semibold uppercase tracking-[0.18em] !text-(--on-inverse) shadow-[0_10px_24px_rgba(45,39,35,0.16)] transition-all duration-300 hover:bg-(--p-4b3d34)"
               >
                 {business.hero.primaryCta.label}
 

@@ -131,14 +131,14 @@ const cookieCategories = [
 
 export default function CookiesPage() {
   return (
-    <div className="min-h-screen bg-(--p-f8f5f0) text-(--p-25211e)">
+    <div className="min-h-screen bg-(--canvas) text-(--inverse)">
       <SiteHeader />
 
       <main>
         {/* =====================================================
             HERO
         ====================================================== */}
-        <section className="relative overflow-hidden border-b border-(--p-332b26)/10 bg-(--p-e9dfd4)">
+        <section className="relative overflow-hidden border-b border-(--heading)/10 bg-(--hero-bg)">
           <div className="pointer-events-none absolute -right-32 -top-48 h-[560px] w-[560px] rounded-full bg-(--p-d9c3ae)/55 blur-3xl" />
 
           <div className="pointer-events-none absolute -bottom-60 -left-40 h-[560px] w-[560px] rounded-full bg-white/30 blur-3xl" />
@@ -163,7 +163,7 @@ export default function CookiesPage() {
               </div>
 
               <div>
-                <h1 className="max-w-[850px] font-serif text-5xl leading-[0.95] tracking-[-0.04em] text-(--p-29231f) sm:text-6xl lg:text-7xl">
+                <h1 className="max-w-[850px] font-serif text-5xl leading-[0.95] tracking-[-0.04em] text-(--ink) sm:text-6xl lg:text-7xl">
                   Política de cookies
                 </h1>
 
@@ -179,10 +179,10 @@ export default function CookiesPage() {
         {/* =====================================================
             DEMO NOTICE
         ====================================================== */}
-        <section className="bg-(--p-f8f5f0)">
+        <section className="bg-(--canvas)">
           <div className="mx-auto w-full max-w-[1440px] px-5 pt-12 sm:px-8 lg:px-12 xl:px-16">
-            <div className="rounded-[1.4rem] border border-(--p-9b775e)/20 bg-(--p-efe4da) p-5 sm:p-6">
-              <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-(--p-8b6d59)">
+            <div className="rounded-[1.4rem] border border-(--p-9b775e)/20 bg-(--notice-bg) p-5 sm:p-6">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-(--accent)">
                 {business.demo.label}
               </p>
 
@@ -196,7 +196,7 @@ export default function CookiesPage() {
         {/* =====================================================
             COOKIES CONTENT
         ====================================================== */}
-        <section className="bg-(--p-f8f5f0)">
+        <section className="bg-(--canvas)">
           <div className="mx-auto grid w-full max-w-[1440px] gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[0.32fr_0.68fr] lg:px-12 lg:py-24 xl:px-16">
             {/* =================================================
                 INDEX
@@ -208,13 +208,13 @@ export default function CookiesPage() {
 
               <nav
                 aria-label="Índice de la política de cookies"
-                className="mt-6 border-t border-(--p-332b26)/10"
+                className="mt-6 border-t border-(--heading)/10"
               >
                 {sections.map((section) => (
                   <a
                     key={section.id}
                     href={`#${section.id}`}
-                    className="group flex items-start gap-4 border-b border-(--p-332b26)/10 py-4"
+                    className="group flex items-start gap-4 border-b border-(--heading)/10 py-4"
                   >
                     <span className="font-serif text-sm text-(--p-a18a79)">
                       {section.number}
@@ -237,14 +237,14 @@ export default function CookiesPage() {
               ================================================ */}
               <section
                 id="que-son"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 pb-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 pb-12"
               >
                 <LegalSectionHeader
                   number="01"
                   title="Qué son las cookies"
                 />
 
-                <div className="mt-6 space-y-5 text-base leading-8 text-(--p-6c5f56)">
+                <div className="mt-6 space-y-5 text-base leading-8 text-(--ink-muted)">
                   <p>
                     Las cookies son pequeños archivos o fragmentos de
                     información que pueden almacenarse en el dispositivo de la
@@ -264,14 +264,14 @@ export default function CookiesPage() {
               ================================================ */}
               <section
                 id="tipos"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="02"
                   title="Tipos de cookies"
                 />
 
-                <p className="mt-6 text-base leading-8 text-(--p-6c5f56)">
+                <p className="mt-6 text-base leading-8 text-(--ink-muted)">
                   Las cookies pueden clasificarse según su finalidad, duración
                   y entidad responsable de su gestión.
                 </p>
@@ -280,23 +280,23 @@ export default function CookiesPage() {
                   {cookieCategories.map((item) => (
                     <div
                       key={item.category}
-                      className="rounded-[1.25rem] border border-(--p-332b26)/10 bg-(--p-f1ebe4) p-5 sm:p-6"
+                      className="rounded-[1.25rem] border border-(--heading)/10 bg-(--p-f1ebe4) p-5 sm:p-6"
                     >
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <h3 className="font-serif text-2xl text-(--p-332c27)">
                           {item.category}
                         </h3>
 
-                        <span className="w-fit rounded-full border border-(--p-8b6d59)/15 bg-(--p-8b6d59)/[0.05] px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-(--p-856c59)">
+                        <span className="w-fit rounded-full border border-(--accent)/15 bg-(--accent)/[0.05] px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-(--p-856c59)">
                           {item.status}
                         </span>
                       </div>
 
-                      <p className="mt-4 text-sm leading-6 text-(--p-6c5f56)">
+                      <p className="mt-4 text-sm leading-6 text-(--ink-muted)">
                         {item.purpose}
                       </p>
 
-                      <div className="mt-5 border-t border-(--p-332b26)/10 pt-4">
+                      <div className="mt-5 border-t border-(--heading)/10 pt-4">
                         <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-(--p-9a806d)">
                           Consentimiento
                         </p>
@@ -315,14 +315,14 @@ export default function CookiesPage() {
               ================================================ */}
               <section
                 id="cookies-utilizadas"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="03"
                   title="Cookies utilizadas en este sitio"
                 />
 
-                <div className="mt-6 space-y-5 text-base leading-8 text-(--p-6c5f56)">
+                <div className="mt-6 space-y-5 text-base leading-8 text-(--ink-muted)">
                   <p>
                     La versión inicial de esta demo no presupone la instalación
                     de cookies analíticas, publicitarias o de personalización.
@@ -335,8 +335,8 @@ export default function CookiesPage() {
                   </p>
                 </div>
 
-                <div className="mt-8 overflow-hidden rounded-[1.4rem] border border-(--p-332b26)/10">
-                  <div className="grid grid-cols-1 gap-0 bg-(--p-eee5dc) sm:grid-cols-4">
+                <div className="mt-8 overflow-hidden rounded-[1.4rem] border border-(--heading)/10">
+                  <div className="grid grid-cols-1 gap-0 bg-(--section-warm) sm:grid-cols-4">
                     <CookieTableHeader label="Cookie / tecnología" />
                     <CookieTableHeader label="Proveedor" />
                     <CookieTableHeader label="Finalidad" />
@@ -351,7 +351,7 @@ export default function CookiesPage() {
                   </div>
                 </div>
 
-                <div className="mt-6 rounded-[1.2rem] border border-(--p-9b775e)/15 bg-(--p-efe4da)/60 p-5">
+                <div className="mt-6 rounded-[1.2rem] border border-(--p-9b775e)/15 bg-(--notice-bg)/60 p-5">
                   <p className="text-sm leading-6 text-(--p-66584f)">
                     Antes de desplegar este starter para un cliente real deberá
                     realizarse una revisión técnica de las cookies efectivamente
@@ -365,14 +365,14 @@ export default function CookiesPage() {
               ================================================ */}
               <section
                 id="terceros"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="04"
                   title="Cookies y servicios de terceros"
                 />
 
-                <div className="mt-6 space-y-5 text-base leading-8 text-(--p-6c5f56)">
+                <div className="mt-6 space-y-5 text-base leading-8 text-(--ink-muted)">
                   <p>
                     Determinadas funcionalidades pueden depender de servicios
                     externos que, cuando se incorporen, podrían utilizar sus
@@ -399,14 +399,14 @@ export default function CookiesPage() {
               ================================================ */}
               <section
                 id="gestion"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="05"
                   title="Cómo gestionar las cookies"
                 />
 
-                <div className="mt-6 space-y-5 text-base leading-8 text-(--p-6c5f56)">
+                <div className="mt-6 space-y-5 text-base leading-8 text-(--ink-muted)">
                   <p>
                     Las personas usuarias pueden configurar su navegador para
                     bloquear, limitar o eliminar cookies almacenadas en su
@@ -433,14 +433,14 @@ export default function CookiesPage() {
               ================================================ */}
               <section
                 id="consentimiento"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="06"
                   title="Consentimiento"
                 />
 
-                <div className="mt-6 space-y-5 text-base leading-8 text-(--p-6c5f56)">
+                <div className="mt-6 space-y-5 text-base leading-8 text-(--ink-muted)">
                   <p>
                     Las cookies que no sean estrictamente necesarias deberán
                     utilizarse únicamente cuando exista una base válida para
@@ -460,14 +460,14 @@ export default function CookiesPage() {
               ================================================ */}
               <section
                 id="actualizaciones"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="07"
                   title="Actualizaciones de la política"
                 />
 
-                <p className="mt-6 text-base leading-8 text-(--p-6c5f56)">
+                <p className="mt-6 text-base leading-8 text-(--ink-muted)">
                   Esta política podrá actualizarse cuando cambien las cookies,
                   proveedores, servicios integrados, funcionalidades del sitio o
                   la normativa aplicable.
@@ -486,13 +486,13 @@ export default function CookiesPage() {
                   title="Contacto"
                 />
 
-                <div className="mt-6 space-y-5 text-base leading-8 text-(--p-6c5f56)">
+                <div className="mt-6 space-y-5 text-base leading-8 text-(--ink-muted)">
                   <p>
                     Para cualquier consulta relacionada con el uso de cookies
                     puede contactar con:
                   </p>
 
-                  <dl className="overflow-hidden rounded-[1.4rem] border border-(--p-332b26)/10 bg-(--p-f1ebe4)">
+                  <dl className="overflow-hidden rounded-[1.4rem] border border-(--heading)/10 bg-(--p-f1ebe4)">
                     <LegalDataRow
                       label="Nombre comercial"
                       value={cookieOwner.businessName}
@@ -511,7 +511,7 @@ export default function CookiesPage() {
                   </dl>
                 </div>
 
-                <div className="mt-12 rounded-[1.4rem] border border-(--p-332b26)/10 bg-(--p-eee5dc) p-6 sm:p-8">
+                <div className="mt-12 rounded-[1.4rem] border border-(--heading)/10 bg-(--section-warm) p-6 sm:p-8">
                   <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-(--p-967a66)">
                     Última actualización
                   </p>
@@ -528,7 +528,7 @@ export default function CookiesPage() {
         {/* =====================================================
             BACK CTA
         ====================================================== */}
-        <section className="bg-(--p-d8c3b2)">
+        <section className="bg-(--section-sand)">
           <div className="mx-auto w-full max-w-[1440px] px-5 py-16 sm:px-8 lg:px-12 xl:px-16">
             <div className="flex flex-col justify-between gap-8 rounded-[1.8rem] border border-white/25 bg-(--p-f3ebe3) p-7 sm:p-9 lg:flex-row lg:items-center">
               <div>
@@ -544,7 +544,7 @@ export default function CookiesPage() {
 
               <Link
                 href="/"
-                className="group inline-flex h-14 shrink-0 items-center justify-center gap-3 rounded-full bg-(--p-2e2824) px-8 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--p-fffaf6) transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4b3e35)"
+                className="group inline-flex h-14 shrink-0 items-center justify-center gap-3 rounded-full bg-(--p-2e2824) px-8 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--on-inverse) transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4b3e35)"
               >
                 Volver al inicio
 
@@ -603,7 +603,7 @@ function LegalDataRow({
     <div
       className={[
         "grid gap-2 px-5 py-4 sm:grid-cols-[190px_1fr] sm:gap-6 sm:px-6",
-        last ? "" : "border-b border-(--p-332b26)/10",
+        last ? "" : "border-b border-(--heading)/10",
       ].join(" ")}
     >
       <dt className="text-[9px] font-semibold uppercase tracking-[0.18em] text-(--p-9a806d)">
@@ -625,7 +625,7 @@ function CookieTableHeader({
   label,
 }: CookieTableHeaderProps) {
   return (
-    <div className="border-b border-(--p-332b26)/10 px-4 py-3 sm:border-b-0 sm:border-r sm:last:border-r-0">
+    <div className="border-b border-(--heading)/10 px-4 py-3 sm:border-b-0 sm:border-r sm:last:border-r-0">
       <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-(--p-8c7565)">
         {label}
       </p>
@@ -645,7 +645,7 @@ function CookieTableCell({
   return (
     <div
       className={[
-        "border-b border-(--p-332b26)/10 px-4 py-4 sm:border-b-0 sm:border-r",
+        "border-b border-(--heading)/10 px-4 py-4 sm:border-b-0 sm:border-r",
         last ? "sm:border-r-0" : "",
       ].join(" ")}
     >

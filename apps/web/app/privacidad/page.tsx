@@ -98,14 +98,14 @@ const sections = [
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-(--p-f8f5f0) text-(--p-25211e)">
+    <div className="min-h-screen bg-(--canvas) text-(--inverse)">
       <SiteHeader />
 
       <main>
         {/* =====================================================
             HERO
         ====================================================== */}
-        <section className="relative overflow-hidden border-b border-(--p-332b26)/10 bg-(--p-e9dfd4)">
+        <section className="relative overflow-hidden border-b border-(--heading)/10 bg-(--hero-bg)">
           <div className="pointer-events-none absolute -right-32 -top-48 h-[560px] w-[560px] rounded-full bg-(--p-d9c3ae)/55 blur-3xl" />
 
           <div className="pointer-events-none absolute -bottom-60 -left-40 h-[560px] w-[560px] rounded-full bg-white/30 blur-3xl" />
@@ -130,7 +130,7 @@ export default function PrivacyPage() {
               </div>
 
               <div>
-                <h1 className="max-w-[850px] font-serif text-5xl leading-[0.95] tracking-[-0.04em] text-(--p-29231f) sm:text-6xl lg:text-7xl">
+                <h1 className="max-w-[850px] font-serif text-5xl leading-[0.95] tracking-[-0.04em] text-(--ink) sm:text-6xl lg:text-7xl">
                   Política de privacidad
                 </h1>
 
@@ -146,10 +146,10 @@ export default function PrivacyPage() {
         {/* =====================================================
             DEMO NOTICE
         ====================================================== */}
-        <section className="bg-(--p-f8f5f0)">
+        <section className="bg-(--canvas)">
           <div className="mx-auto w-full max-w-[1440px] px-5 pt-12 sm:px-8 lg:px-12 xl:px-16">
-            <div className="rounded-[1.4rem] border border-(--p-9b775e)/20 bg-(--p-efe4da) p-5 sm:p-6">
-              <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-(--p-8b6d59)">
+            <div className="rounded-[1.4rem] border border-(--p-9b775e)/20 bg-(--notice-bg) p-5 sm:p-6">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-(--accent)">
                 {business.demo.label}
               </p>
 
@@ -163,7 +163,7 @@ export default function PrivacyPage() {
         {/* =====================================================
             PRIVACY CONTENT
         ====================================================== */}
-        <section className="bg-(--p-f8f5f0)">
+        <section className="bg-(--canvas)">
           <div className="mx-auto grid w-full max-w-[1440px] gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[0.32fr_0.68fr] lg:px-12 lg:py-24 xl:px-16">
             {/* Index */}
             <aside className="lg:sticky lg:top-[108px] lg:self-start">
@@ -173,13 +173,13 @@ export default function PrivacyPage() {
 
               <nav
                 aria-label="Índice de la política de privacidad"
-                className="mt-6 border-t border-(--p-332b26)/10"
+                className="mt-6 border-t border-(--heading)/10"
               >
                 {sections.map((section) => (
                   <a
                     key={section.id}
                     href={`#${section.id}`}
-                    className="group flex items-start gap-4 border-b border-(--p-332b26)/10 py-4"
+                    className="group flex items-start gap-4 border-b border-(--heading)/10 py-4"
                   >
                     <span className="font-serif text-sm text-(--p-a18a79)">
                       {section.number}
@@ -197,19 +197,19 @@ export default function PrivacyPage() {
             <article className="max-w-[860px]">
               <section
                 id="responsable"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 pb-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 pb-12"
               >
                 <LegalSectionHeader
                   number="01"
                   title="Responsable del tratamiento"
                 />
 
-                <p className="mt-6 text-base leading-8 text-(--p-6c5f56)">
+                <p className="mt-6 text-base leading-8 text-(--ink-muted)">
                   El responsable del tratamiento de los datos personales
                   facilitados a través de este sitio web será:
                 </p>
 
-                <dl className="mt-8 overflow-hidden rounded-[1.4rem] border border-(--p-332b26)/10 bg-(--p-f1ebe4)">
+                <dl className="mt-8 overflow-hidden rounded-[1.4rem] border border-(--heading)/10 bg-(--p-f1ebe4)">
                   <LegalDataRow
                     label="Nombre comercial"
                     value={privacyOwner.businessName}
@@ -240,14 +240,14 @@ export default function PrivacyPage() {
 
               <section
                 id="datos"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="02"
                   title="Datos personales tratados"
                 />
 
-                <div className="mt-6 space-y-5 text-base leading-8 text-(--p-6c5f56)">
+                <div className="mt-6 space-y-5 text-base leading-8 text-(--ink-muted)">
                   <p>
                     Dependiendo del uso que se realice del sitio web, podrán
                     tratarse datos identificativos y de contacto como nombre,
@@ -267,14 +267,14 @@ export default function PrivacyPage() {
 
               <section
                 id="finalidades"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="03"
                   title="Finalidades del tratamiento"
                 />
 
-                <div className="mt-6 space-y-5 text-base leading-8 text-(--p-6c5f56)">
+                <div className="mt-6 space-y-5 text-base leading-8 text-(--ink-muted)">
                   <p>
                     Los datos podrán utilizarse para atender consultas,
                     solicitudes de información y comunicaciones realizadas a
@@ -292,14 +292,14 @@ export default function PrivacyPage() {
 
               <section
                 id="legitimacion"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="04"
                   title="Base jurídica"
                 />
 
-                <div className="mt-6 space-y-5 text-base leading-8 text-(--p-6c5f56)">
+                <div className="mt-6 space-y-5 text-base leading-8 text-(--ink-muted)">
                   <p>
                     La base jurídica dependerá de cada tratamiento y podrá
                     consistir en el consentimiento de la persona interesada, la
@@ -312,14 +312,14 @@ export default function PrivacyPage() {
 
               <section
                 id="conservacion"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="05"
                   title="Plazo de conservación"
                 />
 
-                <p className="mt-6 text-base leading-8 text-(--p-6c5f56)">
+                <p className="mt-6 text-base leading-8 text-(--ink-muted)">
                   Los datos se conservarán durante el tiempo necesario para
                   cumplir la finalidad para la que fueron recogidos y, cuando
                   corresponda, durante los plazos exigidos por la normativa
@@ -329,14 +329,14 @@ export default function PrivacyPage() {
 
               <section
                 id="destinatarios"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="06"
                   title="Destinatarios y terceros"
                 />
 
-                <div className="mt-6 space-y-5 text-base leading-8 text-(--p-6c5f56)">
+                <div className="mt-6 space-y-5 text-base leading-8 text-(--ink-muted)">
                   <p>
                     Los datos no se comunicarán a terceros salvo cuando resulte
                     necesario para prestar un servicio solicitado, exista una
@@ -355,14 +355,14 @@ export default function PrivacyPage() {
 
               <section
                 id="derechos"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="07"
                   title="Derechos de las personas usuarias"
                 />
 
-                <div className="mt-6 space-y-5 text-base leading-8 text-(--p-6c5f56)">
+                <div className="mt-6 space-y-5 text-base leading-8 text-(--ink-muted)">
                   <p>
                     Las personas interesadas podrán ejercer, cuando proceda,
                     sus derechos de acceso, rectificación, supresión, oposición,
@@ -373,7 +373,7 @@ export default function PrivacyPage() {
                     Las solicitudes podrán dirigirse a{" "}
                     <a
                       href={`mailto:${privacyOwner.privacyEmail}`}
-                      className="font-medium text-(--p-5d4b40) underline decoration-(--p-8b6d59)/35 underline-offset-4 transition-colors hover:text-(--p-8b6d59)"
+                      className="font-medium text-(--p-5d4b40) underline decoration-(--accent)/35 underline-offset-4 transition-colors hover:text-(--accent)"
                     >
                       {privacyOwner.privacyEmail}
                     </a>
@@ -391,14 +391,14 @@ export default function PrivacyPage() {
 
               <section
                 id="seguridad"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="08"
                   title="Seguridad de la información"
                 />
 
-                <p className="mt-6 text-base leading-8 text-(--p-6c5f56)">
+                <p className="mt-6 text-base leading-8 text-(--ink-muted)">
                   El responsable aplicará medidas técnicas y organizativas
                   razonables para proteger los datos personales frente a pérdida,
                   acceso no autorizado, alteración, divulgación o destrucción.
@@ -407,14 +407,14 @@ export default function PrivacyPage() {
 
               <section
                 id="menores"
-                className="scroll-mt-28 border-b border-(--p-332b26)/10 py-12"
+                className="scroll-mt-28 border-b border-(--heading)/10 py-12"
               >
                 <LegalSectionHeader
                   number="09"
                   title="Menores de edad"
                 />
 
-                <p className="mt-6 text-base leading-8 text-(--p-6c5f56)">
+                <p className="mt-6 text-base leading-8 text-(--ink-muted)">
                   Las personas menores de edad deberán utilizar los servicios de
                   acuerdo con la normativa aplicable y, cuando sea necesario,
                   contar con la autorización de sus representantes legales.
@@ -430,13 +430,13 @@ export default function PrivacyPage() {
                   title="Cambios en esta política"
                 />
 
-                <p className="mt-6 text-base leading-8 text-(--p-6c5f56)">
+                <p className="mt-6 text-base leading-8 text-(--ink-muted)">
                   Esta política podrá actualizarse cuando cambien los servicios
                   ofrecidos, los tratamientos de datos realizados o la normativa
                   aplicable.
                 </p>
 
-                <div className="mt-12 rounded-[1.4rem] border border-(--p-332b26)/10 bg-(--p-eee5dc) p-6 sm:p-8">
+                <div className="mt-12 rounded-[1.4rem] border border-(--heading)/10 bg-(--section-warm) p-6 sm:p-8">
                   <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-(--p-967a66)">
                     Última actualización
                   </p>
@@ -453,7 +453,7 @@ export default function PrivacyPage() {
         {/* =====================================================
             BACK CTA
         ====================================================== */}
-        <section className="bg-(--p-d8c3b2)">
+        <section className="bg-(--section-sand)">
           <div className="mx-auto w-full max-w-[1440px] px-5 py-16 sm:px-8 lg:px-12 xl:px-16">
             <div className="flex flex-col justify-between gap-8 rounded-[1.8rem] border border-white/25 bg-(--p-f3ebe3) p-7 sm:p-9 lg:flex-row lg:items-center">
               <div>
@@ -469,7 +469,7 @@ export default function PrivacyPage() {
 
               <Link
                 href="/"
-                className="group inline-flex h-14 shrink-0 items-center justify-center gap-3 rounded-full bg-(--p-2e2824) px-8 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--p-fffaf6) transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4b3e35)"
+                className="group inline-flex h-14 shrink-0 items-center justify-center gap-3 rounded-full bg-(--p-2e2824) px-8 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--on-inverse) transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4b3e35)"
               >
                 Volver al inicio
 
@@ -528,7 +528,7 @@ function LegalDataRow({
     <div
       className={[
         "grid gap-2 px-5 py-4 sm:grid-cols-[190px_1fr] sm:gap-6 sm:px-6",
-        last ? "" : "border-b border-(--p-332b26)/10",
+        last ? "" : "border-b border-(--heading)/10",
       ].join(" ")}
     >
       <dt className="text-[9px] font-semibold uppercase tracking-[0.18em] text-(--p-9a806d)">

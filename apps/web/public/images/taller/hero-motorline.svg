@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="hero-motorline">
+  <rect width="1200" height="900" fill="#292524"/>
+  <rect x="48" y="48" width="72" height="6" fill="#f97316"/>
+  <text x="48" y="414" fill="#fafaf9" font-family="Georgia, serif" font-size="42">hero-motorline</text>
+  <text x="48" y="450" fill="#a8a29e" font-family="Arial, sans-serif" font-size="18">Marcador · Motorline Taller</text>
+</svg>
