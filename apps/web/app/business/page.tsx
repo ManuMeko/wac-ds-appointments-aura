@@ -1446,42 +1446,42 @@ export default function BusinessDashboardPage() {
 
         {/* SUMMARY */}
 
-        <article className="rounded-[24px] border border-[#e4dcd4] bg-[#342d28] p-6 text-white md:p-7">
+        <article className="rounded-[24px] border border-[#e3dbd3] bg-[#eee7df] p-6 shadow-[0_10px_35px_rgba(62,49,41,0.04)] md:p-7">
 
-          <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[#c7b7ab]">
+          <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[#5e534b]">
             Resumen
           </div>
 
-          <h2 className="mt-2 text-xl font-semibold">
+          <h2 className="mt-2 text-xl font-semibold tracking-[-0.02em] text-[#302a26]">
             Control del día
           </h2>
 
-          <p className="mt-3 max-w-xl text-sm leading-6 text-[#d7ccc5]">
+          <p className="mt-3 max-w-xl text-sm leading-6 text-[#5c5148]">
             Consulta el estado de la agenda y entra directamente en los módulos
             principales del negocio.
           </p>
 
           <div className="mt-7 grid grid-cols-2 gap-3">
 
-            <div className="rounded-2xl bg-white/8 p-4">
+            <div className="rounded-2xl border border-[#e6ddd4] bg-white p-4">
 
-              <div className="text-2xl font-semibold">
+              <div className="text-3xl font-semibold tracking-[-0.04em] text-[#342d28]">
                 {confirmedToday}
               </div>
 
-              <div className="mt-1 text-xs text-[#cbbeb5]">
+              <div className="mt-1 text-xs text-[#5e534b]">
                 Confirmadas hoy
               </div>
 
             </div>
 
-            <div className="rounded-2xl bg-white/8 p-4">
+            <div className="rounded-2xl border border-[#e6ddd4] bg-white p-4">
 
-              <div className="text-2xl font-semibold">
+              <div className="text-3xl font-semibold tracking-[-0.04em] text-[#342d28]">
                 {pendingToday}
               </div>
 
-              <div className="mt-1 text-xs text-[#cbbeb5]">
+              <div className="mt-1 text-xs text-[#5e534b]">
                 Pendientes hoy
               </div>
 
@@ -1489,9 +1489,9 @@ export default function BusinessDashboardPage() {
 
           </div>
 
-          <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-4">
+          <div className="mt-5 rounded-2xl border border-[#e6ddd4] bg-white p-4">
 
-            <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#c7b7ab]">
+            <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#5e534b]">
               Próxima actividad
             </div>
 
@@ -1499,12 +1499,12 @@ export default function BusinessDashboardPage() {
               ? (
                 <>
 
-                  <div className="mt-3 text-base font-semibold">
+                  <div className="mt-3 text-base font-semibold text-[#302a26]">
                     {upcomingAppointments[0].customerName
                     || "Próxima cita"}
                   </div>
 
-                  <div className="mt-1 text-sm text-[#d7ccc5]">
+                  <div className="mt-1 text-sm text-[#5c5148]">
                     {formatAppointmentDate(
                       upcomingAppointments[0].startAt,
                       upcomingAppointments[0].timezone,
@@ -1527,7 +1527,7 @@ export default function BusinessDashboardPage() {
               )
               : (
 
-                <div className="mt-3 text-sm text-[#d7ccc5]">
+                <div className="mt-3 text-sm text-[#5c5148]">
                   No hay próximas citas activas.
                 </div>
 
@@ -1537,7 +1537,7 @@ export default function BusinessDashboardPage() {
 
           <Link
             href="/business/appointments"
-            className="mt-6 inline-flex rounded-full bg-white px-5 py-2.5 text-sm font-semibold !text-[#342d28] transition hover:bg-[#f5f1ed] hover:!text-[#342d28]"
+            className="mt-6 inline-flex items-center justify-center rounded-full bg-[#342d28] px-5 py-2.5 text-sm font-semibold !text-white transition hover:bg-[#211c18] hover:!text-white"
           >
             Abrir agenda
           </Link>
