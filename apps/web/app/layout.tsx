@@ -100,22 +100,9 @@ export const metadata: Metadata = {
 
   applicationName: business.seo.siteName,
 
-  category: "beauty",
+  category: business.seo.category,
 
-  keywords: [
-    business.brand.name,
-    "estética",
-    "belleza",
-    "bienestar",
-    "centro de estética",
-    `estética ${business.contact.city}`,
-    "tratamientos faciales",
-    "estética avanzada",
-    "masajes",
-    "cuidado personal",
-    "tratamientos personalizados",
-    `bienestar ${business.contact.city}`,
-  ],
+  keywords: [...business.seo.keywords],
 
   creator: "WAC DS",
 
@@ -244,11 +231,11 @@ export const viewport: Viewport = {
   themeColor: [
     {
       media: "(prefers-color-scheme: light)",
-      color: "#f8f5f0",
+      color: business.seo.themeColor,
     },
     {
       media: "(prefers-color-scheme: dark)",
-      color: "#f8f5f0",
+      color: business.seo.themeColor,
     },
   ],
 
@@ -271,6 +258,7 @@ export default function RootLayout({
   return (
     <html
       lang={business.seo.language}
+      data-theme={business.theme}
       className={`${geistSans.variable} ${cormorant.variable}`}
       suppressHydrationWarning
     >

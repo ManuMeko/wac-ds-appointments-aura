@@ -1,47 +1,47 @@
 import { auraConfig } from "@/data/aura";
+import type { DemoConfig, DemoId } from "@/data/types";
 
 /**
  * Configuración activa del sitio.
  *
- * El contenido de la demo sigue en data/aura.ts. Este archivo
- * no lo copia: lo reutiliza y añade el slug público del negocio.
- * Para montar otro negocio, cambia NEXT_PUBLIC_BUSINESS_SLUG y
- * sustituye esa demo (o el import de abajo).
+ * NEXT_PUBLIC_DEMO elige el contenido y el tema (aura | taller).
+ * Cada demo declara su slug. NEXT_PUBLIC_BUSINESS_SLUG, si existe,
+ * sustituye solo ese slug al hablar con el API.
+ *
+ * El taller todavía no tiene ficha: el hueco está en `demos.taller`.
  */
 
-export const DEFAULT_BUSINESS_SLUG = "aura-studio";
+const demos: Record<DemoId, DemoConfig | null> = {
+  aura: auraConfig,
+  taller: null,
+};
+
+function selectDemo(): DemoConfig {
+  const requested = process.env.NEXT_PUBLIC_DEMO?.trim();
+
+  if (requested === "taller" && demos.taller) {
+    return demos.taller;
+  }
+
+  return demos.aura ?? auraConfig;
+}
+
+const activeDemo = selectDemo();
+
+export const DEFAULT_BUSINESS_SLUG = activeDemo.slug;
 
 export const businessSlug =
   process.env.NEXT_PUBLIC_BUSINESS_SLUG?.trim() || DEFAULT_BUSINESS_SLUG;
 
-const teamImagesByProfessionalId: Record<string, string> = {
-  "laura-martin": auraConfig.assets.team.lauraMartin,
-  "andrea-lopez": auraConfig.assets.team.andreaLopez,
-  "sofia-garcia": auraConfig.assets.team.sofiaGarcia,
-};
-
-const exampleProfessional = auraConfig.professionals[0];
+const exampleProfessional = activeDemo.professionals[0];
 const [exampleFirstName = "", ...exampleLastNameParts] =
   exampleProfessional?.name.split(" ") ?? [];
-const emailDomain = auraConfig.contact.email.split("@")[1] ?? "";
+const emailDomain = activeDemo.contact.email.split("@")[1] ?? "";
 
 export const business = {
+  ...activeDemo,
+
   slug: businessSlug,
-
-  ...auraConfig,
-
-  brandSuffix: auraConfig.brand.name
-    .replace(auraConfig.brand.shortName, "")
-    .trim(),
-
-  experienceBadge: `Ritual ${auraConfig.brand.shortName}`,
-
-  imageAlts: {
-    hero: `Cabina premium de ${auraConfig.brand.name} con camilla de tratamiento, iluminación cálida y elementos de bienestar`,
-    experience: `Detalle de la experiencia ${auraConfig.brand.name} con productos de bienestar, textiles suaves y ambiente de tratamiento premium`,
-  },
-
-  teamImagesByProfessionalId,
 
   placeholders: {
     professionalFirstName: exampleFirstName,
@@ -51,8 +51,8 @@ export const business = {
       : "",
     professionalEmail: emailDomain
       ? `profesional@${emailDomain}`
-      : auraConfig.contact.email,
-    professionalPhone: auraConfig.contact.phoneDisplay.replace(
+      : activeDemo.contact.email,
+    professionalPhone: activeDemo.contact.phoneDisplay.replace(
       /^\+\d{1,3}\s*/,
       "",
     ),

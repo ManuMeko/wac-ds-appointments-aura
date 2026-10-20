@@ -57,7 +57,7 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#2d2824]/10 bg-[#f8f5f0]/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-(--p-2d2824)/10 bg-(--p-f8f5f0)/90 backdrop-blur-xl">
       <div className="mx-auto flex h-[76px] w-full max-w-[1440px] items-center justify-between px-5 sm:px-8 lg:px-12 xl:px-16">
         {/* =====================================================
             BRAND
@@ -68,16 +68,16 @@ export function SiteHeader() {
           className="group flex shrink-0 items-center gap-3"
           onClick={closeMobileMenu}
         >
-          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#7c6654]/30 bg-[#eee5db] font-serif text-lg text-[#665143] transition-transform duration-300 group-hover:scale-105">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-(--p-7c6654)/30 bg-(--p-eee5db) font-serif text-lg text-(--p-665143) transition-transform duration-300 group-hover:scale-105">
             {business.brand.monogram}
           </span>
 
           <span className="leading-none">
-            <span className="block font-serif text-[19px] tracking-[0.16em] text-[#2b2521]">
+            <span className="block font-serif text-[19px] tracking-[0.16em] text-(--p-2b2521)">
               {business.brand.shortName.toUpperCase()}
             </span>
 
-            <span className="mt-1 block text-[9px] font-medium uppercase tracking-[0.34em] text-[#8a7565]">
+            <span className="mt-1 block text-[9px] font-medium uppercase tracking-[0.34em] text-(--p-8a7565)">
               {business.brandSuffix}
             </span>
           </span>
@@ -87,14 +87,14 @@ export function SiteHeader() {
             DESKTOP NAVIGATION
         ====================================================== */}
         <nav
-          className="hidden items-center gap-8 text-[13px] font-medium text-[#62574f] lg:flex"
+          className="hidden items-center gap-8 text-[13px] font-medium text-(--p-62574f) lg:flex"
           aria-label="Navegación principal"
         >
           {business.navigation.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className="relative transition-colors duration-200 hover:text-[#2a2420] after:absolute after:-bottom-2 after:left-0 after:h-px after:w-0 after:bg-[#8b6d59] after:transition-all after:duration-300 hover:after:w-full"
+              className="relative transition-colors duration-200 hover:text-(--p-2a2420) after:absolute after:-bottom-2 after:left-0 after:h-px after:w-0 after:bg-(--p-8b6d59) after:transition-all after:duration-300 hover:after:w-full"
             >
               {item.label}
             </a>
@@ -107,9 +107,9 @@ export function SiteHeader() {
         <div className="hidden items-center gap-3 sm:flex">
           <a
             href={PUBLIC_BOOKING_HREF}
-            className="group inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#2c2622] px-6 text-[11px] font-semibold uppercase tracking-[0.18em] !text-[#fffaf6] shadow-[0_8px_24px_rgba(44,38,34,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#4b3d34] hover:shadow-[0_12px_30px_rgba(44,38,34,0.20)]"
+            className="group inline-flex h-11 items-center justify-center gap-2 rounded-full bg-(--p-2c2622) px-6 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--p-fffaf6) shadow-[0_8px_24px_rgba(44,38,34,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4b3d34) hover:shadow-[0_12px_30px_rgba(44,38,34,0.20)]"
           >
-            Pedir cita
+            {business.header.bookingCta}
 
             <span className="transition-transform duration-300 group-hover:translate-x-0.5">
               <ArrowIcon />
@@ -130,7 +130,7 @@ export function SiteHeader() {
           aria-expanded={mobileMenuOpen}
           aria-controls="mobile-navigation"
           onClick={() => setMobileMenuOpen((current) => !current)}
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-[#3b332e]/15 bg-white/30 text-[#312a26] transition-all duration-200 hover:border-[#3b332e]/30 hover:bg-white/60 sm:hidden"
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-(--p-3b332e)/15 bg-white/30 text-(--p-312a26) transition-all duration-200 hover:border-(--p-3b332e)/30 hover:bg-white/60 sm:hidden"
         >
           {mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
         </button>
@@ -142,7 +142,7 @@ export function SiteHeader() {
       <div
         id="mobile-navigation"
         className={[
-          "overflow-hidden border-t border-[#2d2824]/10 bg-[#f8f5f0] transition-all duration-300 sm:hidden",
+          "overflow-hidden border-t border-(--p-2d2824)/10 bg-(--p-f8f5f0) transition-all duration-300 sm:hidden",
           mobileMenuOpen
             ? "max-h-[520px] opacity-100"
             : "pointer-events-none max-h-0 opacity-0",
@@ -158,7 +158,7 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 onClick={closeMobileMenu}
-                className="flex items-center justify-between border-b border-[#332b26]/10 py-4 text-base font-medium text-[#40362f] transition-colors duration-200 hover:text-[#8b6d59]"
+                className="flex items-center justify-between border-b border-(--p-332b26)/10 py-4 text-base font-medium text-(--p-40362f) transition-colors duration-200 hover:text-(--p-8b6d59)"
               >
                 <span>{item.label}</span>
 
@@ -170,21 +170,21 @@ export function SiteHeader() {
           <a
             href={PUBLIC_BOOKING_HREF}
             onClick={closeMobileMenu}
-            className="group mt-6 inline-flex h-14 w-full items-center justify-center gap-3 rounded-full bg-[#2c2622] px-7 text-[11px] font-semibold uppercase tracking-[0.18em] !text-[#fffaf6] shadow-[0_10px_28px_rgba(44,38,34,0.14)] transition-all duration-300 hover:bg-[#4b3d34]"
+            className="group mt-6 inline-flex h-14 w-full items-center justify-center gap-3 rounded-full bg-(--p-2c2622) px-7 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--p-fffaf6) shadow-[0_10px_28px_rgba(44,38,34,0.14)] transition-all duration-300 hover:bg-(--p-4b3d34)"
           >
-            Pedir cita
+            {business.header.bookingCta}
 
             <span className="transition-transform duration-300 group-hover:translate-x-1">
               <ArrowIcon />
             </span>
           </a>
 
-          <div className="mt-6 border-t border-[#332b26]/10 pt-5">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9a806d]">
+          <div className="mt-6 border-t border-(--p-332b26)/10 pt-5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-(--p-9a806d)">
               {business.brand.tagline}
             </p>
 
-            <p className="mt-2 text-sm leading-6 text-[#756a61]">
+            <p className="mt-2 text-sm leading-6 text-(--p-756a61)">
               {business.brand.description}
             </p>
           </div>

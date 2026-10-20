@@ -23,6 +23,9 @@ import { getApiBaseUrl } from "@/lib/api";
 
 const API_BASE_URL = getApiBaseUrl().replace(/\/$/, "");
 
+const copy = business.manageBooking;
+const bookingCopy = business.booking;
+
 const MANAGEMENT_HEADER = "X-Booking-Management-Token";
 const STORAGE_PREFIX = "wacds_booking_management_";
 const TOKEN_HASH_KEY = "token";
@@ -222,7 +225,7 @@ function formatDateTime(value: string): string {
       minute: "2-digit",
     }).format(new Date(value));
   } catch {
-    return "Fecha no disponible";
+    return copy.invalidDate;
   }
 }
 
@@ -244,15 +247,15 @@ function formatTime(value: string): string {
 function getStatusLabel(status: string): string {
   switch (status.toUpperCase()) {
     case "PENDING":
-      return "Pendiente de confirmación";
+      return bookingCopy.statuses.PENDING;
     case "CONFIRMED":
-      return "Confirmada";
+      return bookingCopy.statuses.CONFIRMED;
     case "COMPLETED":
-      return "Completada";
+      return bookingCopy.statuses.COMPLETED;
     case "CANCELLED":
-      return "Cancelada";
+      return bookingCopy.statuses.CANCELLED;
     case "NO_SHOW":
-      return "No asistió";
+      return bookingCopy.statuses.NO_SHOW;
     default:
       return status;
   }
@@ -514,33 +517,33 @@ function CalendarDatePicker({
       <div className="flex items-center justify-between gap-4">
         <button
           type="button"
-          aria-label="Mes anterior"
+          aria-label={bookingCopy.previousMonth}
           disabled={disabled || !canGoPrevious}
           onClick={() =>
             setVisibleMonth(current => addMonths(current, -1))
           }
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-[#3b332e]/10 bg-[#f8f3ee] text-xl text-[#5a4a40] transition hover:bg-[#eadfd4] disabled:cursor-not-allowed disabled:opacity-25"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-(--p-3b332e)/10 bg-(--p-f8f3ee) text-xl text-(--p-5a4a40) transition hover:bg-(--p-eadfd4) disabled:cursor-not-allowed disabled:opacity-25"
         >
           ‹
         </button>
 
         <div className="text-center">
-          <p className="font-serif text-xl capitalize text-[#342c27]">
+          <p className="font-serif text-xl capitalize text-(--p-342c27)">
             {monthLabel}
           </p>
-          <p className="mt-0.5 text-[9px] uppercase tracking-[0.18em] text-[#9a887c]">
-            Selecciona un día
+          <p className="mt-0.5 text-[9px] uppercase tracking-[0.18em] text-(--p-9a887c)">
+            {bookingCopy.selectDay}
           </p>
         </div>
 
         <button
           type="button"
-          aria-label="Mes siguiente"
+          aria-label={bookingCopy.nextMonth}
           disabled={disabled || !canGoNext}
           onClick={() =>
             setVisibleMonth(current => addMonths(current, 1))
           }
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-[#3b332e]/10 bg-[#f8f3ee] text-xl text-[#5a4a40] transition hover:bg-[#eadfd4] disabled:cursor-not-allowed disabled:opacity-25"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-(--p-3b332e)/10 bg-(--p-f8f3ee) text-xl text-(--p-5a4a40) transition hover:bg-(--p-eadfd4) disabled:cursor-not-allowed disabled:opacity-25"
         >
           ›
         </button>
@@ -550,7 +553,7 @@ function CalendarDatePicker({
         {WEEKDAYS.map((weekday, index) => (
           <div
             key={`${weekday}-${index}`}
-            className="flex h-8 items-center justify-center text-[9px] font-semibold uppercase tracking-[0.13em] text-[#a19085]"
+            className="flex h-8 items-center justify-center text-[9px] font-semibold uppercase tracking-[0.13em] text-(--p-a19085)"
           >
             {weekday}
           </div>
@@ -588,16 +591,16 @@ function CalendarDatePicker({
               className={[
                 "relative flex aspect-square min-h-9 items-center justify-center rounded-full text-xs font-medium transition-all duration-200 sm:min-h-10",
                 isSelected
-                  ? "bg-[#302924] text-white shadow-[0_8px_18px_rgba(48,41,36,0.22)]"
+                  ? "bg-(--p-302924) text-white shadow-[0_8px_18px_rgba(48,41,36,0.22)]"
                   : "",
                 !isSelected && isToday
-                  ? "border border-[#9d7f6a]/50 bg-[#efe5db] text-[#54453c]"
+                  ? "border border-(--p-9d7f6a)/50 bg-(--p-efe5db) text-(--p-54453c)"
                   : "",
                 !isSelected && !isToday && !isDisabled
-                  ? "text-[#51453d] hover:bg-[#eadfd4]"
+                  ? "text-(--p-51453d) hover:bg-(--p-eadfd4)"
                   : "",
                 isDisabled
-                  ? "cursor-not-allowed text-[#d0c6bf]"
+                  ? "cursor-not-allowed text-(--p-d0c6bf)"
                   : "",
               ].join(" ")}
             >
@@ -721,7 +724,7 @@ export default function ManageBookingPage() {
           throw new Error(
             await readApiError(
               response,
-              "No se pudo recuperar la cita."
+              copy.errorLoad
             )
           );
         }
@@ -746,7 +749,7 @@ export default function ManageBookingPage() {
           setCredentials(null);
           setBooking(null);
           setError(
-            "La credencial no corresponde a la reserva solicitada."
+            copy.errorCredentialMismatch
           );
           setAccessState("invalid");
           return;
@@ -766,7 +769,7 @@ export default function ManageBookingPage() {
         setError(
           cause instanceof Error
             ? cause.message
-            : "No se pudo recuperar la cita."
+            : copy.errorLoad
         );
         setAccessState("error");
       }
@@ -850,7 +853,7 @@ export default function ManageBookingPage() {
         throw new Error(
           await readApiError(
             response,
-            "No se pudo consultar la disponibilidad."
+            copy.errorAvailability
           )
         );
       }
@@ -866,7 +869,7 @@ export default function ManageBookingPage() {
         payload.date !== date
       ) {
         throw new Error(
-          "La disponibilidad recibida no corresponde a la selección."
+          copy.errorAvailabilityMismatch
         );
       }
 
@@ -884,7 +887,7 @@ export default function ManageBookingPage() {
       setError(
         cause instanceof Error
           ? cause.message
-          : "No se pudo consultar la disponibilidad."
+          : copy.errorAvailability
       );
     } finally {
       if (sequence === availabilitySequence.current) {
@@ -913,7 +916,7 @@ export default function ManageBookingPage() {
       currentCredentialsRef.current?.token !==
         credentials.token
     ) {
-      setError("La sesión de gestión no corresponde a esta cita.");
+      setError(copy.errorSession);
       return;
     }
 
@@ -937,7 +940,7 @@ export default function ManageBookingPage() {
         throw new Error(
           await readApiError(
             response,
-            "No se pudo cancelar la cita."
+            copy.errorCancel
           )
         );
       }
@@ -974,7 +977,7 @@ export default function ManageBookingPage() {
       setError(
         cause instanceof Error
           ? cause.message
-          : "No se pudo cancelar la cita."
+          : copy.errorCancel
       );
     } finally {
       operationLock.current = false;
@@ -1003,7 +1006,7 @@ export default function ManageBookingPage() {
       currentCredentialsRef.current?.token !==
         credentials.token
     ) {
-      setError("La sesión de gestión no corresponde a esta cita.");
+      setError(copy.errorSession);
       return;
     }
 
@@ -1034,7 +1037,7 @@ export default function ManageBookingPage() {
         throw new Error(
           await readApiError(
             response,
-            "No se pudo reprogramar la cita."
+            copy.errorReschedule
           )
         );
       }
@@ -1053,7 +1056,7 @@ export default function ManageBookingPage() {
 
       if (!refreshResponse.ok) {
         throw new Error(
-          "El cambio se ha enviado, pero no se pudo verificar la información actualizada. Recarga la página antes de intentarlo de nuevo."
+          copy.errorRescheduleVerify
         );
       }
 
@@ -1064,7 +1067,7 @@ export default function ManageBookingPage() {
         refreshed.appointmentId !== expectedAppointmentId
       ) {
         throw new Error(
-          "La respuesta no corresponde a la cita solicitada."
+          copy.errorRescheduleMismatch
         );
       }
 
@@ -1097,7 +1100,7 @@ export default function ManageBookingPage() {
       setError(
         cause instanceof Error
           ? cause.message
-          : "No se pudo reprogramar la cita."
+          : copy.errorReschedule
       );
     } finally {
       operationLock.current = false;
@@ -1129,37 +1132,35 @@ export default function ManageBookingPage() {
     booking?.reschedulingAllowed === true;
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0] text-[#2d2723]">
+    <div className="min-h-screen bg-(--p-f8f5f0) text-(--p-2d2723)">
       <SiteHeader />
 
       <main>
         {/* HERO */}
 
-        <section className="border-b border-[#3a312c]/10 bg-[#e9dfd4]">
+        <section className="border-b border-(--p-3a312c)/10 bg-(--p-e9dfd4)">
           <div className="mx-auto w-full max-w-[1180px] px-5 py-14 sm:px-8 sm:py-16 lg:px-12">
             <Link
               href="/reservar"
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#856f5f] transition hover:text-[#392f29]"
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-(--p-856f5f) transition hover:text-(--p-392f29)"
             >
-              ← Volver a reservas
+              {copy.backToBooking}
             </Link>
 
             <div className="mt-8 max-w-[760px]">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#8b6d59]">
-                Reserva online
+              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-(--p-8b6d59)">
+                {copy.eyebrow}
               </p>
 
-              <h1 className="mt-4 font-serif text-[clamp(2.8rem,6vw,5.3rem)] leading-[0.95] tracking-[-0.04em] text-[#2b2521]">
-                Gestiona tu
-                <span className="block italic text-[#8b6d59]">
-                  cita.
+              <h1 className="mt-4 font-serif text-[clamp(2.8rem,6vw,5.3rem)] leading-[0.95] tracking-[-0.04em] text-(--p-2b2521)">
+                {copy.titleLead}
+                <span className="block italic text-(--p-8b6d59)">
+                  {copy.titleAccent}
                 </span>
               </h1>
 
-              <p className="mt-6 max-w-[620px] text-base leading-7 text-[#6b5f56] sm:text-lg">
-                Consulta los detalles de tu reserva y,
-                cuando esté permitido, cambia el horario
-                o cancélala.
+              <p className="mt-6 max-w-[620px] text-base leading-7 text-(--p-6b5f56) sm:text-lg">
+                {copy.description}
               </p>
             </div>
           </div>
@@ -1180,10 +1181,10 @@ export default function ManageBookingPage() {
           {/* LOADING */}
 
           {showLoading && (
-            <div className="flex min-h-[320px] items-center justify-center rounded-[2rem] border border-[#3b332e]/10 bg-white/55">
-              <div className="flex items-center gap-3 text-sm text-[#756960]">
+            <div className="flex min-h-[320px] items-center justify-center rounded-[2rem] border border-(--p-3b332e)/10 bg-white/55">
+              <div className="flex items-center gap-3 text-sm text-(--p-756960)">
                 <LoadingSpinner />
-                Recuperando tu cita...
+                {copy.loading}
               </div>
             </div>
           )}
@@ -1193,36 +1194,35 @@ export default function ManageBookingPage() {
           {!showLoading &&
             !showBooking &&
             ["missing", "invalid", "error"].includes(accessState) && (
-              <div className="mx-auto max-w-[680px] rounded-[2rem] border border-[#3b332e]/10 bg-white/60 p-8 text-center shadow-[0_22px_60px_rgba(57,47,41,0.06)] sm:p-10">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#eee4da] text-xl text-[#5a493f]">
+              <div className="mx-auto max-w-[680px] rounded-[2rem] border border-(--p-3b332e)/10 bg-white/60 p-8 text-center shadow-[0_22px_60px_rgba(57,47,41,0.06)] sm:p-10">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-(--p-eee4da) text-xl text-(--p-5a493f)">
                   ◷
                 </div>
 
-                <h2 className="mt-6 font-serif text-3xl text-[#332b26]">
+                <h2 className="mt-6 font-serif text-3xl text-(--p-332b26)">
                   {accessState === "missing"
-                    ? "No encontramos una cita accesible"
+                    ? copy.missingTitle
                     : accessState === "invalid"
-                      ? "El acceso a esta cita no está disponible"
-                      : "No pudimos cargar tu cita"}
+                      ? copy.invalidTitle
+                      : copy.errorTitle}
                 </h2>
 
-                <p className="mx-auto mt-4 max-w-[520px] text-sm leading-7 text-[#756960]">
+                <p className="mx-auto mt-4 max-w-[520px] text-sm leading-7 text-(--p-756960)">
                   {accessState === "invalid"
-                    ? "El enlace de gestión puede haber caducado, haber sido revocado o no corresponder a esta reserva. Por seguridad, no podemos mostrar otra cita."
-                    : "Para gestionar una reserva necesitas acceder desde su enlace privado o desde el navegador donde realizaste la reserva, siempre que la credencial siga vigente."}
+                    ? copy.invalidBody
+                    : copy.missingBody}
                 </p>
 
-                <p className="mx-auto mt-3 max-w-[500px] text-xs leading-6 text-[#91847b]">
-                  Cada credencial permite acceder únicamente
-                  a la reserva para la que fue emitida.
+                <p className="mx-auto mt-3 max-w-[500px] text-xs leading-6 text-(--p-91847b)">
+                  {copy.credentialNote}
                 </p>
 
                 <Link
                   href="/reservar"
-                  className="mt-7 inline-flex min-h-13 items-center justify-center rounded-full bg-[#302924] px-7 py-3 text-xs font-semibold uppercase tracking-[0.15em] transition hover:bg-[#4b3d34]"
-                  style={{ color: "#ffffff" }}
+                  className="mt-7 inline-flex min-h-13 items-center justify-center rounded-full bg-(--p-302924) px-7 py-3 text-xs font-semibold uppercase tracking-[0.15em] transition hover:bg-(--p-4b3d34)"
+                  style={{ color: "var(--p-ffffff)" }}
                 >
-                  Reservar una cita
+                  {copy.bookCta}
                 </Link>
               </div>
             )}
@@ -1233,61 +1233,61 @@ export default function ManageBookingPage() {
             <div className="space-y-6">
               {/* SUMMARY */}
 
-              <div className="rounded-[2rem] border border-[#3b332e]/10 bg-white/60 p-7 shadow-[0_22px_60px_rgba(57,47,41,0.06)] sm:p-9">
+              <div className="rounded-[2rem] border border-(--p-3b332e)/10 bg-white/60 p-7 shadow-[0_22px_60px_rgba(57,47,41,0.06)] sm:p-9">
                 <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
                   <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#967b68]">
-                      Tu reserva
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-(--p-967b68)">
+                      {copy.summaryEyebrow}
                     </p>
 
-                    <h2 className="mt-3 font-serif text-3xl text-[#332b26] sm:text-4xl">
+                    <h2 className="mt-3 font-serif text-3xl text-(--p-332b26) sm:text-4xl">
                       {booking.serviceName}
                     </h2>
 
-                    <p className="mt-2 text-sm text-[#756960]">
-                      con {booking.professionalName}
+                    <p className="mt-2 text-sm text-(--p-756960)">
+                      {copy.withProfessional} {booking.professionalName}
                     </p>
                   </div>
 
-                  <span className="w-fit rounded-full bg-[#eee4da] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6f5b4d]">
+                  <span className="w-fit rounded-full bg-(--p-eee4da) px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-(--p-6f5b4d)">
                     {getStatusLabel(booking.status)}
                   </span>
                 </div>
 
-                <div className="mt-8 grid gap-5 border-t border-[#3b332e]/10 pt-6 sm:grid-cols-2">
+                <div className="mt-8 grid gap-5 border-t border-(--p-3b332e)/10 pt-6 sm:grid-cols-2">
                   <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#9a887b]">
-                      Fecha y hora
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-(--p-9a887b)">
+                      {copy.dateTimeLabel}
                     </p>
-                    <p className="mt-2 capitalize text-sm font-medium leading-6 text-[#433831]">
+                    <p className="mt-2 capitalize text-sm font-medium leading-6 text-(--p-433831)">
                       {formatDateTime(booking.startAt)}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#9a887b]">
-                      Duración
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-(--p-9a887b)">
+                      {copy.durationLabel}
                     </p>
-                    <p className="mt-2 text-sm font-medium text-[#433831]">
-                      {booking.serviceDurationMinutes} minutos
+                    <p className="mt-2 text-sm font-medium text-(--p-433831)">
+                      {booking.serviceDurationMinutes} {copy.minutes}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#9a887b]">
-                      Cliente
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-(--p-9a887b)">
+                      {copy.customerLabel}
                     </p>
-                    <p className="mt-2 text-sm font-medium text-[#433831]">
+                    <p className="mt-2 text-sm font-medium text-(--p-433831)">
                       {booking.customerName}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#9a887b]">
-                      Referencia
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-(--p-9a887b)">
+                      {copy.referenceLabel}
                     </p>
-                    <p className="mt-2 text-sm font-medium text-[#433831]">
-                      Cita #{booking.appointmentId}
+                    <p className="mt-2 text-sm font-medium text-(--p-433831)">
+                      {copy.appointmentRef}{booking.appointmentId}
                     </p>
                   </div>
                 </div>
@@ -1299,29 +1299,26 @@ export default function ManageBookingPage() {
                 <div className="grid gap-4 md:grid-cols-2">
                   {/* RESCHEDULE CARD */}
 
-                  <div className="rounded-[1.75rem] border border-[#3b332e]/10 bg-white/55 p-6">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#927663]">
-                      Reprogramar
+                  <div className="rounded-[1.75rem] border border-(--p-3b332e)/10 bg-white/55 p-6">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-(--p-927663)">
+                      {copy.rescheduleEyebrow}
                     </p>
 
-                    <h3 className="mt-2 font-serif text-2xl text-[#342c27]">
-                      Cambiar fecha y hora
+                    <h3 className="mt-2 font-serif text-2xl text-(--p-342c27)">
+                      {copy.rescheduleTitle}
                     </h3>
 
-                    <p className="mt-3 text-sm leading-6 text-[#786b62]">
-                      Puedes elegir otro hueco disponible
-                      manteniendo el mismo tratamiento
-                      y profesional.
+                    <p className="mt-3 text-sm leading-6 text-(--p-786b62)">
+                      {copy.rescheduleBody}
                     </p>
 
                     {!booking.onlineReschedulingEnabled ? (
-                      <p className="mt-5 rounded-xl bg-[#f1ebe5] p-4 text-xs leading-5 text-[#7c6e64]">
-                        La reprogramación online no está
-                        habilitada para este negocio.
+                      <p className="mt-5 rounded-xl bg-(--p-f1ebe5) p-4 text-xs leading-5 text-(--p-7c6e64)">
+                        {copy.rescheduleDisabled}
                       </p>
                     ) : !canReschedule ? (
-                      <p className="mt-5 rounded-xl bg-[#f1ebe5] p-4 text-xs leading-5 text-[#7c6e64]">
-                        Esta cita ya no puede reprogramarse online.
+                      <p className="mt-5 rounded-xl bg-(--p-f1ebe5) p-4 text-xs leading-5 text-(--p-7c6e64)">
+                        {copy.rescheduleClosed}
                       </p>
                     ) : (
                       <button
@@ -1332,36 +1329,35 @@ export default function ManageBookingPage() {
                           setShowCancelConfirm(false);
                           setError(null);
                         }}
-                        className="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-[#302924] px-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-[#4b3d34] disabled:opacity-50"
+                        className="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-(--p-302924) px-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-(--p-4b3d34) disabled:opacity-50"
                       >
-                        Cambiar horario
+                        {copy.rescheduleCta}
                       </button>
                     )}
                   </div>
 
                   {/* CANCELLATION CARD */}
 
-                  <div className="rounded-[1.75rem] border border-[#3b332e]/10 bg-white/55 p-6">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#927663]">
-                      Cancelación
+                  <div className="rounded-[1.75rem] border border-(--p-3b332e)/10 bg-white/55 p-6">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-(--p-927663)">
+                      {copy.cancelEyebrow}
                     </p>
 
-                    <h3 className="mt-2 font-serif text-2xl text-[#342c27]">
-                      Cancelar la cita
+                    <h3 className="mt-2 font-serif text-2xl text-(--p-342c27)">
+                      {copy.cancelTitle}
                     </h3>
 
-                    <p className="mt-3 text-sm leading-6 text-[#786b62]">
-                      La cancelación es definitiva. El horario
-                      volverá a quedar libre.
+                    <p className="mt-3 text-sm leading-6 text-(--p-786b62)">
+                      {copy.cancelBody}
                     </p>
 
                     {!booking.onlineCancellationEnabled ? (
-                      <p className="mt-5 rounded-xl bg-[#f1ebe5] p-4 text-xs leading-5 text-[#7c6e64]">
-                        La cancelación online no está habilitada.
+                      <p className="mt-5 rounded-xl bg-(--p-f1ebe5) p-4 text-xs leading-5 text-(--p-7c6e64)">
+                        {copy.cancelDisabled}
                       </p>
                     ) : !canCancel ? (
-                      <p className="mt-5 rounded-xl bg-[#f1ebe5] p-4 text-xs leading-5 text-[#7c6e64]">
-                        Esta cita ya no puede cancelarse online.
+                      <p className="mt-5 rounded-xl bg-(--p-f1ebe5) p-4 text-xs leading-5 text-(--p-7c6e64)">
+                        {copy.cancelClosed}
                       </p>
                     ) : (
                       <button
@@ -1374,9 +1370,9 @@ export default function ManageBookingPage() {
                           setLoadingAvailability(false);
                           setError(null);
                         }}
-                        className="mt-6 inline-flex h-12 items-center justify-center rounded-full border border-[#7d4e45]/25 bg-[#fff9f7] px-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#7a463e] transition hover:bg-[#f7eae6] disabled:opacity-50"
+                        className="mt-6 inline-flex h-12 items-center justify-center rounded-full border border-(--p-7d4e45)/25 bg-(--p-fff9f7) px-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-(--p-7a463e) transition hover:bg-(--p-f7eae6) disabled:opacity-50"
                       >
-                        Cancelar cita
+                        {copy.cancelCta}
                       </button>
                     )}
                   </div>
@@ -1386,13 +1382,13 @@ export default function ManageBookingPage() {
               {/* CANCELLATION CONFIRMATION */}
 
               {showCancelConfirm && canCancel && (
-                <div className="rounded-[1.75rem] border border-[#7d4e45]/15 bg-[#fff8f5] p-6">
-                  <h3 className="font-serif text-2xl text-[#4f332d]">
-                    ¿Cancelar esta cita?
+                <div className="rounded-[1.75rem] border border-(--p-7d4e45)/15 bg-(--p-fff8f5) p-6">
+                  <h3 className="font-serif text-2xl text-(--p-4f332d)">
+                    {copy.confirmCancelTitle}
                   </h3>
 
-                  <p className="mt-3 max-w-[600px] text-sm leading-6 text-[#80665f]">
-                    Esta acción no se puede deshacer desde esta página.
+                  <p className="mt-3 max-w-[600px] text-sm leading-6 text-(--p-80665f)">
+                    {copy.confirmCancelBody}
                   </p>
 
                   <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -1400,19 +1396,19 @@ export default function ManageBookingPage() {
                       type="button"
                       disabled={cancelling}
                       onClick={() => void cancelBooking()}
-                      className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#70453d] px-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-[#5d3933] disabled:opacity-50"
+                      className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-(--p-70453d) px-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-(--p-5d3933) disabled:opacity-50"
                     >
                       {cancelling && <LoadingSpinner />}
-                      {cancelling ? "Cancelando..." : "Sí, cancelar"}
+                      {cancelling ? copy.cancelling : copy.confirmCancel}
                     </button>
 
                     <button
                       type="button"
                       disabled={cancelling}
                       onClick={() => setShowCancelConfirm(false)}
-                      className="inline-flex h-12 items-center justify-center rounded-full border border-[#3b332e]/12 bg-white px-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#544940] disabled:opacity-50"
+                      className="inline-flex h-12 items-center justify-center rounded-full border border-(--p-3b332e)/12 bg-white px-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-(--p-544940) disabled:opacity-50"
                     >
-                      Volver
+                      {copy.back}
                     </button>
                   </div>
                 </div>
@@ -1424,20 +1420,20 @@ export default function ManageBookingPage() {
                 <div
                   ref={rescheduleSectionRef}
                   tabIndex={-1}
-                  aria-label="Reprogramar cita"
-                  className="scroll-mt-24 rounded-[2rem] border border-[#3b332e]/10 bg-white/60 p-6 outline-none sm:p-8"
+                  aria-label={copy.rescheduleRegionLabel}
+                  className="scroll-mt-24 rounded-[2rem] border border-(--p-3b332e)/10 bg-white/60 p-6 outline-none sm:p-8"
                 >
                   <div className="mb-7">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#927663]">
-                      Nueva fecha
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-(--p-927663)">
+                      {copy.newDateEyebrow}
                     </p>
 
-                    <h3 className="mt-2 font-serif text-3xl text-[#342c27]">
-                      Reprogramar tu cita
+                    <h3 className="mt-2 font-serif text-3xl text-(--p-342c27)">
+                      {copy.rescheduleFlowTitle}
                     </h3>
 
-                    <p className="mt-2 text-sm text-[#7d7067]">
-                      {booking.serviceName} con{" "}
+                    <p className="mt-2 text-sm text-(--p-7d7067)">
+                      {booking.serviceName} {copy.withProfessional}{" "}
                       {booking.professionalName}
                     </p>
                   </div>
@@ -1445,9 +1441,9 @@ export default function ManageBookingPage() {
                   <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
                     {/* DATE */}
 
-                    <div className="rounded-[1.5rem] border border-[#3b332e]/10 bg-[#fffdfb] p-5">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#79685c]">
-                        Fecha
+                    <div className="rounded-[1.5rem] border border-(--p-3b332e)/10 bg-(--p-fffdfb) p-5">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-(--p-79685c)">
+                        {copy.dateLabel}
                       </p>
 
                       <CalendarDatePicker
@@ -1463,33 +1459,31 @@ export default function ManageBookingPage() {
 
                     {/* AVAILABLE SLOTS */}
 
-                    <div className="rounded-[1.5rem] border border-[#3b332e]/10 bg-[#fffdfb] p-5">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#79685c]">
-                        Horarios
+                    <div className="rounded-[1.5rem] border border-(--p-3b332e)/10 bg-(--p-fffdfb) p-5">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-(--p-79685c)">
+                        {copy.timesLabel}
                       </p>
 
                       {!rescheduleDate ? (
-                        <p className="mt-5 text-sm leading-6 text-[#85786f]">
-                          Selecciona una fecha para consultar
-                          la disponibilidad.
+                        <p className="mt-5 text-sm leading-6 text-(--p-85786f)">
+                          {copy.pickDateHint}
                         </p>
                       ) : loadingAvailability ? (
-                        <div className="mt-6 flex items-center gap-3 text-sm text-[#756960]">
+                        <div className="mt-6 flex items-center gap-3 text-sm text-(--p-756960)">
                           <LoadingSpinner />
-                          Consultando...
+                          {copy.loadingAvailability}
                         </div>
                       ) : !availability ||
                         !availability.available ||
                         availability.slots.length === 0 ? (
-                        <div className="mt-5 rounded-xl bg-[#f2ebe4] p-4">
-                          <p className="text-sm text-[#74675e]">
-                            No hay horarios disponibles
-                            para esta fecha.
+                        <div className="mt-5 rounded-xl bg-(--p-f2ebe4) p-4">
+                          <p className="text-sm text-(--p-74675e)">
+                            {copy.emptyTimes}
                           </p>
                         </div>
                       ) : (
                         <>
-                          <p className="mt-3 text-xs capitalize text-[#8c7e74]">
+                          <p className="mt-3 text-xs capitalize text-(--p-8c7e74)">
                             {formatDate(rescheduleDate)}
                           </p>
 
@@ -1510,8 +1504,8 @@ export default function ManageBookingPage() {
                                   className={[
                                     "rounded-xl border px-4 py-3 text-sm font-semibold transition",
                                     selected
-                                      ? "border-[#302924] bg-[#302924] text-white"
-                                      : "border-[#3b332e]/12 bg-white text-[#4b4038] hover:bg-[#f2e9e1]",
+                                      ? "border-(--p-302924) bg-(--p-302924) text-white"
+                                      : "border-(--p-3b332e)/12 bg-white text-(--p-4b4038) hover:bg-(--p-f2e9e1)",
                                   ].join(" ")}
                                 >
                                   {formatTime(slot.startTime)}
@@ -1536,9 +1530,9 @@ export default function ManageBookingPage() {
                         setSelectedSlot(null);
                         setLoadingAvailability(false);
                       }}
-                      className="inline-flex h-12 items-center justify-center rounded-full border border-[#3b332e]/12 bg-white px-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#544940] disabled:opacity-50"
+                      className="inline-flex h-12 items-center justify-center rounded-full border border-(--p-3b332e)/12 bg-white px-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-(--p-544940) disabled:opacity-50"
                     >
-                      Cancelar cambio
+                      {copy.cancelChange}
                     </button>
 
                     <button
@@ -1549,10 +1543,10 @@ export default function ManageBookingPage() {
                         !canReschedule
                       }
                       onClick={() => void confirmReschedule()}
-                      className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#302924] px-7 text-[11px] font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-[#4b3d34] disabled:cursor-not-allowed disabled:opacity-35"
+                      className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-(--p-302924) px-7 text-[11px] font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-(--p-4b3d34) disabled:cursor-not-allowed disabled:opacity-35"
                     >
                       {loadingAvailability && <LoadingSpinner />}
-                      Confirmar nuevo horario
+                      {copy.confirmNewTime}
                     </button>
                   </div>
                 </div>
@@ -1561,39 +1555,37 @@ export default function ManageBookingPage() {
               {/* CANCELLED STATE */}
 
               {bookingIsCancelled && (
-                <div className="rounded-[1.75rem] border border-[#3b332e]/10 bg-[#eee4da] p-7 text-center shadow-[0_16px_40px_rgba(57,47,41,0.05)] sm:p-8">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white/75 text-lg font-semibold text-[#6f5b4d] shadow-sm">
+                <div className="rounded-[1.75rem] border border-(--p-3b332e)/10 bg-(--p-eee4da) p-7 text-center shadow-[0_16px_40px_rgba(57,47,41,0.05)] sm:p-8">
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white/75 text-lg font-semibold text-(--p-6f5b4d) shadow-sm">
                     ✓
                   </div>
 
-                  <p className="mt-5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8d7463]">
-                    Reserva cancelada
+                  <p className="mt-5 text-[10px] font-semibold uppercase tracking-[0.16em] text-(--p-8d7463)">
+                    {copy.cancelledEyebrow}
                   </p>
 
-                  <h3 className="mt-3 font-serif text-3xl text-[#342c27]">
-                    Esta cita ya no está activa
+                  <h3 className="mt-3 font-serif text-3xl text-(--p-342c27)">
+                    {copy.cancelledTitle}
                   </h3>
 
-                  <p className="mx-auto mt-3 max-w-[520px] text-sm leading-6 text-[#756960]">
-                    El horario ha quedado liberado.
-                    Si quieres volver a visitarnos,
-                    puedes crear una nueva reserva.
+                  <p className="mx-auto mt-3 max-w-[520px] text-sm leading-6 text-(--p-756960)">
+                    {copy.cancelledBody}
                   </p>
 
                   <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
                     <Link
                       href="/"
-                      className="inline-flex h-12 min-w-[168px] items-center justify-center rounded-full border border-[#3b332e]/15 bg-white px-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#4f433b] transition hover:bg-[#f8f3ee]"
+                      className="inline-flex h-12 min-w-[168px] items-center justify-center rounded-full border border-(--p-3b332e)/15 bg-white px-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-(--p-4f433b) transition hover:bg-(--p-f8f3ee)"
                     >
-                      Volver a {business.brand.shortName}
+                      {copy.backHomePrefix} {business.brand.shortName}
                     </Link>
 
                     <Link
                       href="/reservar"
-                      className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-full bg-[#302924] px-6 text-[11px] font-semibold uppercase tracking-[0.14em] shadow-[0_10px_24px_rgba(48,41,36,0.16)] transition hover:bg-[#4b3d34]"
-                      style={{ color: "#ffffff" }}
+                      className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-full bg-(--p-302924) px-6 text-[11px] font-semibold uppercase tracking-[0.14em] shadow-[0_10px_24px_rgba(48,41,36,0.16)] transition hover:bg-(--p-4b3d34)"
+                      style={{ color: "var(--p-ffffff)" }}
                     >
-                      Reservar otra cita
+                      {copy.bookAnother}
                     </Link>
                   </div>
                 </div>

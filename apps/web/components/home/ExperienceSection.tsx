@@ -12,13 +12,13 @@ import { business } from "@/config/business";
 
 export function ExperienceSection() {
   return (
-    <section className="bg-[#eee5dc]">
+    <section className="bg-(--p-eee5dc)">
       <div className="mx-auto grid w-full max-w-[1440px] gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center lg:gap-16 lg:px-12 lg:py-28 xl:px-16">
         {/* =====================================================
             VISUAL
         ====================================================== */}
         <div className="relative">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/25 bg-[#bda693] shadow-[0_30px_80px_rgba(72,56,45,0.14)] sm:aspect-[4/3] lg:aspect-[4/5] xl:aspect-[5/6]">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/25 bg-(--p-bda693) shadow-[0_30px_80px_rgba(72,56,45,0.14)] sm:aspect-[4/3] lg:aspect-[4/5] xl:aspect-[5/6]">
             <Image
               src={business.assets.experience}
               alt={business.imageAlts.experience}
@@ -29,28 +29,28 @@ export function ExperienceSection() {
             />
 
             {/* Tratamiento visual suave */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#32261f]/35 via-transparent to-white/[0.03]" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-(--p-32261f)/35 via-transparent to-white/[0.03]" />
 
             <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10" />
 
             {/* =================================================
                 EXPERIENCE LABEL
             ================================================== */}
-            <div className="absolute left-5 top-5 z-10 rounded-full border border-white/25 bg-[#3b2e26]/20 px-4 py-2 backdrop-blur-md sm:left-6 sm:top-6">
+            <div className="absolute left-5 top-5 z-10 rounded-full border border-white/25 bg-(--p-3b2e26)/20 px-4 py-2 backdrop-blur-md sm:left-6 sm:top-6">
               <span className="text-[9px] font-semibold uppercase tracking-[0.2em] !text-white sm:text-[10px]">
-                {business.experienceBadge}
+                {business.experience.badge}
               </span>
             </div>
 
             {/* =================================================
                 VISUAL COPY CARD
             ================================================== */}
-            <div className="absolute bottom-5 left-5 right-5 z-10 rounded-[1.4rem] border border-white/30 bg-[#f6ede4]/88 p-5 shadow-[0_16px_45px_rgba(45,34,27,0.14)] backdrop-blur-xl sm:bottom-7 sm:left-7 sm:right-7 sm:p-7">
-              <p className="max-w-[390px] font-serif text-3xl leading-[1.02] tracking-[-0.025em] text-[#302925] sm:text-4xl">
+            <div className="absolute bottom-5 left-5 right-5 z-10 rounded-[1.4rem] border border-white/30 bg-(--p-f6ede4)/88 p-5 shadow-[0_16px_45px_rgba(45,34,27,0.14)] backdrop-blur-xl sm:bottom-7 sm:left-7 sm:right-7 sm:p-7">
+              <p className="max-w-[390px] font-serif text-3xl leading-[1.02] tracking-[-0.025em] text-(--p-302925) sm:text-4xl">
                 {business.experience.visualTitle}
               </p>
 
-              <p className="mt-4 max-w-md text-sm leading-6 text-[#685a51]">
+              <p className="mt-4 max-w-md text-sm leading-6 text-(--p-685a51)">
                 {business.experience.visualDescription}
               </p>
             </div>
@@ -59,9 +59,9 @@ export function ExperienceSection() {
           {/* =====================================================
               DECORATIVE DETAIL
           ====================================================== */}
-          <div className="pointer-events-none absolute -bottom-5 -right-5 -z-10 hidden h-28 w-28 rounded-full border border-[#8b6d59]/15 lg:block" />
+          <div className="pointer-events-none absolute -bottom-5 -right-5 -z-10 hidden h-28 w-28 rounded-full border border-(--p-8b6d59)/15 lg:block" />
 
-          <div className="pointer-events-none absolute -left-7 top-16 -z-10 hidden h-20 w-20 rounded-full bg-[#d6c0ad]/45 blur-2xl lg:block" />
+          <div className="pointer-events-none absolute -left-7 top-16 -z-10 hidden h-20 w-20 rounded-full bg-(--p-d6c0ad)/45 blur-2xl lg:block" />
         </div>
 
         {/* =====================================================
@@ -70,17 +70,17 @@ export function ExperienceSection() {
         <div className="flex items-center">
           <div className="w-full">
             {/* Eyebrow */}
-            <p className="text-[10px] font-semibold uppercase tracking-[0.27em] text-[#89705e]">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.27em] text-(--p-89705e)">
               {business.experience.eyebrow}
             </p>
 
             {/* Heading */}
-            <h2 className="mt-5 max-w-[600px] font-serif text-5xl leading-[0.97] tracking-[-0.035em] text-[#2d2723] sm:text-6xl">
+            <h2 className="mt-5 max-w-[600px] font-serif text-5xl leading-[0.97] tracking-[-0.035em] text-(--p-2d2723) sm:text-6xl">
               {business.experience.title}
             </h2>
 
             {/* Description */}
-            <p className="mt-7 max-w-[590px] text-base leading-8 text-[#70635b]">
+            <p className="mt-7 max-w-[590px] text-base leading-8 text-(--p-70635b)">
               {business.experience.description}
             </p>
 
@@ -91,13 +91,13 @@ export function ExperienceSection() {
               {business.benefits.map((benefit) => (
                 <div
                   key={benefit.id}
-                  className="group flex items-center gap-3 border-t border-[#41372f]/15 pt-5"
+                  className="group flex items-center gap-3 border-t border-(--p-41372f)/15 pt-5"
                 >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#d9c7b8] text-[#5a493d] transition-all duration-300 group-hover:scale-105 group-hover:bg-[#ceb7a4]">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-(--p-d9c7b8) text-(--p-5a493d) transition-all duration-300 group-hover:scale-105 group-hover:bg-(--p-ceb7a4)">
                     <CheckIcon />
                   </span>
 
-                  <span className="text-sm font-medium text-[#40362f]">
+                  <span className="text-sm font-medium text-(--p-40362f)">
                     {benefit.label}
                   </span>
                 </div>
@@ -107,10 +107,9 @@ export function ExperienceSection() {
             {/* =================================================
                 SUPPORTING NOTE
             ================================================== */}
-            <div className="mt-10 border-l border-[#8b6d59]/35 pl-5">
-              <p className="max-w-[510px] font-serif text-xl leading-7 text-[#5d4d42]">
-                Cada sesión está diseñada para que el tratamiento empiece antes
-                incluso de entrar en cabina.
+            <div className="mt-10 border-l border-(--p-8b6d59)/35 pl-5">
+              <p className="max-w-[510px] font-serif text-xl leading-7 text-(--p-5d4d42)">
+                {business.experience.note}
               </p>
             </div>
           </div>

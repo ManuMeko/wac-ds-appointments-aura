@@ -22,6 +22,8 @@ const BUSINESS_SLUG = business.slug;
 
 const API_BASE_URL = getApiBaseUrl().replace(/\/$/, "");
 
+const copy = business.booking;
+
 /* =========================================================
    TYPES
 ========================================================= */
@@ -385,19 +387,19 @@ function getStatusLabel(
     status.toUpperCase()
   ) {
     case "CONFIRMED":
-      return "Confirmada";
+      return copy.statuses.CONFIRMED;
 
     case "PENDING":
-      return "Pendiente de confirmación";
+      return copy.statuses.PENDING;
 
     case "COMPLETED":
-      return "Completada";
+      return copy.statuses.COMPLETED;
 
     case "CANCELLED":
-      return "Cancelada";
+      return copy.statuses.CANCELLED;
 
     case "NO_SHOW":
-      return "No asistió";
+      return copy.statuses.NO_SHOW;
 
     default:
       return status;
@@ -454,8 +456,8 @@ function StepNumber({
       className={[
         "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition-all",
         active || completed
-          ? "bg-[#302924] text-white"
-          : "border border-[#3d342e]/15 bg-white/40 text-[#83766d]",
+          ? "bg-(--p-302924) text-white"
+          : "border border-(--p-3d342e)/15 bg-white/40 text-(--p-83766d)",
       ].join(" ")}
     >
       {completed ? "✓" : number}
@@ -642,7 +644,7 @@ function CalendarDatePicker({
       <div className="flex items-center justify-between gap-4">
         <button
           type="button"
-          aria-label="Mes anterior"
+          aria-label={copy.previousMonth}
           disabled={
             disabled ||
             !canGoPrevious
@@ -650,24 +652,24 @@ function CalendarDatePicker({
           onClick={
             goPreviousMonth
           }
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#3b332e]/10 bg-[#f8f3ee] text-xl text-[#5a4a40] transition hover:border-[#8b6d59]/30 hover:bg-[#eadfd4] disabled:cursor-not-allowed disabled:opacity-25"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-(--p-3b332e)/10 bg-(--p-f8f3ee) text-xl text-(--p-5a4a40) transition hover:border-(--p-8b6d59)/30 hover:bg-(--p-eadfd4) disabled:cursor-not-allowed disabled:opacity-25"
         >
           ‹
         </button>
 
         <div className="text-center">
-          <p className="font-serif text-xl capitalize text-[#342c27]">
+          <p className="font-serif text-xl capitalize text-(--p-342c27)">
             {monthLabel}
           </p>
 
-          <p className="mt-0.5 text-[9px] uppercase tracking-[0.18em] text-[#9a887c]">
-            Selecciona un día
+          <p className="mt-0.5 text-[9px] uppercase tracking-[0.18em] text-(--p-9a887c)">
+            {copy.selectDay}
           </p>
         </div>
 
         <button
           type="button"
-          aria-label="Mes siguiente"
+          aria-label={copy.nextMonth}
           disabled={
             disabled ||
             !canGoNext
@@ -675,7 +677,7 @@ function CalendarDatePicker({
           onClick={
             goNextMonth
           }
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#3b332e]/10 bg-[#f8f3ee] text-xl text-[#5a4a40] transition hover:border-[#8b6d59]/30 hover:bg-[#eadfd4] disabled:cursor-not-allowed disabled:opacity-25"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-(--p-3b332e)/10 bg-(--p-f8f3ee) text-xl text-(--p-5a4a40) transition hover:border-(--p-8b6d59)/30 hover:bg-(--p-eadfd4) disabled:cursor-not-allowed disabled:opacity-25"
         >
           ›
         </button>
@@ -690,7 +692,7 @@ function CalendarDatePicker({
               key={
                 weekday
               }
-              className="flex h-8 items-center justify-center text-[9px] font-semibold uppercase tracking-[0.13em] text-[#a19085]"
+              className="flex h-8 items-center justify-center text-[9px] font-semibold uppercase tracking-[0.13em] text-(--p-a19085)"
             >
               {weekday}
             </div>
@@ -753,19 +755,19 @@ function CalendarDatePicker({
                 className={[
                   "relative flex aspect-square min-h-9 items-center justify-center rounded-full text-xs font-medium transition-all duration-200 sm:min-h-10",
                   isSelected
-                    ? "bg-[#302924] text-white shadow-[0_8px_18px_rgba(48,41,36,0.22)]"
+                    ? "bg-(--p-302924) text-white shadow-[0_8px_18px_rgba(48,41,36,0.22)]"
                     : "",
                   !isSelected &&
                   isToday
-                    ? "border border-[#9d7f6a]/50 bg-[#efe5db] text-[#54453c]"
+                    ? "border border-(--p-9d7f6a)/50 bg-(--p-efe5db) text-(--p-54453c)"
                     : "",
                   !isSelected &&
                   !isToday &&
                   !isDisabled
-                    ? "text-[#51453d] hover:bg-[#eadfd4] hover:text-[#2d2723]"
+                    ? "text-(--p-51453d) hover:bg-(--p-eadfd4) hover:text-(--p-2d2723)"
                     : "",
                   isDisabled
-                    ? "cursor-not-allowed text-[#d0c6bf]"
+                    ? "cursor-not-allowed text-(--p-d0c6bf)"
                     : "",
                 ].join(" ")}
               >
@@ -777,7 +779,7 @@ function CalendarDatePicker({
                   !isSelected && (
                     <span
                       aria-hidden="true"
-                      className="absolute bottom-[5px] h-1 w-1 rounded-full bg-[#92725d]"
+                      className="absolute bottom-[5px] h-1 w-1 rounded-full bg-(--p-92725d)"
                     />
                   )}
               </button>
@@ -788,7 +790,7 @@ function CalendarDatePicker({
 
       {/* CALENDAR FOOTER */}
 
-      <div className="mt-6 flex items-center justify-between gap-4 border-t border-[#3b332e]/10 pt-4">
+      <div className="mt-6 flex items-center justify-between gap-4 border-t border-(--p-3b332e)/10 pt-4">
         <button
           type="button"
           disabled={
@@ -797,20 +799,20 @@ function CalendarDatePicker({
           onClick={
             selectToday
           }
-          className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#8b6d59] transition hover:text-[#342d28] disabled:opacity-40"
+          className="text-[10px] font-semibold uppercase tracking-[0.15em] text-(--p-8b6d59) transition hover:text-(--p-342d28) disabled:opacity-40"
         >
-          Hoy
+          {copy.today}
         </button>
 
         {value ? (
-          <p className="text-right text-xs capitalize text-[#706258]">
+          <p className="text-right text-xs capitalize text-(--p-706258)">
             {formatDate(
               value
             )}
           </p>
         ) : (
-          <p className="text-right text-xs text-[#9a8e86]">
-            Sin fecha seleccionada
+          <p className="text-right text-xs text-(--p-9a8e86)">
+            {copy.noDate}
           </p>
         )}
       </div>
@@ -986,7 +988,7 @@ export default function PublicBookingPage() {
             throw new Error(
               await readApiError(
                 response,
-                "No se pudieron cargar los servicios disponibles."
+                copy.errorLoadServices
               )
             );
           }
@@ -1008,7 +1010,7 @@ export default function PublicBookingPage() {
             setError(
               cause instanceof Error
                 ? cause.message
-                : "No se pudieron cargar los servicios disponibles."
+                : copy.errorLoadServices
             );
           }
         } finally {
@@ -1091,7 +1093,7 @@ export default function PublicBookingPage() {
         throw new Error(
           await readApiError(
             response,
-            "No se pudieron cargar los profesionales disponibles."
+            copy.errorLoadProfessionals
           )
         );
       }
@@ -1114,7 +1116,7 @@ export default function PublicBookingPage() {
       setError(
         cause instanceof Error
           ? cause.message
-          : "No se pudieron cargar los profesionales disponibles."
+          : copy.errorLoadProfessionals
       );
     } finally {
       setLoadingProfessionals(
@@ -1225,7 +1227,7 @@ export default function PublicBookingPage() {
         throw new Error(
           await readApiError(
             response,
-            "No se pudo consultar la disponibilidad para esa fecha."
+            copy.errorLoadAvailabilityDate
           )
         );
       }
@@ -1240,7 +1242,7 @@ export default function PublicBookingPage() {
       setError(
         cause instanceof Error
           ? cause.message
-          : "No se pudo consultar la disponibilidad."
+          : copy.errorLoadAvailability
       );
     } finally {
       setLoadingAvailability(
@@ -1290,7 +1292,7 @@ export default function PublicBookingPage() {
       !availability
     ) {
       setError(
-        "Faltan datos de la reserva. Vuelve a seleccionar fecha y hora."
+        copy.errorMissingSelection
       );
 
       return;
@@ -1300,7 +1302,7 @@ export default function PublicBookingPage() {
       !customerForm.firstName.trim()
     ) {
       setError(
-        "Introduce tu nombre para continuar."
+        copy.errorFirstName
       );
 
       return;
@@ -1310,7 +1312,7 @@ export default function PublicBookingPage() {
       !hasContactMethod
     ) {
       setError(
-        "Introduce al menos un email o un teléfono para poder gestionar tu cita."
+        copy.errorContact
       );
 
       return;
@@ -1375,7 +1377,7 @@ export default function PublicBookingPage() {
         throw new Error(
           await readApiError(
             response,
-            "No se pudo crear la reserva."
+            copy.errorCreate
           )
         );
       }
@@ -1428,7 +1430,7 @@ export default function PublicBookingPage() {
       setError(
         cause instanceof Error
           ? cause.message
-          : "No se pudo crear la reserva."
+          : copy.errorCreate
       );
     } finally {
       setCreatingBooking(
@@ -1512,7 +1514,7 @@ export default function PublicBookingPage() {
       : "/reservar/gestionar";
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0] text-[#2d2723]">
+    <div className="min-h-screen bg-(--p-f8f5f0) text-(--p-2d2723)">
       <SiteHeader />
 
       <main>
@@ -1520,37 +1522,34 @@ export default function PublicBookingPage() {
             HERO
         ==================================================== */}
 
-        <section className="border-b border-[#3a312c]/10 bg-[#e9dfd4]">
+        <section className="border-b border-(--p-3a312c)/10 bg-(--p-e9dfd4)">
           <div className="mx-auto w-full max-w-[1180px] px-5 py-14 sm:px-8 sm:py-16 lg:px-12">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#856f5f] transition hover:text-[#392f29]"
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-(--p-856f5f) transition hover:text-(--p-392f29)"
             >
               <span aria-hidden="true">
                 ←
               </span>
 
-              Volver a {business.brand.name}
+              {copy.backPrefix} {business.brand.name}
             </Link>
 
             <div className="mt-8 max-w-[760px]">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#8b6d59]">
-                Reserva online
+              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-(--p-8b6d59)">
+                {copy.eyebrow}
               </p>
 
-              <h1 className="mt-4 font-serif text-[clamp(2.8rem,6vw,5.6rem)] leading-[0.95] tracking-[-0.04em] text-[#2b2521]">
-                Reserva tu
+              <h1 className="mt-4 font-serif text-[clamp(2.8rem,6vw,5.6rem)] leading-[0.95] tracking-[-0.04em] text-(--p-2b2521)">
+                {copy.titleLead}
 
-                <span className="block italic text-[#8b6d59]">
-                  momento.
+                <span className="block italic text-(--p-8b6d59)">
+                  {copy.titleAccent}
                 </span>
               </h1>
 
-              <p className="mt-6 max-w-[620px] text-base leading-7 text-[#6b5f56] sm:text-lg">
-                Elige tratamiento,
-                profesional, fecha y hora.
-                Nosotros nos encargamos del
-                resto.
+              <p className="mt-6 max-w-[620px] text-base leading-7 text-(--p-6b5f56) sm:text-lg">
+                {copy.description}
               </p>
             </div>
           </div>
@@ -1565,12 +1564,7 @@ export default function PublicBookingPage() {
             "success" && (
             <div className="mb-8 overflow-x-auto">
               <div className="flex min-w-[650px] items-center">
-                {[
-                  "Tratamiento",
-                  "Profesional",
-                  "Fecha y hora",
-                  "Tus datos",
-                ].map(
+                {copy.steps.map(
                   (
                     label,
                     index
@@ -1608,8 +1602,8 @@ export default function PublicBookingPage() {
                               "text-xs font-semibold uppercase tracking-[0.13em]",
                               active ||
                               completed
-                                ? "text-[#39302a]"
-                                : "text-[#9a8d84]",
+                                ? "text-(--p-39302a)"
+                                : "text-(--p-9a8d84)",
                             ].join(" ")}
                           >
                             {
@@ -1620,7 +1614,7 @@ export default function PublicBookingPage() {
 
                         {index <
                           3 && (
-                          <div className="mx-5 h-px flex-1 bg-[#3b332e]/10" />
+                          <div className="mx-5 h-px flex-1 bg-(--p-3b332e)/10" />
                         )}
                       </div>
                     );
@@ -1649,41 +1643,36 @@ export default function PublicBookingPage() {
             "service" && (
             <div>
               <div className="mb-8">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#987e6c]">
-                  Paso 1 de 4
+                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-(--p-987e6c)">
+                  {copy.stepHeadings[0]}
                 </p>
 
-                <h2 className="mt-2 font-serif text-3xl text-[#332b26] sm:text-4xl">
-                  Elige tu tratamiento
+                <h2 className="mt-2 font-serif text-3xl text-(--p-332b26) sm:text-4xl">
+                  {copy.chooseServiceTitle}
                 </h2>
 
-                <p className="mt-3 max-w-[620px] text-sm leading-6 text-[#756960]">
-                  Mostramos únicamente
-                  servicios que actualmente
-                  admiten nuevas reservas.
+                <p className="mt-3 max-w-[620px] text-sm leading-6 text-(--p-756960)">
+                  {copy.chooseServiceDescription}
                 </p>
               </div>
 
               {loadingServices ? (
-                <div className="flex min-h-[240px] items-center justify-center rounded-[1.75rem] border border-[#3b332e]/10 bg-white/45">
-                  <div className="flex items-center gap-3 text-sm text-[#6f6259]">
+                <div className="flex min-h-[240px] items-center justify-center rounded-[1.75rem] border border-(--p-3b332e)/10 bg-white/45">
+                  <div className="flex items-center gap-3 text-sm text-(--p-6f6259)">
                     <LoadingSpinner />
 
-                    Cargando tratamientos...
+                    {copy.loadingServices}
                   </div>
                 </div>
               ) : services.length ===
                 0 ? (
-                <div className="rounded-[1.75rem] border border-[#3b332e]/10 bg-white/50 p-8">
-                  <h3 className="font-serif text-2xl text-[#332b26]">
-                    No hay tratamientos
-                    disponibles
+                <div className="rounded-[1.75rem] border border-(--p-3b332e)/10 bg-white/50 p-8">
+                  <h3 className="font-serif text-2xl text-(--p-332b26)">
+                    {copy.emptyServicesTitle}
                   </h3>
 
-                  <p className="mt-3 max-w-[560px] text-sm leading-6 text-[#756960]">
-                    En este momento no hay
-                    servicios habilitados para
-                    reserva online.
+                  <p className="mt-3 max-w-[560px] text-sm leading-6 text-(--p-756960)">
+                    {copy.emptyServicesBody}
                   </p>
                 </div>
               ) : (
@@ -1703,18 +1692,18 @@ export default function PublicBookingPage() {
                             service
                           )
                         }
-                        className="group rounded-[1.5rem] border border-[#3b332e]/10 bg-white/55 p-6 text-left shadow-[0_12px_35px_rgba(57,47,41,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-[#8b6d59]/30 hover:bg-white hover:shadow-[0_20px_45px_rgba(57,47,41,0.10)] disabled:pointer-events-none disabled:opacity-60"
+                        className="group rounded-[1.5rem] border border-(--p-3b332e)/10 bg-white/55 p-6 text-left shadow-[0_12px_35px_rgba(57,47,41,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-(--p-8b6d59)/30 hover:bg-white hover:shadow-[0_20px_45px_rgba(57,47,41,0.10)] disabled:pointer-events-none disabled:opacity-60"
                       >
                         <div className="flex items-start justify-between gap-5">
                           <div>
-                            <h3 className="font-serif text-2xl text-[#342c27]">
+                            <h3 className="font-serif text-2xl text-(--p-342c27)">
                               {
                                 service.name
                               }
                             </h3>
 
                             {service.description && (
-                              <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#71665e]">
+                              <p className="mt-3 line-clamp-3 text-sm leading-6 text-(--p-71665e)">
                                 {
                                   service.description
                                 }
@@ -1722,20 +1711,20 @@ export default function PublicBookingPage() {
                             )}
                           </div>
 
-                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#3b332e]/10 bg-[#f3ece5] text-lg text-[#5a493f] transition-transform duration-300 group-hover:translate-x-1">
+                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-(--p-3b332e)/10 bg-(--p-f3ece5) text-lg text-(--p-5a493f) transition-transform duration-300 group-hover:translate-x-1">
                             →
                           </span>
                         </div>
 
                         <div className="mt-6 flex flex-wrap gap-2">
-                          <span className="rounded-full bg-[#eee4da] px-3 py-1.5 text-xs font-medium text-[#705d50]">
+                          <span className="rounded-full bg-(--p-eee4da) px-3 py-1.5 text-xs font-medium text-(--p-705d50)">
                             {
                               service.durationMinutes
                             }{" "}
-                            min
+                            {copy.minuteShort}
                           </span>
 
-                          <span className="rounded-full bg-[#332b26] px-3 py-1.5 text-xs font-semibold text-white">
+                          <span className="rounded-full bg-(--p-332b26) px-3 py-1.5 text-xs font-semibold text-white">
                             {formatMoney(
                               Number(
                                 service.price
@@ -1771,21 +1760,21 @@ export default function PublicBookingPage() {
                       null
                     );
                   }}
-                  className="mb-7 text-sm font-medium text-[#7a6759] transition hover:text-[#342d28]"
+                  className="mb-7 text-sm font-medium text-(--p-7a6759) transition hover:text-(--p-342d28)"
                 >
-                  ← Cambiar tratamiento
+                  {copy.changeService}
                 </button>
 
                 <div className="mb-8">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#987e6c]">
-                    Paso 2 de 4
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-(--p-987e6c)">
+                    {copy.stepHeadings[1]}
                   </p>
 
-                  <h2 className="mt-2 font-serif text-3xl text-[#332b26] sm:text-4xl">
-                    Elige profesional
+                  <h2 className="mt-2 font-serif text-3xl text-(--p-332b26) sm:text-4xl">
+                    {copy.chooseProfessionalTitle}
                   </h2>
 
-                  <p className="mt-3 text-sm leading-6 text-[#756960]">
+                  <p className="mt-3 text-sm leading-6 text-(--p-756960)">
                     {
                       selectedService.name
                     }{" "}
@@ -1793,7 +1782,7 @@ export default function PublicBookingPage() {
                     {
                       selectedService.durationMinutes
                     }{" "}
-                    min ·{" "}
+                    {copy.minuteShort} ·{" "}
                     {formatMoney(
                       Number(
                         selectedService.price
@@ -1804,25 +1793,22 @@ export default function PublicBookingPage() {
                 </div>
 
                 {loadingProfessionals ? (
-                  <div className="flex min-h-[220px] items-center justify-center rounded-[1.75rem] border border-[#3b332e]/10 bg-white/45">
-                    <div className="flex items-center gap-3 text-sm text-[#6f6259]">
+                  <div className="flex min-h-[220px] items-center justify-center rounded-[1.75rem] border border-(--p-3b332e)/10 bg-white/45">
+                    <div className="flex items-center gap-3 text-sm text-(--p-6f6259)">
                       <LoadingSpinner />
 
-                      Cargando profesionales...
+                      {copy.loadingProfessionals}
                     </div>
                   </div>
                 ) : professionals.length ===
                   0 ? (
-                  <div className="rounded-[1.75rem] border border-[#3b332e]/10 bg-white/50 p-8">
-                    <h3 className="font-serif text-2xl text-[#332b26]">
-                      Sin profesionales
-                      disponibles
+                  <div className="rounded-[1.75rem] border border-(--p-3b332e)/10 bg-white/50 p-8">
+                    <h3 className="font-serif text-2xl text-(--p-332b26)">
+                      {copy.emptyProfessionalsTitle}
                     </h3>
 
-                    <p className="mt-3 text-sm leading-6 text-[#756960]">
-                      No hay profesionales
-                      habilitados actualmente
-                      para este tratamiento.
+                    <p className="mt-3 text-sm leading-6 text-(--p-756960)">
+                      {copy.emptyProfessionalsBody}
                     </p>
                   </div>
                 ) : (
@@ -1839,24 +1825,24 @@ export default function PublicBookingPage() {
                               professional
                             )
                           }
-                          className="group rounded-[1.5rem] border border-[#3b332e]/10 bg-white/55 p-6 text-left shadow-[0_12px_35px_rgba(57,47,41,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-[#8b6d59]/30 hover:bg-white"
+                          className="group rounded-[1.5rem] border border-(--p-3b332e)/10 bg-white/55 p-6 text-left shadow-[0_12px_35px_rgba(57,47,41,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-(--p-8b6d59)/30 hover:bg-white"
                         >
                           <div className="flex items-start gap-4">
-                            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#e8dbcf] font-serif text-lg text-[#735e50]">
+                            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-(--p-e8dbcf) font-serif text-lg text-(--p-735e50)">
                               {professional.displayName
                                 .charAt(0)
                                 .toUpperCase()}
                             </span>
 
                             <div className="min-w-0 flex-1">
-                              <h3 className="font-serif text-2xl text-[#342c27]">
+                              <h3 className="font-serif text-2xl text-(--p-342c27)">
                                 {
                                   professional.displayName
                                 }
                               </h3>
 
                               {professional.bio && (
-                                <p className="mt-2 text-sm leading-6 text-[#71665e]">
+                                <p className="mt-2 text-sm leading-6 text-(--p-71665e)">
                                   {
                                     professional.bio
                                   }
@@ -1864,7 +1850,7 @@ export default function PublicBookingPage() {
                               )}
                             </div>
 
-                            <span className="text-lg text-[#7b6759] transition-transform duration-300 group-hover:translate-x-1">
+                            <span className="text-lg text-(--p-7b6759) transition-transform duration-300 group-hover:translate-x-1">
                               →
                             </span>
                           </div>
@@ -1896,25 +1882,25 @@ export default function PublicBookingPage() {
                       null
                     );
                   }}
-                  className="mb-7 text-sm font-medium text-[#7a6759] transition hover:text-[#342d28]"
+                  className="mb-7 text-sm font-medium text-(--p-7a6759) transition hover:text-(--p-342d28)"
                 >
-                  ← Cambiar profesional
+                  {copy.changeProfessional}
                 </button>
 
                 <div className="mb-8">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#987e6c]">
-                    Paso 3 de 4
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-(--p-987e6c)">
+                    {copy.stepHeadings[2]}
                   </p>
 
-                  <h2 className="mt-2 font-serif text-3xl text-[#332b26] sm:text-4xl">
-                    Fecha y hora
+                  <h2 className="mt-2 font-serif text-3xl text-(--p-332b26) sm:text-4xl">
+                    {copy.dateTimeTitle}
                   </h2>
 
-                  <p className="mt-3 text-sm leading-6 text-[#756960]">
+                  <p className="mt-3 text-sm leading-6 text-(--p-756960)">
                     {
                       selectedService.name
                     }{" "}
-                    con{" "}
+                    {copy.withProfessional}{" "}
                     {
                       selectedProfessional.displayName
                     }
@@ -1924,15 +1910,14 @@ export default function PublicBookingPage() {
                 <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
                   {/* CALENDAR */}
 
-                  <div className="rounded-[1.75rem] border border-[#3b332e]/10 bg-white/60 p-5 shadow-[0_14px_40px_rgba(57,47,41,0.04)] sm:p-6">
+                  <div className="rounded-[1.75rem] border border-(--p-3b332e)/10 bg-white/60 p-5 shadow-[0_14px_40px_rgba(57,47,41,0.04)] sm:p-6">
                     <div>
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#79685c]">
-                        Elige fecha
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-(--p-79685c)">
+                        {copy.chooseDateLabel}
                       </p>
 
-                      <p className="mt-2 text-xs leading-5 text-[#96877d]">
-                        Selecciona el día que
-                        mejor te venga.
+                      <p className="mt-2 text-xs leading-5 text-(--p-96877d)">
+                        {copy.chooseDateHint}
                       </p>
                     </div>
 
@@ -1960,15 +1945,15 @@ export default function PublicBookingPage() {
 
                   {/* TIMES */}
 
-                  <div className="rounded-[1.75rem] border border-[#3b332e]/10 bg-white/60 p-5 shadow-[0_14px_40px_rgba(57,47,41,0.04)] sm:p-6">
+                  <div className="rounded-[1.75rem] border border-(--p-3b332e)/10 bg-white/60 p-5 shadow-[0_14px_40px_rgba(57,47,41,0.04)] sm:p-6">
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#79685c]">
-                          Horarios
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-(--p-79685c)">
+                          {copy.timesLabel}
                         </p>
 
                         {selectedDate && (
-                          <p className="mt-2 text-xs capitalize leading-5 text-[#96877d]">
+                          <p className="mt-2 text-xs capitalize leading-5 text-(--p-96877d)">
                             {formatDate(
                               selectedDate
                             )}
@@ -1979,60 +1964,56 @@ export default function PublicBookingPage() {
                       {availability?.available &&
                         availability.totalSlots >
                           0 && (
-                          <span className="rounded-full bg-[#eee4da] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#755f51]">
+                          <span className="rounded-full bg-(--p-eee4da) px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-(--p-755f51)">
                             {
                               availability.totalSlots
                             }{" "}
                             {availability.totalSlots === 1
-                              ? "hora"
-                              : "horas"}
+                              ? copy.slotSingular
+                              : copy.slotPlural}
                           </span>
                         )}
                     </div>
 
                     {!selectedDate ? (
-                      <div className="mt-7 rounded-[1.25rem] bg-[#f5efe9] px-5 py-6">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#e8ddd2] text-[#7c6758]">
+                      <div className="mt-7 rounded-[1.25rem] bg-(--p-f5efe9) px-5 py-6">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-(--p-e8ddd2) text-(--p-7c6758)">
                           ◷
                         </div>
 
-                        <p className="mt-4 text-sm font-medium text-[#554940]">
-                          Selecciona una fecha
+                        <p className="mt-4 text-sm font-medium text-(--p-554940)">
+                          {copy.selectDateTitle}
                         </p>
 
-                        <p className="mt-1 max-w-[320px] text-xs leading-5 text-[#8a7d74]">
-                          Los horarios disponibles
-                          aparecerán aquí
-                          automáticamente.
+                        <p className="mt-1 max-w-[320px] text-xs leading-5 text-(--p-8a7d74)">
+                          {copy.selectDateHint}
                         </p>
                       </div>
                     ) : loadingAvailability ? (
                       <div className="mt-8 flex min-h-[120px] items-center justify-center">
-                        <div className="flex items-center gap-3 text-sm text-[#6f6259]">
+                        <div className="flex items-center gap-3 text-sm text-(--p-6f6259)">
                           <LoadingSpinner />
 
-                          Consultando disponibilidad...
+                          {copy.loadingAvailability}
                         </div>
                       </div>
                     ) : !availability ||
                       !availability.available ||
                       availability.slots.length ===
                         0 ? (
-                      <div className="mt-7 rounded-[1.25rem] bg-[#f2ebe4] px-5 py-6">
-                        <p className="text-sm font-medium text-[#584b42]">
-                          Sin horarios disponibles
+                      <div className="mt-7 rounded-[1.25rem] bg-(--p-f2ebe4) px-5 py-6">
+                        <p className="text-sm font-medium text-(--p-584b42)">
+                          {copy.emptyTimesTitle}
                         </p>
 
-                        <p className="mt-2 text-xs leading-5 text-[#84766d]">
-                          Prueba con otro día del
-                          calendario.
+                        <p className="mt-2 text-xs leading-5 text-(--p-84766d)">
+                          {copy.emptyTimesHint}
                         </p>
                       </div>
                     ) : (
                       <div className="mt-6">
-                        <p className="text-xs leading-5 text-[#85776d]">
-                          Selecciona una hora para
-                          continuar.
+                        <p className="text-xs leading-5 text-(--p-85776d)">
+                          {copy.selectTimeHint}
                         </p>
 
                         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -2060,8 +2041,8 @@ export default function PublicBookingPage() {
                                   className={[
                                     "rounded-xl border px-4 py-3.5 text-sm font-semibold transition-all duration-200",
                                     selected
-                                      ? "border-[#332b26] bg-[#332b26] text-white shadow-[0_10px_22px_rgba(51,43,38,0.18)]"
-                                      : "border-[#3b332e]/12 bg-[#fffdfb] text-[#4b4038] hover:-translate-y-0.5 hover:border-[#8b6d59]/35 hover:bg-[#f4ece5]",
+                                      ? "border-(--p-332b26) bg-(--p-332b26) text-white shadow-[0_10px_22px_rgba(51,43,38,0.18)]"
+                                      : "border-(--p-3b332e)/12 bg-(--p-fffdfb) text-(--p-4b4038) hover:-translate-y-0.5 hover:border-(--p-8b6d59)/35 hover:bg-(--p-f4ece5)",
                                   ].join(" ")}
                                 >
                                   {formatTime(
@@ -2074,13 +2055,13 @@ export default function PublicBookingPage() {
                         </div>
 
                         {selectedSlot && (
-                          <div className="mt-6 flex items-center justify-between gap-4 rounded-[1.1rem] bg-[#eee4da] px-4 py-3.5">
+                          <div className="mt-6 flex items-center justify-between gap-4 rounded-[1.1rem] bg-(--p-eee4da) px-4 py-3.5">
                             <div>
-                              <p className="text-[9px] font-semibold uppercase tracking-[0.14em] text-[#8c7565]">
-                                Hora seleccionada
+                              <p className="text-[9px] font-semibold uppercase tracking-[0.14em] text-(--p-8c7565)">
+                                {copy.selectedTimeLabel}
                               </p>
 
-                              <p className="mt-1 text-sm font-semibold text-[#42372f]">
+                              <p className="mt-1 text-sm font-semibold text-(--p-42372f)">
                                 {formatTime(
                                   selectedSlot.startTime
                                 )}{" "}
@@ -2091,7 +2072,7 @@ export default function PublicBookingPage() {
                               </p>
                             </div>
 
-                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#332b26] text-xs text-white">
+                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-(--p-332b26) text-xs text-white">
                               ✓
                             </span>
                           </div>
@@ -2112,9 +2093,9 @@ export default function PublicBookingPage() {
                         "customer"
                       )
                     }
-                    className="inline-flex h-13 items-center justify-center rounded-full bg-[#302924] px-8 text-xs font-semibold uppercase tracking-[0.16em] text-white shadow-[0_10px_28px_rgba(48,41,36,0.16)] transition hover:-translate-y-0.5 hover:bg-[#4b3d34] disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:translate-y-0"
+                    className="inline-flex h-13 items-center justify-center rounded-full bg-(--p-302924) px-8 text-xs font-semibold uppercase tracking-[0.16em] text-white shadow-[0_10px_28px_rgba(48,41,36,0.16)] transition hover:-translate-y-0.5 hover:bg-(--p-4b3d34) disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:translate-y-0"
                   >
-                    Continuar
+                    {copy.continueLabel}
                   </button>
                 </div>
               </div>
@@ -2142,26 +2123,24 @@ export default function PublicBookingPage() {
                       null
                     );
                   }}
-                  className="mb-7 text-sm font-medium text-[#7a6759] transition hover:text-[#342d28]"
+                  className="mb-7 text-sm font-medium text-(--p-7a6759) transition hover:text-(--p-342d28)"
                 >
-                  ← Cambiar fecha u hora
+                  {copy.changeDateTime}
                 </button>
 
                 <div className="grid gap-8 lg:grid-cols-[1fr_0.72fr]">
                   <div>
                     <div className="mb-8">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#987e6c]">
-                        Paso 4 de 4
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-(--p-987e6c)">
+                        {copy.stepHeadings[3]}
                       </p>
 
-                      <h2 className="mt-2 font-serif text-3xl text-[#332b26] sm:text-4xl">
-                        Tus datos
+                      <h2 className="mt-2 font-serif text-3xl text-(--p-332b26) sm:text-4xl">
+                        {copy.customerTitle}
                       </h2>
 
-                      <p className="mt-3 text-sm leading-6 text-[#756960]">
-                        Solo necesitamos los
-                        datos necesarios para
-                        gestionar tu cita.
+                      <p className="mt-3 text-sm leading-6 text-(--p-756960)">
+                        {copy.customerDescription}
                       </p>
                     </div>
 
@@ -2173,8 +2152,8 @@ export default function PublicBookingPage() {
                     >
                       <div className="grid gap-5 sm:grid-cols-2">
                         <label className="block">
-                          <span className="text-xs font-semibold text-[#665950]">
-                            Nombre *
+                          <span className="text-xs font-semibold text-(--p-665950)">
+                            {copy.firstNameLabel}
                           </span>
 
                           <input
@@ -2192,13 +2171,13 @@ export default function PublicBookingPage() {
                                   event.target.value
                                 )
                             }
-                            className="mt-2 h-12 w-full rounded-xl border border-[#3b332e]/15 bg-white px-4 text-sm outline-none transition focus:border-[#8b6d59]/50 focus:ring-2 focus:ring-[#8b6d59]/10"
+                            className="mt-2 h-12 w-full rounded-xl border border-(--p-3b332e)/15 bg-white px-4 text-sm outline-none transition focus:border-(--p-8b6d59)/50 focus:ring-2 focus:ring-(--p-8b6d59)/10"
                           />
                         </label>
 
                         <label className="block">
-                          <span className="text-xs font-semibold text-[#665950]">
-                            Apellidos
+                          <span className="text-xs font-semibold text-(--p-665950)">
+                            {copy.lastNameLabel}
                           </span>
 
                           <input
@@ -2215,15 +2194,15 @@ export default function PublicBookingPage() {
                                   event.target.value
                                 )
                             }
-                            className="mt-2 h-12 w-full rounded-xl border border-[#3b332e]/15 bg-white px-4 text-sm outline-none transition focus:border-[#8b6d59]/50 focus:ring-2 focus:ring-[#8b6d59]/10"
+                            className="mt-2 h-12 w-full rounded-xl border border-(--p-3b332e)/15 bg-white px-4 text-sm outline-none transition focus:border-(--p-8b6d59)/50 focus:ring-2 focus:ring-(--p-8b6d59)/10"
                           />
                         </label>
                       </div>
 
                       <div className="grid gap-5 sm:grid-cols-2">
                         <label className="block">
-                          <span className="text-xs font-semibold text-[#665950]">
-                            Email
+                          <span className="text-xs font-semibold text-(--p-665950)">
+                            {copy.emailLabel}
                           </span>
 
                           <input
@@ -2240,13 +2219,13 @@ export default function PublicBookingPage() {
                                   event.target.value
                                 )
                             }
-                            className="mt-2 h-12 w-full rounded-xl border border-[#3b332e]/15 bg-white px-4 text-sm outline-none transition focus:border-[#8b6d59]/50 focus:ring-2 focus:ring-[#8b6d59]/10"
+                            className="mt-2 h-12 w-full rounded-xl border border-(--p-3b332e)/15 bg-white px-4 text-sm outline-none transition focus:border-(--p-8b6d59)/50 focus:ring-2 focus:ring-(--p-8b6d59)/10"
                           />
                         </label>
 
                         <label className="block">
-                          <span className="text-xs font-semibold text-[#665950]">
-                            Teléfono
+                          <span className="text-xs font-semibold text-(--p-665950)">
+                            {copy.phoneLabel}
                           </span>
 
                           <input
@@ -2263,19 +2242,18 @@ export default function PublicBookingPage() {
                                   event.target.value
                                 )
                             }
-                            className="mt-2 h-12 w-full rounded-xl border border-[#3b332e]/15 bg-white px-4 text-sm outline-none transition focus:border-[#8b6d59]/50 focus:ring-2 focus:ring-[#8b6d59]/10"
+                            className="mt-2 h-12 w-full rounded-xl border border-(--p-3b332e)/15 bg-white px-4 text-sm outline-none transition focus:border-(--p-8b6d59)/50 focus:ring-2 focus:ring-(--p-8b6d59)/10"
                           />
                         </label>
                       </div>
 
-                      <p className="-mt-1 text-xs leading-5 text-[#8a7d74]">
-                        Introduce al menos un email o un teléfono para que podamos
-                        identificar tu reserva y enviarte la información de gestión.
+                      <p className="-mt-1 text-xs leading-5 text-(--p-8a7d74)">
+                        {copy.contactHint}
                       </p>
 
                       <label className="block">
-                        <span className="text-xs font-semibold text-[#665950]">
-                          Notas para el centro
+                        <span className="text-xs font-semibold text-(--p-665950)">
+                          {copy.notesLabel}
                         </span>
 
                         <textarea
@@ -2291,8 +2269,8 @@ export default function PublicBookingPage() {
                                 event.target.value
                               )
                           }
-                          placeholder="Opcional"
-                          className="mt-2 w-full resize-none rounded-xl border border-[#3b332e]/15 bg-white px-4 py-3 text-sm leading-6 outline-none transition focus:border-[#8b6d59]/50 focus:ring-2 focus:ring-[#8b6d59]/10"
+                          placeholder={copy.notesPlaceholder}
+                          className="mt-2 w-full resize-none rounded-xl border border-(--p-3b332e)/15 bg-white px-4 py-3 text-sm leading-6 outline-none transition focus:border-(--p-8b6d59)/50 focus:ring-2 focus:ring-(--p-8b6d59)/10"
                         />
                       </label>
 
@@ -2303,39 +2281,39 @@ export default function PublicBookingPage() {
                           !customerForm.firstName.trim() ||
                           !hasContactMethod
                         }
-                        className="inline-flex h-14 w-full items-center justify-center gap-3 rounded-full bg-[#302924] px-8 text-xs font-semibold uppercase tracking-[0.17em] text-white shadow-[0_12px_30px_rgba(48,41,36,0.18)] transition hover:bg-[#4b3d34] disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto"
+                        className="inline-flex h-14 w-full items-center justify-center gap-3 rounded-full bg-(--p-302924) px-8 text-xs font-semibold uppercase tracking-[0.17em] text-white shadow-[0_12px_30px_rgba(48,41,36,0.18)] transition hover:bg-(--p-4b3d34) disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto"
                       >
                         {creatingBooking && (
                           <LoadingSpinner />
                         )}
 
                         {creatingBooking
-                          ? "Reservando..."
-                          : "Confirmar reserva"}
+                          ? copy.submitting
+                          : copy.submit}
                       </button>
                     </form>
                   </div>
 
                   {/* SUMMARY */}
 
-                  <aside className="h-fit rounded-[1.75rem] border border-[#3b332e]/10 bg-[#eee4da] p-6 lg:sticky lg:top-[100px]">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8b7261]">
-                      Tu cita
+                  <aside className="h-fit rounded-[1.75rem] border border-(--p-3b332e)/10 bg-(--p-eee4da) p-6 lg:sticky lg:top-[100px]">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-(--p-8b7261)">
+                      {copy.summaryEyebrow}
                     </p>
 
-                    <h3 className="mt-3 font-serif text-2xl text-[#332b26]">
+                    <h3 className="mt-3 font-serif text-2xl text-(--p-332b26)">
                       {
                         selectedService.name
                       }
                     </h3>
 
-                    <div className="mt-6 space-y-4 border-t border-[#3b332e]/10 pt-5 text-sm">
+                    <div className="mt-6 space-y-4 border-t border-(--p-3b332e)/10 pt-5 text-sm">
                       <div>
-                        <p className="text-xs text-[#8b7c72]">
-                          Profesional
+                        <p className="text-xs text-(--p-8b7c72)">
+                          {copy.summaryProfessional}
                         </p>
 
-                        <p className="mt-1 font-medium text-[#423830]">
+                        <p className="mt-1 font-medium text-(--p-423830)">
                           {
                             selectedProfessional.displayName
                           }
@@ -2343,11 +2321,11 @@ export default function PublicBookingPage() {
                       </div>
 
                       <div>
-                        <p className="text-xs text-[#8b7c72]">
-                          Fecha
+                        <p className="text-xs text-(--p-8b7c72)">
+                          {copy.summaryDate}
                         </p>
 
-                        <p className="mt-1 capitalize font-medium text-[#423830]">
+                        <p className="mt-1 capitalize font-medium text-(--p-423830)">
                           {formatDate(
                             selectedDate
                           )}
@@ -2355,11 +2333,11 @@ export default function PublicBookingPage() {
                       </div>
 
                       <div>
-                        <p className="text-xs text-[#8b7c72]">
-                          Hora
+                        <p className="text-xs text-(--p-8b7c72)">
+                          {copy.summaryTime}
                         </p>
 
-                        <p className="mt-1 font-medium text-[#423830]">
+                        <p className="mt-1 font-medium text-(--p-423830)">
                           {formatTime(
                             selectedSlot.startTime
                           )}{" "}
@@ -2371,24 +2349,24 @@ export default function PublicBookingPage() {
                       </div>
 
                       <div>
-                        <p className="text-xs text-[#8b7c72]">
-                          Duración
+                        <p className="text-xs text-(--p-8b7c72)">
+                          {copy.summaryDuration}
                         </p>
 
-                        <p className="mt-1 font-medium text-[#423830]">
+                        <p className="mt-1 font-medium text-(--p-423830)">
                           {
                             selectedService.durationMinutes
                           }{" "}
-                          minutos
+                          {copy.minutes}
                         </p>
                       </div>
 
                       <div>
-                        <p className="text-xs text-[#8b7c72]">
-                          Precio
+                        <p className="text-xs text-(--p-8b7c72)">
+                          {copy.summaryPrice}
                         </p>
 
-                        <p className="mt-1 font-serif text-xl text-[#342d28]">
+                        <p className="mt-1 font-serif text-xl text-(--p-342d28)">
                           {formatMoney(
                             Number(
                               selectedService.price
@@ -2411,32 +2389,31 @@ export default function PublicBookingPage() {
             "success" &&
             bookingResult && (
               <div className="mx-auto max-w-[760px]">
-                <div className="rounded-[2rem] border border-[#3b332e]/10 bg-white/60 p-7 text-center shadow-[0_24px_70px_rgba(56,46,40,0.08)] sm:p-10">
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#ded2c6] text-2xl text-[#4f4036]">
+                <div className="rounded-[2rem] border border-(--p-3b332e)/10 bg-white/60 p-7 text-center shadow-[0_24px_70px_rgba(56,46,40,0.08)] sm:p-10">
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-(--p-ded2c6) text-2xl text-(--p-4f4036)">
                     ✓
                   </div>
 
-                  <p className="mt-7 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#987e6c]">
-                    Reserva realizada
+                  <p className="mt-7 text-[10px] font-semibold uppercase tracking-[0.22em] text-(--p-987e6c)">
+                    {copy.successEyebrow}
                   </p>
 
-                  <h2 className="mt-3 font-serif text-4xl text-[#302924] sm:text-5xl">
-                    Tu cita está registrada
+                  <h2 className="mt-3 font-serif text-4xl text-(--p-302924) sm:text-5xl">
+                    {copy.successTitle}
                   </h2>
 
-                  <p className="mx-auto mt-5 max-w-[560px] text-sm leading-7 text-[#756960]">
-                    {bookingResult.message ||
-                      "Hemos registrado correctamente tu reserva."}
+                  <p className="mx-auto mt-5 max-w-[560px] text-sm leading-7 text-(--p-756960)">
+                    {bookingResult.message || copy.successFallback}
                   </p>
 
-                  <div className="mt-8 rounded-[1.5rem] bg-[#eee4da] p-6 text-left">
+                  <div className="mt-8 rounded-[1.5rem] bg-(--p-eee4da) p-6 text-left">
                     <div className="grid gap-5 sm:grid-cols-2">
                       <div>
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#917b6b]">
-                          Tratamiento
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-(--p-917b6b)">
+                          {copy.successService}
                         </p>
 
-                        <p className="mt-1 font-medium text-[#3f352f]">
+                        <p className="mt-1 font-medium text-(--p-3f352f)">
                           {
                             bookingResult.serviceName
                           }
@@ -2444,11 +2421,11 @@ export default function PublicBookingPage() {
                       </div>
 
                       <div>
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#917b6b]">
-                          Profesional
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-(--p-917b6b)">
+                          {copy.successProfessional}
                         </p>
 
-                        <p className="mt-1 font-medium text-[#3f352f]">
+                        <p className="mt-1 font-medium text-(--p-3f352f)">
                           {
                             bookingResult.professionalName
                           }
@@ -2456,11 +2433,11 @@ export default function PublicBookingPage() {
                       </div>
 
                       <div>
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#917b6b]">
-                          Fecha y hora
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-(--p-917b6b)">
+                          {copy.successDateTime}
                         </p>
 
-                        <p className="mt-1 capitalize font-medium text-[#3f352f]">
+                        <p className="mt-1 capitalize font-medium text-(--p-3f352f)">
                           {formatBookingDateTime(
                             bookingResult.startAt
                           )}
@@ -2468,11 +2445,11 @@ export default function PublicBookingPage() {
                       </div>
 
                       <div>
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#917b6b]">
-                          Estado
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-(--p-917b6b)">
+                          {copy.successStatus}
                         </p>
 
-                        <p className="mt-1 font-medium text-[#3f352f]">
+                        <p className="mt-1 font-medium text-(--p-3f352f)">
                           {getStatusLabel(
                             bookingResult.status
                           )}
@@ -2480,16 +2457,14 @@ export default function PublicBookingPage() {
                       </div>
                     </div>
 
-                    <div className="mt-5 border-t border-[#3b332e]/10 pt-5">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#917b6b]">
-                        Referencia
+                    <div className="mt-5 border-t border-(--p-3b332e)/10 pt-5">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-(--p-917b6b)">
+                        {copy.successReference}
                       </p>
 
-                      <p className="mt-1 font-medium text-[#3f352f]">
-                        Cita #
-                        {
-                          bookingResult.appointmentId
-                        }
+                      <p className="mt-1 font-medium text-(--p-3f352f)">
+                        {copy.appointmentRef}{" "}
+                        {bookingResult.appointmentId}
                       </p>
                     </div>
                   </div>
@@ -2497,10 +2472,10 @@ export default function PublicBookingPage() {
                   <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
                     <Link
                       href={managementHref}
-                      className="inline-flex min-h-13 items-center justify-center rounded-full bg-[#302924] px-7 py-3 text-center text-xs font-semibold uppercase tracking-[0.15em] !text-[#fffaf5] no-underline shadow-[0_10px_26px_rgba(48,41,36,0.16)] transition hover:-translate-y-0.5 hover:bg-[#4b3d34] hover:!text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8b6d59]"
+                      className="inline-flex min-h-13 items-center justify-center rounded-full bg-(--p-302924) px-7 py-3 text-center text-xs font-semibold uppercase tracking-[0.15em] !text-(--p-fffaf5) no-underline shadow-[0_10px_26px_rgba(48,41,36,0.16)] transition hover:-translate-y-0.5 hover:bg-(--p-4b3d34) hover:!text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--p-8b6d59)"
                     >
-                      <span style={{ color: "#fffaf5", WebkitTextFillColor: "#fffaf5" }}>
-                        Gestionar mi cita
+                      <span style={{ color: "var(--p-fffaf5)", WebkitTextFillColor: "var(--p-fffaf5)" }}>
+                        {copy.manageCta}
                       </span>
                     </Link>
 
@@ -2509,16 +2484,16 @@ export default function PublicBookingPage() {
                       onClick={
                         resetBooking
                       }
-                      className="inline-flex h-13 items-center justify-center rounded-full border border-[#3b332e]/15 bg-white px-7 text-xs font-semibold uppercase tracking-[0.15em] text-[#403630] transition hover:bg-[#f5eee8]"
+                      className="inline-flex h-13 items-center justify-center rounded-full border border-(--p-3b332e)/15 bg-white px-7 text-xs font-semibold uppercase tracking-[0.15em] text-(--p-403630) transition hover:bg-(--p-f5eee8)"
                     >
-                      Reservar otra cita
+                      {copy.bookAnother}
                     </button>
 
                     <Link
                       href="/"
-                      className="inline-flex h-13 items-center justify-center rounded-full px-7 text-xs font-semibold uppercase tracking-[0.15em] text-[#6f6259] transition hover:bg-[#eee4da]/70 hover:text-[#302924]"
+                      className="inline-flex h-13 items-center justify-center rounded-full px-7 text-xs font-semibold uppercase tracking-[0.15em] text-(--p-6f6259) transition hover:bg-(--p-eee4da)/70 hover:text-(--p-302924)"
                     >
-                      Volver a {business.brand.shortName}
+                      {copy.backPrefix} {business.brand.shortName}
                     </Link>
                   </div>
                 </div>

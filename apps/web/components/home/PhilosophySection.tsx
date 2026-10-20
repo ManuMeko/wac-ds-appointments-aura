@@ -11,14 +11,14 @@ export function PhilosophySection() {
   return (
     <section
       id="experiencia"
-      className="border-y border-[#332b26]/10 bg-[#25211e] text-white"
+      className="border-y border-(--p-332b26)/10 bg-(--p-25211e) text-white"
     >
       <div className="mx-auto grid w-full max-w-[1440px] grid-cols-1 gap-14 px-5 py-20 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:px-12 lg:py-28 xl:px-16">
         {/* =====================================================
             EYEBROW
         ====================================================== */}
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.27em] text-[#c8a992]">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.27em] text-(--p-c8a992)">
             {business.philosophy.eyebrow}
           </p>
         </div>
@@ -27,16 +27,16 @@ export function PhilosophySection() {
             COPY
         ====================================================== */}
         <div>
-          <h2 className="max-w-[840px] font-serif text-4xl leading-[1.05] tracking-[-0.03em] text-[#f3ece5] sm:text-5xl lg:text-6xl">
+          <h2 className="max-w-[840px] font-serif text-4xl leading-[1.05] tracking-[-0.03em] text-(--p-f3ece5) sm:text-5xl lg:text-6xl">
             {business.philosophy.title}
 
-            <span className="text-[#bda08a]">
+            <span className="text-(--p-bda08a)">
               {" "}
               {business.philosophy.highlightedTitle}
             </span>
           </h2>
 
-          <p className="mt-8 max-w-[720px] text-base leading-8 text-[#bfb4ac]">
+          <p className="mt-8 max-w-[720px] text-base leading-8 text-(--p-bfb4ac)">
             {business.philosophy.description}
           </p>
         </div>
