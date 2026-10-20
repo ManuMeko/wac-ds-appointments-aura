@@ -846,6 +846,15 @@ function PremiumSelect({
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
+  const [trackedOpen, setTrackedOpen] = useState(open);
+
+  if (open !== trackedOpen) {
+    setTrackedOpen(open);
+
+    if (open) {
+      setActiveIndex(0);
+    }
+  }
 
   const selected = options.find((option) => option.value === value);
   const filtered = useMemo(() => {
@@ -877,11 +886,8 @@ function PremiumSelect({
   }, [open]);
 
   useEffect(() => {
-    if (!open) return;
-    setActiveIndex(0);
-    if (searchable) {
-      searchRef.current?.focus();
-    }
+    if (!open || !searchable) return;
+    searchRef.current?.focus();
   }, [open, searchable]);
 
   function choose(option: PremiumOption) {
@@ -1425,7 +1431,11 @@ export default function BusinessAppointmentsPage() {
 
   useEffect(
     () => {
-      void loadAppointments();
+      void Promise.resolve().then(
+        () => {
+          void loadAppointments();
+        },
+      );
     },
     [
       loadAppointments,
@@ -1533,25 +1543,31 @@ export default function BusinessAppointmentsPage() {
 
   useEffect(
     () => {
-      if (
-        !createOpen
-        || createProfessionalId == null
-        || createServiceId == null
-        || !createDate
-      ) {
-        setCreateAvailability(
-          null,
-        );
-
-        setCreateSelectedSlot(
-          null,
-        );
-
-        return;
-      }
-
       let cancelled =
         false;
+
+      void Promise.resolve().then(
+        () => {
+          if (
+            !createOpen
+            || createProfessionalId == null
+            || createServiceId == null
+            || !createDate
+          ) {
+            setCreateAvailability(
+              null,
+            );
+
+            setCreateSelectedSlot(
+              null,
+            );
+
+            return;
+          }
+
+          void loadAvailability();
+        },
+      );
 
       async function loadAvailability() {
         const accessToken =
@@ -1659,8 +1675,6 @@ export default function BusinessAppointmentsPage() {
           }
         }
       }
-
-      void loadAvailability();
 
       return () => {
         cancelled =

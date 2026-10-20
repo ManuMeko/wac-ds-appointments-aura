@@ -475,19 +475,23 @@ function CalendarDatePicker({
     )
   );
 
-  useEffect(() => {
-    if (!value) return;
+  const [trackedValue, setTrackedValue] = useState(value);
 
-    const selected = parseLocalDate(value);
+  if (value !== trackedValue) {
+    setTrackedValue(value);
 
-    setVisibleMonth(
-      new Date(
-        selected.getFullYear(),
-        selected.getMonth(),
-        1
-      )
-    );
-  }, [value]);
+    if (value) {
+      const selected = parseLocalDate(value);
+
+      setVisibleMonth(
+        new Date(
+          selected.getFullYear(),
+          selected.getMonth(),
+          1
+        )
+      );
+    }
+  }
 
   const calendarDays = useMemo(
     () => getCalendarDays(visibleMonth),

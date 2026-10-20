@@ -251,24 +251,23 @@ export default function WacCalendar({
     }
   );
 
-  const palette = THEMES[theme];
+  const [trackedSelectedDate, setTrackedSelectedDate] =
+    useState(selectedDate);
 
-  // =======================================================
-  // SYNCHRONIZE SELECTED MONTH
-  // =======================================================
+  if (selectedDate !== trackedSelectedDate) {
+    setTrackedSelectedDate(selectedDate);
 
-  useEffect(() => {
-    if (!selectedDate) {
-      return;
+    if (selectedDate) {
+      const parsed = parseDateKey(selectedDate);
+
+      setVisibleMonth({
+        year: parsed.getUTCFullYear(),
+        month: parsed.getUTCMonth(),
+      });
     }
+  }
 
-    const parsed = parseDateKey(selectedDate);
-
-    setVisibleMonth({
-      year: parsed.getUTCFullYear(),
-      month: parsed.getUTCMonth(),
-    });
-  }, [selectedDate]);
+  const palette = THEMES[theme];
 
   // =======================================================
   // CLOSE ON OUTSIDE CLICK / ESCAPE

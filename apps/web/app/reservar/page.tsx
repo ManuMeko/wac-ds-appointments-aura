@@ -494,12 +494,24 @@ function CalendarDatePicker({
       )
     );
 
-  useEffect(
-    () => {
-      if (!value) {
-        return;
-      }
+  const [
+    trackedValue,
+    setTrackedValue,
+  ] =
+    useState(
+      value
+    );
 
+  if (
+    value !== trackedValue
+  ) {
+    setTrackedValue(
+      value
+    );
+
+    if (
+      value
+    ) {
       const selected =
         parseLocalDate(
           value
@@ -512,9 +524,8 @@ function CalendarDatePicker({
           1
         )
       );
-    },
-    [value]
-  );
+    }
+  }
 
   const calendarDays =
     useMemo(

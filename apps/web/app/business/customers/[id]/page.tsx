@@ -180,6 +180,10 @@ const filterLabels: Record<
 // HELPERS
 // ============================================================
 
+function captureTimestamp(): number {
+  return Date.now();
+}
+
 function customerToForm(
   customer: CustomerResponse,
 ): CustomerFormState {
@@ -824,9 +828,6 @@ export default function CustomerDetailPage() {
       false,
     );
 
-  editingRef.current =
-    editing;
-
   const [
     saving,
     setSaving,
@@ -1057,7 +1058,11 @@ export default function CustomerDetailPage() {
 
   useEffect(
     () => {
-      void loadCustomer();
+      void Promise.resolve().then(
+        () => {
+          void loadCustomer();
+        },
+      );
     },
     [
       loadCustomer,
@@ -1134,6 +1139,9 @@ export default function CustomerDetailPage() {
       null,
     );
 
+    editingRef.current =
+      true;
+
     setEditing(
       true,
     );
@@ -1161,6 +1169,9 @@ export default function CustomerDetailPage() {
     setSaveError(
       null,
     );
+
+    editingRef.current =
+      false;
 
     setEditing(
       false,
@@ -1283,6 +1294,9 @@ export default function CustomerDetailPage() {
           updated,
         ),
       );
+
+      editingRef.current =
+        false;
 
       setEditing(
         false,
@@ -1503,7 +1517,7 @@ export default function CustomerDetailPage() {
       () => {
 
         const now =
-          Date.now();
+          captureTimestamp();
 
         const total =
           appointments.length;

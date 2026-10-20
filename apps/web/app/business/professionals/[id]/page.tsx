@@ -190,6 +190,10 @@ const DAYS: Array<{
 const MINIMUM_ACTION_FEEDBACK_MS =
   450;
 
+function captureTimestamp(): number {
+  return Date.now();
+}
+
 async function ensureMinimumActionFeedback(
   startedAt: number,
 ): Promise<void> {
@@ -952,7 +956,11 @@ export default function ProfessionalDetailPage() {
   useEffect(
     () => {
 
-      void loadProfessional();
+      void Promise.resolve().then(
+        () => {
+          void loadProfessional();
+        },
+      );
 
     },
     [
@@ -1143,7 +1151,7 @@ export default function ProfessionalDetailPage() {
       `assign-service-${serviceId}`;
 
     const startedAt =
-      Date.now();
+      captureTimestamp();
 
     setWorkingKey(
       key,
@@ -1225,7 +1233,7 @@ export default function ProfessionalDetailPage() {
       `remove-service-${serviceId}`;
 
     const startedAt =
-      Date.now();
+      captureTimestamp();
 
     setWorkingKey(
       key,
@@ -1323,7 +1331,7 @@ export default function ProfessionalDetailPage() {
     }
 
     const startedAt =
-      Date.now();
+      captureTimestamp();
 
     setWorkingKey(
       "create-availability",
@@ -1436,7 +1444,7 @@ export default function ProfessionalDetailPage() {
       `availability-${availabilityId}`;
 
     const startedAt =
-      Date.now();
+      captureTimestamp();
 
     setWorkingKey(
       key,
@@ -1548,7 +1556,7 @@ export default function ProfessionalDetailPage() {
     }
 
     const startedAt =
-      Date.now();
+      captureTimestamp();
 
     setWorkingKey(
       "create-exception",
@@ -1673,7 +1681,7 @@ export default function ProfessionalDetailPage() {
       `exception-${scheduleExceptionId}`;
 
     const startedAt =
-      Date.now();
+      captureTimestamp();
 
     setWorkingKey(
       key,

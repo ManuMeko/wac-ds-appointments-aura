@@ -5,9 +5,9 @@ import type {
 } from "react";
 
 import {
-  useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
 
 import Link from "next/link";
@@ -235,6 +235,49 @@ function readStoredBusinessSession():
   }
 }
 
+let cachedBusinessSessionRaw:
+  | string
+  | null
+  | undefined;
+
+let cachedBusinessSession:
+  | StoredBusinessSession
+  | null =
+    null;
+
+function subscribeStoredBusinessSession(): () => void {
+  return () => {};
+}
+
+function readStoredBusinessSessionSnapshot():
+  | StoredBusinessSession
+  | null {
+  const rawSession =
+    window.localStorage.getItem(
+      BUSINESS_SESSION_STORAGE_KEY,
+    );
+
+  if (
+    rawSession === cachedBusinessSessionRaw
+  ) {
+    return cachedBusinessSession;
+  }
+
+  cachedBusinessSessionRaw =
+    rawSession;
+
+  cachedBusinessSession =
+    readStoredBusinessSession();
+
+  return cachedBusinessSession;
+}
+
+function getStoredBusinessSessionServerSnapshot():
+  | StoredBusinessSession
+  | null {
+  return null;
+}
+
 /* =========================================================
    DISPLAY HELPERS
 ========================================================= */
@@ -368,15 +411,11 @@ export default function BusinessLayout({
       pathname,
     );
 
-  const [
-    session,
-    setSession,
-  ] =
-    useState<
-      StoredBusinessSession
-      | null
-    >(
-      null,
+  const session =
+    useSyncExternalStore(
+      subscribeStoredBusinessSession,
+      readStoredBusinessSessionSnapshot,
+      getStoredBusinessSessionServerSnapshot,
     );
 
   const [
@@ -438,21 +477,6 @@ export default function BusinessLayout({
       );
     }
   }
-
-  /* =======================================================
-     SESSION SYNC
-  ======================================================= */
-
-  useEffect(
-    () => {
-      setSession(
-        readStoredBusinessSession(),
-      );
-    },
-    [
-      normalizedPathname,
-    ],
-  );
 
   /* =======================================================
      LOGIN

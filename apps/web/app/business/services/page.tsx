@@ -486,7 +486,11 @@ export default function ServicesPage() {
 
   useEffect(
     () => {
-      void loadServices();
+      void Promise.resolve().then(
+        () => {
+          void loadServices();
+        },
+      );
     },
     [
       loadServices,
@@ -606,20 +610,6 @@ export default function ServicesPage() {
             service,
           ) =>
             service.active,
-        ),
-      [
-        services,
-      ],
-    );
-
-  const inactiveServices =
-    useMemo(
-      () =>
-        services.filter(
-          (
-            service,
-          ) =>
-            !service.active,
         ),
       [
         services,

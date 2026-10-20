@@ -796,7 +796,11 @@ export default function BusinessDashboardPage() {
   useEffect(
     () => {
 
-      void loadDashboard();
+      void Promise.resolve().then(
+        () => {
+          void loadDashboard();
+        },
+      );
 
     },
     [

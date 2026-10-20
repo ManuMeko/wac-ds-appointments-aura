@@ -463,7 +463,11 @@ export default function ProfessionalsPage() {
   useEffect(
     () => {
 
-      void loadProfessionals();
+      void Promise.resolve().then(
+        () => {
+          void loadProfessionals();
+        },
+      );
 
     },
     [
@@ -587,18 +591,6 @@ export default function ProfessionalsPage() {
         professionals.filter(
           professional =>
             professional.active,
-        ),
-      [
-        professionals,
-      ],
-    );
-
-  const inactiveProfessionals =
-    useMemo(
-      () =>
-        professionals.filter(
-          professional =>
-            !professional.active,
         ),
       [
         professionals,

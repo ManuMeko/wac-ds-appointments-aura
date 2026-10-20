@@ -350,7 +350,10 @@ function redirectToBusinessLogin(): void {
   }
 
   window.location.assign(
-    "/business/login",
+    new URL(
+      "/business/login",
+      window.location.origin,
+    ).href,
   );
 }
 
@@ -676,14 +679,12 @@ async function performRequest(
 
   const {
     body,
-
-    accessToken: _accessToken,
-
-    skipAuthRefresh: _skipAuthRefresh,
-
     ...requestInit
   } =
     options;
+
+  delete requestInit.accessToken;
+  delete requestInit.skipAuthRefresh;
 
   const accessToken =
     resolveRequestAccessToken(

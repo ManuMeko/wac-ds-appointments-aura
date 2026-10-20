@@ -451,7 +451,11 @@ export default function CustomersPage() {
   useEffect(
     () => {
 
-      void loadCustomers();
+      void Promise.resolve().then(
+        () => {
+          void loadCustomers();
+        },
+      );
 
     },
     [

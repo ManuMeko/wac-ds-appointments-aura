@@ -5,6 +5,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  useSyncExternalStore,
 } from "react";
 
 import {
@@ -541,6 +542,49 @@ function readStoredBusinessSession():
   } catch {
     return null;
   }
+}
+
+let cachedBusinessSessionRaw:
+  | string
+  | null
+  | undefined;
+
+let cachedBusinessSession:
+  | StoredBusinessSession
+  | null =
+    null;
+
+function subscribeStoredBusinessSession(): () => void {
+  return () => {};
+}
+
+function readStoredBusinessSessionSnapshot():
+  | StoredBusinessSession
+  | null {
+  const rawSession =
+    window.localStorage.getItem(
+      BUSINESS_SESSION_STORAGE_KEY,
+    );
+
+  if (
+    rawSession === cachedBusinessSessionRaw
+  ) {
+    return cachedBusinessSession;
+  }
+
+  cachedBusinessSessionRaw =
+    rawSession;
+
+  cachedBusinessSession =
+    readStoredBusinessSession();
+
+  return cachedBusinessSession;
+}
+
+function getStoredBusinessSessionServerSnapshot():
+  | StoredBusinessSession
+  | null {
+  return null;
 }
 
 /* =========================================================
@@ -1117,15 +1161,11 @@ export default function BusinessSettingsPage() {
       null,
     );
 
-  const [
-    session,
-    setSession,
-  ] =
-    useState<
-      StoredBusinessSession
-      | null
-    >(
-      null,
+  const session =
+    useSyncExternalStore(
+      subscribeStoredBusinessSession,
+      readStoredBusinessSessionSnapshot,
+      getStoredBusinessSessionServerSnapshot,
     );
 
   const [
@@ -1412,13 +1452,12 @@ export default function BusinessSettingsPage() {
 
   useEffect(
     () => {
-      setSession(
-        readStoredBusinessSession(),
+      void Promise.resolve().then(
+        () => {
+          void loadBusiness();
+          void loadOperationalSettings();
+        },
       );
-
-      void loadBusiness();
-
-      void loadOperationalSettings();
     },
     [
       loadBusiness,

@@ -1077,7 +1077,11 @@ export default function BusinessAppointmentDetailPage() {
 
   useEffect(
     () => {
-      void loadAppointment();
+      void Promise.resolve().then(
+        () => {
+          void loadAppointment();
+        },
+      );
     },
     [
       loadAppointment,
@@ -1121,6 +1125,36 @@ export default function BusinessAppointmentDetailPage() {
      RESCHEDULE MODAL UX
   ======================================================= */
 
+  const closeReschedulePanel =
+    useCallback(
+      () => {
+        if (
+          rescheduling
+        ) {
+          return;
+        }
+
+        setRescheduleOpen(
+          false,
+        );
+
+        setAvailability(
+          null,
+        );
+
+        setAvailabilityError(
+          null,
+        );
+
+        setSelectedSlot(
+          null,
+        );
+      },
+      [
+        rescheduling,
+      ],
+    );
+
   useEffect(
     () => {
       if (
@@ -1162,6 +1196,7 @@ export default function BusinessAppointmentDetailPage() {
       };
     },
     [
+      closeReschedulePanel,
       rescheduleOpen,
       rescheduling,
     ],
@@ -1560,34 +1595,6 @@ export default function BusinessAppointmentDetailPage() {
 
     setRescheduleOpen(
       true,
-    );
-  }
-
-  /* =======================================================
-     CLOSE RESCHEDULE
-  ======================================================= */
-
-  function closeReschedulePanel() {
-    if (
-      rescheduling
-    ) {
-      return;
-    }
-
-    setRescheduleOpen(
-      false,
-    );
-
-    setAvailability(
-      null,
-    );
-
-    setAvailabilityError(
-      null,
-    );
-
-    setSelectedSlot(
-      null,
     );
   }
 
