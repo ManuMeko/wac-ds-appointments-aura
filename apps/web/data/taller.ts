@@ -309,6 +309,33 @@ export const tallerConfig: DemoConfig = {
     secondaryCta: { label: "Ver servicios", href: "#servicios" },
   },
 
+  scrollSequence: {
+    basePath: "/images/taller/sequence",
+    frameCount: 120,
+    fileExtension: "webp",
+    heightVh: 400,
+    overlays: [
+      {
+        from: 0,
+        to: 0.36,
+        title: "Primero, el coche.",
+        text: "Identificamos el síntoma y el vehículo antes de tocar una pieza.",
+      },
+      {
+        from: 0.32,
+        to: 0.68,
+        title: "Después, el diagnóstico.",
+        text: "Te decimos qué tiene, qué cuesta y cuándo lo tienes.",
+      },
+      {
+        from: 0.64,
+        to: 1,
+        title: "Sin sorpresas en la factura.",
+        text: "Si aparece algo más, paramos y te llamamos.",
+      },
+    ],
+  },
+
   stats: [
     { value: "+15", label: "Años de taller" },
     { value: "4.8", label: "Valoración" },

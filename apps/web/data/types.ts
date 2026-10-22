@@ -290,6 +290,26 @@ export type ManageBookingCopy = {
   rescheduleRegionLabel: string;
 };
 
+/**
+ * Fotogramas que avanzan con el scroll.
+ * Si una demo no lo define, la home no monta el bloque.
+ * `from` y `to` van de 0 a 1 sobre el recorrido de la sección.
+ */
+export type ScrollSequenceOverlay = {
+  from: number;
+  to: number;
+  title: string;
+  text?: string;
+};
+
+export type ScrollSequenceConfig = {
+  basePath: string;
+  frameCount: number;
+  fileExtension: "webp";
+  heightVh: number;
+  overlays?: readonly ScrollSequenceOverlay[];
+};
+
 export type DemoConfig = {
   slug: string;
   theme: DemoId;
@@ -325,6 +345,7 @@ export type DemoConfig = {
     primaryCta: { label: string; href: string };
     secondaryCta: { label: string; href: string };
   };
+  scrollSequence?: ScrollSequenceConfig;
   stats: readonly Stat[];
   philosophy: {
     eyebrow: string;

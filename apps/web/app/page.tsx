@@ -5,10 +5,12 @@ import { ExperienceSection } from "@/components/home/ExperienceSection";
 import { HeroSection } from "@/components/home/HeroSection";
 import { PhilosophySection } from "@/components/home/PhilosophySection";
 import { ReviewsSection } from "@/components/home/ReviewsSection";
+import { ScrollSequence } from "@/components/home/ScrollSequence";
 import { ServicesSection } from "@/components/home/ServicesSection";
 import { TeamSection } from "@/components/home/TeamSection";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { business } from "@/config/business";
 
 /* =========================================================
    WAC DS · MODEL 01 · APPOINTMENTS
@@ -22,6 +24,9 @@ export default function Home() {
 
       <main>
         <HeroSection />
+        {business.scrollSequence ? (
+          <ScrollSequence sequence={business.scrollSequence} />
+        ) : null}
         <PhilosophySection />
         <ServicesSection />
         <ExperienceSection />
