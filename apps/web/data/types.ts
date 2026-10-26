@@ -13,7 +13,19 @@ export type NavigationItem = {
 export type Stat = {
   value: string;
   label: string;
+  unit?: string;
 };
+
+export type TradeIconName =
+  | "revision"
+  | "oil"
+  | "itv"
+  | "tires"
+  | "brakes"
+  | "diagnosis"
+  | "quote"
+  | "parts"
+  | "schedule";
 
 export type Service = {
   id: string;
@@ -24,6 +36,7 @@ export type Service = {
   price: string;
   category: string;
   featured: boolean;
+  icon?: TradeIconName;
 };
 
 export type Professional = {
@@ -33,6 +46,7 @@ export type Professional = {
   initials: string;
   description: string;
   specialties: string[];
+  image?: string;
 };
 
 export type Review = {
@@ -45,6 +59,7 @@ export type Review = {
 export type Benefit = {
   id: string;
   label: string;
+  icon?: TradeIconName;
 };
 
 export type OpeningHour = {
@@ -84,6 +99,14 @@ export type SeoConfig = {
   category: string;
   keywords: readonly string[];
   themeColor: string;
+  backgroundColor?: string;
+  schemaType?: string | readonly string[];
+  priceRange?: string;
+  areaServed?: string;
+  geo?: {
+    latitude: number;
+    longitude: number;
+  };
   robots: {
     index: boolean;
     follow: boolean;
@@ -143,11 +166,25 @@ export type BookingStatuses = {
   NO_SHOW: string;
 };
 
+export type BookingHeroSequence = {
+  basePath: string;
+  frameCount: number;
+  durationMs: number;
+  fileExtension?: "webp";
+};
+
 export type BookingCopy = {
   eyebrow: string;
   titleLead: string;
   titleAccent: string;
   description: string;
+  /** Fotogramas de la cabecera. Si no está, la cabecera gris se mantiene. */
+  heroSequence?: BookingHeroSequence;
+  /** Fracciones 0–1 del desmontaje: pasos 1–4 y la confirmación. */
+  stepFrames?: readonly number[];
+  /** Rótulos de la miniatura, uno por paso. */
+  stepPhaseLabels?: readonly string[];
+  successVisualTitle?: string;
   backPrefix: string;
   steps: readonly string[];
   stepHeadings: readonly string[];
@@ -158,12 +195,14 @@ export type BookingCopy = {
   emptyServicesBody: string;
   changeService: string;
   chooseProfessionalTitle: string;
+  chooseProfessionalDescription: string;
   loadingProfessionals: string;
   emptyProfessionalsTitle: string;
   emptyProfessionalsBody: string;
   changeProfessional: string;
   dateTimeTitle: string;
   withProfessional: string;
+  dateTimePrompt: string;
   chooseDateLabel: string;
   chooseDateHint: string;
   timesLabel: string;
@@ -300,6 +339,10 @@ export type ScrollSequenceOverlay = {
   to: number;
   title: string;
   text?: string;
+  align?: "start" | "end";
+  level?: "h1" | "h2";
+  primaryCta?: { label: string; href: string };
+  secondaryCta?: { label: string; href: string };
 };
 
 export type ScrollSequenceConfig = {
@@ -307,6 +350,8 @@ export type ScrollSequenceConfig = {
   frameCount: number;
   fileExtension: "webp";
   heightVh: number;
+  /** Recorrido extra, en vh, con el último fotograma quieto. */
+  holdVh?: number;
   overlays?: readonly ScrollSequenceOverlay[];
 };
 
@@ -347,11 +392,19 @@ export type DemoConfig = {
   };
   scrollSequence?: ScrollSequenceConfig;
   stats: readonly Stat[];
+  /** Franja de cifras entre experiencia y equipo. Si no se define, no se monta. */
+  proofStats?: readonly Stat[];
   philosophy: {
     eyebrow: string;
     title: string;
     highlightedTitle: string;
     description: string;
+    steps?: readonly {
+      number: string;
+      title: string;
+      text: string;
+      icon: TradeIconName;
+    }[];
   };
   servicesIntro: {
     eyebrow: string;
@@ -369,6 +422,7 @@ export type DemoConfig = {
     visualDescription: string;
     badge: string;
     note: string;
+    image?: string;
   };
   benefits: readonly Benefit[];
   teamIntro: {

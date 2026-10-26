@@ -1,5 +1,7 @@
 // apps/web/components/home/ContactSection.tsx
 
+import { TiltCard } from "@/components/home/TiltCard";
+import { Reveal } from "@/components/motion/Reveal";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
 import { business } from "@/config/business";
 
@@ -97,6 +99,8 @@ export function ContactSection() {
       <div className="pointer-events-none absolute -bottom-40 -left-32 h-[440px] w-[440px] rounded-full bg-(--p-9a7c66)/10 blur-3xl" />
 
       <div className="relative mx-auto w-full max-w-[1440px] px-5 py-20 sm:px-8 lg:px-12 lg:py-28 xl:px-16">
+        <Reveal variant="fade-up">
+        <TiltCard>
         <div className="overflow-hidden rounded-[2rem] border border-white/25 bg-(--p-f6f0e9) shadow-[0_30px_90px_rgba(65,50,40,0.12)]">
           <div className="grid lg:grid-cols-[1.12fr_0.88fr]">
             {/* =================================================
@@ -111,9 +115,11 @@ export function ContactSection() {
                   {business.contactSection.eyebrow}
                 </p>
 
-                <h2 className="mt-5 max-w-[650px] font-serif text-5xl leading-[0.95] tracking-[-0.04em] text-(--p-2d2723) sm:text-6xl">
-                  {business.contactSection.title}
-                </h2>
+                <Reveal variant="fade-up">
+                  <h2 className="mt-5 max-w-[650px] font-serif text-5xl leading-[0.95] tracking-[-0.04em] text-(--p-2d2723) sm:text-6xl">
+                    {business.contactSection.title}
+                  </h2>
+                </Reveal>
 
                 <p className="mt-7 max-w-[560px] text-base leading-8 text-(--p-72645a)">
                   {business.contactSection.description}
@@ -191,7 +197,26 @@ export function ContactSection() {
                   En desktop se empuja hacia abajo para
                   equilibrar visualmente el panel derecho.
               ============================================== */}
-              <div className="mt-12 border-l border-(--accent)/35 pl-5 lg:mt-auto lg:pt-8">
+              {business.theme === "taller" ? (
+                <div className="relative mt-10 hidden min-h-48 flex-1 overflow-hidden rounded-[1.4rem] bg-[linear-gradient(165deg,#292524,#1c1917)] lg:block">
+                  <p className="absolute left-6 top-6 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/65">
+                    {business.brand.locationLabel}
+                  </p>
+                  <span
+                    aria-hidden="true"
+                    className="absolute -bottom-8 left-5 font-serif text-[10rem] leading-none text-transparent [-webkit-text-stroke:1px_rgba(249,115,22,0.55)]"
+                  >
+                    {business.brand.monogram}
+                  </span>
+                </div>
+              ) : null}
+              <div
+                className={
+                  business.theme === "taller"
+                    ? "mt-8 border-l border-(--accent)/35 pl-5"
+                    : "mt-12 border-l border-(--accent)/35 pl-5 lg:mt-auto lg:pt-8"
+                }
+              >
                 <p className="max-w-[510px] font-serif text-xl leading-7 text-(--p-5d4d42)">
                   {business.contactSection.closingNote}
                 </p>
@@ -320,6 +345,8 @@ export function ContactSection() {
             </aside>
           </div>
         </div>
+        </TiltCard>
+        </Reveal>
       </div>
     </section>
   );

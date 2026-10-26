@@ -2,7 +2,10 @@
 
 import Image from "next/image";
 
+import { LiftVisual } from "@/components/home/LiftVisual";
+import { Reveal } from "@/components/motion/Reveal";
 import { CheckIcon } from "@/components/ui/CheckIcon";
+import { TradeIcon } from "@/components/ui/TradeIcon";
 import { business } from "@/config/business";
 
 /* =========================================================
@@ -11,13 +14,27 @@ import { business } from "@/config/business";
 ========================================================= */
 
 export function ExperienceSection() {
+  const liftCard = business.theme === "taller";
+  const experienceImage = business.experience.image ?? business.assets.experience;
+
   return (
-    <section className="bg-(--section-warm)">
+    <section className={liftCard ? "bg-(--canvas)" : "bg-(--section-warm)"}>
       <div className="mx-auto grid w-full max-w-[1440px] gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center lg:gap-16 lg:px-12 lg:py-28 xl:px-16">
         {/* =====================================================
             VISUAL
         ====================================================== */}
         <div className="relative">
+          {liftCard ? (
+            <Reveal variant="fade-right">
+              <LiftVisual
+                src={experienceImage}
+                alt={business.imageAlts.experience}
+                badge={business.experience.badge}
+                title={business.experience.visualTitle}
+                description={business.experience.visualDescription}
+              />
+            </Reveal>
+          ) : (
           <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/25 bg-(--p-bda693) shadow-[0_30px_80px_rgba(72,56,45,0.14)] sm:aspect-[4/3] lg:aspect-[4/5] xl:aspect-[5/6]">
             <Image
               src={business.assets.experience}
@@ -56,13 +73,18 @@ export function ExperienceSection() {
               </p>
             </div>
           </div>
+          )}
 
           {/* =====================================================
               DECORATIVE DETAIL
           ====================================================== */}
+          {liftCard ? null : (
+            <>
           <div className="pointer-events-none absolute -bottom-5 -right-5 -z-10 hidden h-28 w-28 rounded-full border border-(--accent)/15 lg:block" />
 
           <div className="pointer-events-none absolute -left-7 top-16 -z-10 hidden h-20 w-20 rounded-full bg-(--p-d6c0ad)/45 blur-2xl lg:block" />
+            </>
+          )}
         </div>
 
         {/* =====================================================
@@ -76,9 +98,11 @@ export function ExperienceSection() {
             </p>
 
             {/* Heading */}
-            <h2 className="mt-5 max-w-[600px] font-serif text-5xl leading-[0.97] tracking-[-0.035em] text-(--p-2d2723) sm:text-6xl">
-              {business.experience.title}
-            </h2>
+            <Reveal variant="fade-left">
+              <h2 className="mt-5 max-w-[600px] font-serif text-5xl leading-[0.97] tracking-[-0.035em] text-(--p-2d2723) sm:text-6xl">
+                {business.experience.title}
+              </h2>
+            </Reveal>
 
             {/* Description */}
             <p className="mt-7 max-w-[590px] text-base leading-8 text-(--p-70635b)">
@@ -89,19 +113,24 @@ export function ExperienceSection() {
                 BENEFITS
             ================================================== */}
             <div className="mt-10 grid gap-5 sm:grid-cols-2">
-              {business.benefits.map((benefit) => (
+              {business.benefits.map((benefit, index) => (
+                <Reveal key={benefit.id} variant="fade-up" delay={index * 80}>
                 <div
-                  key={benefit.id}
                   className="group flex items-center gap-3 border-t border-(--p-41372f)/15 pt-5"
                 >
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-(--p-d9c7b8) text-(--p-5a493d) transition-all duration-300 group-hover:scale-105 group-hover:bg-(--p-ceb7a4)">
-                    <CheckIcon />
+                    {benefit.icon ? (
+                      <TradeIcon name={benefit.icon} className="h-4 w-4" />
+                    ) : (
+                      <CheckIcon />
+                    )}
                   </span>
 
                   <span className="text-sm font-medium text-(--p-40362f)">
                     {benefit.label}
                   </span>
                 </div>
+                </Reveal>
               ))}
             </div>
 

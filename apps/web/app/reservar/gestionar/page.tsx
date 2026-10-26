@@ -214,16 +214,23 @@ function getCalendarDays(visibleMonth: Date): CalendarDay[] {
    FORMATTERS
 ========================================================= */
 
+function lowercaseLead(value: string): string {
+  if (!value) return value;
+  return value.charAt(0).toLocaleLowerCase("es-ES") + value.slice(1);
+}
+
 function formatDateTime(value: string): string {
   try {
-    return new Intl.DateTimeFormat("es-ES", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(value));
+    return lowercaseLead(
+      new Intl.DateTimeFormat("es-ES", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }).format(new Date(value))
+    );
   } catch {
     return copy.invalidDate;
   }
@@ -232,12 +239,14 @@ function formatDateTime(value: string): string {
 function formatDate(value: string): string {
   if (!value) return "";
 
-  return new Intl.DateTimeFormat("es-ES", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(parseLocalDate(value));
+  return lowercaseLead(
+    new Intl.DateTimeFormat("es-ES", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(parseLocalDate(value))
+  );
 }
 
 function formatTime(value: string): string {
@@ -508,8 +517,9 @@ function CalendarDatePicker({
   const canGoPrevious = currentMonthKey > minMonthKey;
   const canGoNext = currentMonthKey < maxMonthKey;
 
+  const monthName = MONTHS[visibleMonth.getMonth()];
   const monthLabel =
-    `${MONTHS[visibleMonth.getMonth()]} ` +
+    `${monthName.charAt(0).toLocaleUpperCase("es-ES")}${monthName.slice(1)} ` +
     `${visibleMonth.getFullYear()}`;
 
   return (
@@ -528,7 +538,7 @@ function CalendarDatePicker({
         </button>
 
         <div className="text-center">
-          <p className="font-serif text-xl capitalize text-(--p-342c27)">
+          <p className="font-serif text-xl text-(--p-342c27)">
             {monthLabel}
           </p>
           <p className="mt-0.5 text-[9px] uppercase tracking-[0.18em] text-(--p-9a887c)">
@@ -1259,7 +1269,7 @@ export default function ManageBookingPage() {
                     <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-(--p-9a887b)">
                       {copy.dateTimeLabel}
                     </p>
-                    <p className="mt-2 capitalize text-sm font-medium leading-6 text-(--p-433831)">
+                    <p className="mt-2 text-sm font-medium leading-6 text-(--p-433831)">
                       {formatDateTime(booking.startAt)}
                     </p>
                   </div>
@@ -1483,7 +1493,7 @@ export default function ManageBookingPage() {
                         </div>
                       ) : (
                         <>
-                          <p className="mt-3 text-xs capitalize text-(--p-8c7e74)">
+                          <p className="mt-3 text-xs text-(--p-8c7e74)">
                             {formatDate(rescheduleDate)}
                           </p>
 

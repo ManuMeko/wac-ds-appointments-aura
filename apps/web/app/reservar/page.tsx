@@ -2,16 +2,27 @@
 
 import Link from "next/link";
 import {
-  FormEvent,
+  type FormEvent,
+  type ReactNode,
+  type RefObject,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
+import { BookingCanvas } from "@/components/booking/BookingCanvas";
+import { BookingHero } from "@/components/booking/BookingHero";
+import {
+  BookingStepCard,
+  type BookingChip,
+} from "@/components/booking/BookingStepCard";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { Reveal } from "@/components/motion/Reveal";
+import { TradeIcon } from "@/components/ui/TradeIcon";
 import { business } from "@/config/business";
-import type { BookingExtraField } from "@/data/types";
+import type { BookingExtraField, TradeIconName } from "@/data/types";
 import { getApiBaseUrl } from "@/lib/api";
 
 /* =========================================================
@@ -383,6 +394,24 @@ function formatTime(
   return value.slice(0, 5);
 }
 
+function formatChipWhen(
+  date: string,
+  time: string
+): string {
+  const parsed = parseLocalDate(date);
+  const weekday = new Intl.DateTimeFormat(
+    "es-ES",
+    { weekday: "short" }
+  )
+    .format(parsed)
+    .replace(/\./g, "");
+  const label =
+    weekday.charAt(0).toLocaleUpperCase("es-ES") +
+    weekday.slice(1);
+
+  return `${label} ${parsed.getDate()} · ${formatTime(time)}`;
+}
+
 function formatDate(
   value: string
 ): string {
@@ -395,32 +424,63 @@ function formatDate(
       value
     );
 
-  return new Intl.DateTimeFormat(
-    "es-ES",
-    {
+  return lowercaseLead(
+    new Intl.DateTimeFormat(
+      "es-ES",
+      {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }
+    ).format(date)
+  );
+}
+
+function formatSummaryDay(value: string): string {
+  if (!value) {
+    return "";
+  }
+
+  return lowercaseLead(
+    new Intl.DateTimeFormat("es-ES", {
       weekday: "long",
       day: "numeric",
       month: "long",
-      year: "numeric",
-    }
-  ).format(date);
+    }).format(parseLocalDate(value)),
+  );
+}
+
+function lowercaseLead(
+  value: string
+): string {
+  if (!value) {
+    return value;
+  }
+
+  return (
+    value.charAt(0).toLocaleLowerCase("es-ES") +
+    value.slice(1)
+  );
 }
 
 function formatBookingDateTime(
   value: string
 ): string {
-  return new Intl.DateTimeFormat(
-    "es-ES",
-    {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }
-  ).format(
-    new Date(value)
+  return lowercaseLead(
+    new Intl.DateTimeFormat(
+      "es-ES",
+      {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    ).format(
+      new Date(value)
+    )
   );
 }
 
@@ -448,6 +508,48 @@ function getStatusLabel(
     default:
       return status;
   }
+}
+
+function icsEscape(value: string): string {
+  return value
+    .replace(/\\/g, "\\\\")
+    .replace(/\r?\n/g, "\\n")
+    .replace(/,/g, "\\,")
+    .replace(/;/g, "\\;");
+}
+
+function icsStamp(iso: string): string {
+  return new Date(iso).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+}
+
+function downloadAppointmentIcs(booking: PublicBookingResponse) {
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//WAC DS//Cita//ES",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    `UID:cita-${booking.appointmentId}@${booking.businessId}`,
+    `DTSTAMP:${icsStamp(new Date().toISOString())}`,
+    `DTSTART:${icsStamp(booking.startAt)}`,
+    `DTEND:${icsStamp(booking.endAt)}`,
+    `SUMMARY:${icsEscape(booking.serviceName)}`,
+    `DESCRIPTION:${icsEscape(`${booking.professionalName} · ${booking.businessName}`)}`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ];
+  const blob = new Blob([lines.join("\r\n")], {
+    type: "text/calendar;charset=utf-8",
+  });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = `cita-${booking.appointmentId}.ics`;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
 }
 
 /* =========================================================
@@ -486,6 +588,27 @@ function LoadingSpinner() {
   );
 }
 
+function serviceIcon(
+  service: PublicCatalogService,
+): TradeIconName | undefined {
+  const name = service.name.toLowerCase();
+  const slug = service.slug.toLowerCase();
+
+  return business.services.find((item) => {
+    if (!item.icon) return false;
+    const label = item.name.toLowerCase();
+    const id = item.id.toLowerCase();
+    return (
+      slug === id ||
+      slug.includes(id) ||
+      id.includes(slug) ||
+      name === label ||
+      name.includes(label) ||
+      label.includes(name)
+    );
+  })?.icon;
+}
+
 function StepNumber({
   number,
   active,
@@ -520,6 +643,9 @@ function CalendarDatePicker({
   disabled = false,
   onChange,
 }: CalendarDatePickerProps) {
+  const tallerCalendar =
+    business.theme === "taller";
+
   const today =
     getTodayLocalDate();
 
@@ -615,10 +741,13 @@ function CalendarDatePicker({
     currentMonthKey <
     maximumMonthKey;
 
-  const monthLabel =
-    `${CALENDAR_MONTHS[
+  const monthName =
+    CALENDAR_MONTHS[
       visibleMonth.getMonth()
-    ]} ${visibleMonth.getFullYear()}`;
+    ];
+
+  const monthLabel =
+    `${monthName.charAt(0).toLocaleUpperCase("es-ES")}${monthName.slice(1)} ${visibleMonth.getFullYear()}`;
 
   function goPreviousMonth() {
     if (
@@ -702,7 +831,7 @@ function CalendarDatePicker({
         </button>
 
         <div className="text-center">
-          <p className="font-serif text-xl capitalize text-(--p-342c27)">
+          <p className="font-serif text-xl text-(--p-342c27)">
             {monthLabel}
           </p>
 
@@ -769,9 +898,12 @@ function CalendarDatePicker({
             const isToday =
               day.date === today;
 
+            const isPast =
+              day.date < minDate;
+
             const isDisabled =
               disabled ||
-              day.date < minDate ||
+              isPast ||
               day.date > maxDate;
 
             return (
@@ -796,10 +928,17 @@ function CalendarDatePicker({
                     day.date!
                   )
                 }
+                style={
+                  isPast && tallerCalendar
+                    ? { cursor: "not-allowed" }
+                    : undefined
+                }
                 className={[
                   "relative flex aspect-square min-h-9 items-center justify-center rounded-full text-xs font-medium transition-all duration-200 sm:min-h-10",
                   isSelected
-                    ? "bg-(--p-302924) text-white shadow-[0_8px_18px_rgba(48,41,36,0.22)]"
+                    ? tallerCalendar
+                      ? "bg-[#1c1917] text-white shadow-[0_10px_22px_rgba(28,25,23,0.28)]"
+                      : "bg-(--p-302924) text-white shadow-[0_8px_18px_rgba(48,41,36,0.22)]"
                     : "",
                   !isSelected &&
                   isToday
@@ -811,7 +950,9 @@ function CalendarDatePicker({
                     ? "text-(--p-51453d) hover:bg-(--p-eadfd4) hover:text-(--p-2d2723)"
                     : "",
                   isDisabled
-                    ? "cursor-not-allowed text-(--p-d0c6bf)"
+                    ? isPast && tallerCalendar
+                      ? "cursor-not-allowed text-[#d6d3d1] opacity-50"
+                      : "cursor-not-allowed text-(--p-d0c6bf)"
                     : "",
                 ].join(" ")}
               >
@@ -823,7 +964,11 @@ function CalendarDatePicker({
                   !isSelected && (
                     <span
                       aria-hidden="true"
-                      className="absolute bottom-[5px] h-1 w-1 rounded-full bg-(--p-92725d)"
+                      className={
+                        tallerCalendar
+                          ? "absolute bottom-[5px] h-1 w-1 rounded-full bg-[#c2410c]"
+                          : "absolute bottom-[5px] h-1 w-1 rounded-full bg-(--p-92725d)"
+                      }
                     />
                   )}
               </button>
@@ -835,21 +980,28 @@ function CalendarDatePicker({
       {/* CALENDAR FOOTER */}
 
       <div className="mt-6 flex items-center justify-between gap-4 border-t border-(--p-3b332e)/10 pt-4">
-        <button
-          type="button"
-          disabled={
-            disabled
-          }
-          onClick={
-            selectToday
-          }
-          className="text-[10px] font-semibold uppercase tracking-[0.15em] text-(--accent) transition hover:text-(--p-342d28) disabled:opacity-40"
-        >
-          {copy.today}
-        </button>
+        {value &&
+        value !== today ? (
+          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-(--p-706258)">
+            Día elegido
+          </p>
+        ) : (
+          <button
+            type="button"
+            disabled={
+              disabled
+            }
+            onClick={
+              selectToday
+            }
+            className="text-[10px] font-semibold uppercase tracking-[0.15em] text-(--accent) transition hover:text-(--p-342d28) disabled:opacity-40"
+          >
+            {copy.today}
+          </button>
+        )}
 
         {value ? (
-          <p className="text-right text-xs capitalize text-(--p-706258)">
+          <p className="text-right text-xs text-(--p-706258)">
             {formatDate(
               value
             )}
@@ -864,9 +1016,568 @@ function CalendarDatePicker({
   );
 }
 
+function ChangeStepButton({
+  label,
+  onClick,
+}: {
+  label: string;
+  onClick: () => void;
+}) {
+  const text = label.replace(/^←\s*/, "");
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="group ml-auto inline-flex items-center gap-2 rounded-full border border-[#d6d3d1] px-[18px] py-[10px] text-[14px] font-medium text-[#1c1917] transition hover:border-[#c2410c] hover:text-[#c2410c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c2410c]"
+      style={{ fontSize: "14px", fontWeight: 500 }}
+    >
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 16 16"
+        className="h-3.5 w-3.5 shrink-0 transition-transform duration-200 group-hover:-translate-x-[3px] motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M10 3.5 5.5 8 10 12.5" />
+      </svg>
+      {text}
+    </button>
+  );
+}
+
+function StepHeading({
+  taller,
+  index,
+  eyebrow,
+  title,
+  description,
+  descriptionClass,
+  changeLabel,
+  onChange,
+}: {
+  taller: boolean;
+  index: number;
+  eyebrow: string;
+  title: string;
+  description: ReactNode;
+  descriptionClass?: string;
+  changeLabel?: string;
+  onChange?: () => void;
+}) {
+  if (!taller) {
+    return (
+      <>
+        {onChange && changeLabel ? (
+          <button
+            type="button"
+            onClick={onChange}
+            className="mb-7 text-sm font-medium text-(--p-7a6759) transition hover:text-(--p-342d28)"
+          >
+            {changeLabel}
+          </button>
+        ) : null}
+        <div className="mb-8">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-(--p-987e6c)">
+            {eyebrow}
+          </p>
+          <h2 className="mt-2 font-serif text-3xl text-(--heading) sm:text-4xl">
+            {title}
+          </h2>
+          <p className={descriptionClass ?? "mt-3 text-sm leading-6 text-(--p-756960)"}>
+            {description}
+          </p>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <div className="mb-8">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <p className="text-[12px] font-semibold tracking-[0.12em] text-[#c2410c]">
+            {eyebrow}
+          </p>
+          <span className="flex items-center gap-1" aria-hidden="true">
+            {Array.from({ length: 4 }, (_, segment) => (
+              <span
+                key={segment}
+                className={[
+                  "h-1 w-4 rounded-full",
+                  segment <= index ? "bg-[#c2410c]" : "bg-[#e7e5e4]",
+                ].join(" ")}
+              />
+            ))}
+          </span>
+        </div>
+        {onChange && changeLabel ? (
+          <ChangeStepButton label={changeLabel} onClick={onChange} />
+        ) : null}
+      </div>
+      <h2 className="pt-3 font-serif text-[32px] tracking-[-0.02em] text-(--heading) sm:text-[40px]">
+        {title}
+      </h2>
+      <div className="mt-3 max-w-[40rem] text-sm leading-6 text-(--p-756960)">
+        {description}
+      </div>
+    </div>
+  );
+}
+
+function slotIsMorning(time: string): boolean {
+  return Number.parseInt(time.slice(0, 2), 10) < 14;
+}
+
+function TimeSlotGrid({
+  slots,
+  selectedStartAt,
+  taller,
+  onSelect,
+}: {
+  slots: AvailabilitySlot[];
+  selectedStartAt: string | null;
+  taller: boolean;
+  onSelect: (slot: AvailabilitySlot) => void;
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      {slots.map((slot) => {
+        const selected = selectedStartAt === slot.startAt;
+
+        return (
+          <button
+            key={slot.startAt}
+            type="button"
+            onClick={() => onSelect(slot)}
+            className={[
+              "rounded-xl border px-4 py-3.5 text-sm font-semibold transition-all duration-200",
+              selected
+                ? taller
+                  ? "border-[#c2410c] bg-[#c2410c] text-white shadow-[0_10px_22px_rgba(194,65,12,0.28)]"
+                  : "border-(--heading) bg-(--heading) text-white shadow-[0_10px_22px_rgba(51,43,38,0.18)]"
+                : "border-(--p-3b332e)/12 bg-(--p-fffdfb) text-(--p-4b4038) hover:-translate-y-0.5 hover:border-(--accent)/35 hover:bg-(--p-f4ece5)",
+            ].join(" ")}
+          >
+            {formatTime(slot.startTime)}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function TimesScroller({ children }: { children: ReactNode }) {
+  return (
+    <div className="relative mt-4 flex flex-col md:min-h-0 md:flex-1">
+      <div
+        className="booking-times space-y-4 overflow-visible pr-2 md:min-h-0 md:flex-1 md:overflow-y-auto"
+        ref={(node) => {
+          if (!node) return;
+
+          const sync = () => {
+            const canScroll = window.matchMedia("(min-width: 768px)").matches;
+            const overflowing =
+              canScroll && node.scrollHeight > node.clientHeight + 4;
+            const atEnd =
+              node.scrollTop + node.clientHeight >= node.scrollHeight - 8;
+            node.dataset.overflow = overflowing && !atEnd ? "true" : "false";
+          };
+
+          sync();
+          const observer = new ResizeObserver(sync);
+          observer.observe(node);
+          node.addEventListener("scroll", sync, { passive: true });
+          window.addEventListener("resize", sync);
+
+          return () => {
+            observer.disconnect();
+            node.removeEventListener("scroll", sync);
+            window.removeEventListener("resize", sync);
+          };
+        }}
+      >
+        {children}
+      </div>
+      <div
+        aria-hidden="true"
+        className="booking-times-fade pointer-events-none absolute inset-x-0 bottom-0 hidden h-8 opacity-0 transition-opacity md:block"
+      />
+    </div>
+  );
+}
+
 /* =========================================================
    PAGE
 ========================================================= */
+
+const NOTE_SUGGESTIONS = [
+  "Ruido al frenar",
+  "Testigo encendido",
+  "Vibraciones",
+  "Revisión antes de viaje",
+] as const;
+
+function FieldGlyph({
+  name,
+}: {
+  name:
+    | "person"
+    | "mail"
+    | "phone"
+    | "car"
+    | "note"
+    | "check"
+    | "clock"
+    | "calendar"
+    | "wrench"
+    | "duration";
+}) {
+  const paths: Record<typeof name, ReactNode> = {
+    person: (
+      <>
+        <circle cx="12" cy="8" r="3.2" />
+        <path d="M5.5 19.2c.8-3.2 3.3-4.8 6.5-4.8s5.7 1.6 6.5 4.8" />
+      </>
+    ),
+    mail: (
+      <>
+        <rect x="3.5" y="5.5" width="17" height="13" rx="2" />
+        <path d="m4.5 7 7.5 6L19.5 7" />
+      </>
+    ),
+    phone: (
+      <path d="M8.2 4.8h2.2l1.2 3-1.6 1a12 12 0 0 0 5.2 5.2l1-1.6 3 1.2v2.2c0 .7-.5 1.3-1.2 1.4A14.5 14.5 0 0 1 6.8 6c.1-.7.7-1.2 1.4-1.2z" />
+    ),
+    car: (
+      <>
+        <path d="M4 15.5 5.6 9.8A2 2 0 0 1 7.5 8.5h9a2 2 0 0 1 1.9 1.3L20 15.5" />
+        <path d="M3.5 15.5h17V18a1 1 0 0 1-1 1h-1.2a1 1 0 0 1-1-1v-.5H6.7V18a1 1 0 0 1-1 1H4.5a1 1 0 0 1-1-1z" />
+        <circle cx="7.2" cy="15.6" r="1" />
+        <circle cx="16.8" cy="15.6" r="1" />
+      </>
+    ),
+    note: (
+      <>
+        <path d="M7 4.5h7.2L19 9.2V19a1.5 1.5 0 0 1-1.5 1.5h-10A1.5 1.5 0 0 1 6 19V6A1.5 1.5 0 0 1 7.5 4.5H7z" />
+        <path d="M14 4.8V9h4.2M9 13h6M9 16h4" />
+      </>
+    ),
+    check: <path d="m5.5 12.5 4 4 9-9" />,
+    clock: (
+      <>
+        <circle cx="12" cy="12" r="7.5" />
+        <path d="M12 8.5V12l2.5 2" />
+      </>
+    ),
+    calendar: (
+      <>
+        <rect x="4" y="5.5" width="16" height="14" rx="2" />
+        <path d="M8 4v3M16 4v3M4 10h16" />
+      </>
+    ),
+    wrench: (
+      <path d="M14.5 6.2a3.2 3.2 0 0 0-4.3 4.2L5 15.6 8.4 19l5.2-5.2a3.2 3.2 0 0 0 4.2-4.3L15.2 12l-2.2-2.2z" />
+    ),
+    duration: (
+      <>
+        <path d="M8 4.5h8M8 19.5h8" />
+        <path d="M9 4.5c0 4.2 6 3.2 6 7.5S9 15.3 9 19.5" />
+      </>
+    ),
+  };
+
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {paths[name]}
+    </svg>
+  );
+}
+
+function PremiumField({
+  id,
+  label,
+  icon,
+  value,
+  valid,
+  invalid,
+  errorId,
+  errorMessage,
+  hintId,
+  plate,
+  multiline,
+  type = "text",
+  maxLength,
+  autoComplete,
+  inputMode,
+  required,
+  placeholder,
+  notesRef,
+  onChange,
+  onInvalid,
+}: {
+  id: string;
+  label: string;
+  icon: "person" | "mail" | "phone" | "car" | "note";
+  value: string;
+  valid: boolean;
+  invalid: boolean;
+  errorId?: string;
+  errorMessage?: string;
+  hintId?: string;
+  plate?: boolean;
+  multiline?: boolean;
+  type?: string;
+  maxLength?: number;
+  autoComplete?: string;
+  inputMode?: "tel" | "email" | "text";
+  required?: boolean;
+  placeholder?: string;
+  notesRef?: RefObject<HTMLTextAreaElement | null>;
+  onChange: (value: string) => void;
+  onInvalid?: (event: FormEvent<HTMLInputElement>) => void;
+}) {
+  const describedBy =
+    [hintId, invalid && errorId ? errorId : undefined].filter(Boolean).join(" ") ||
+    undefined;
+  const controlClass = "booking-field-control";
+
+  return (
+    <label
+      className={[
+        "booking-field",
+        plate ? "booking-field-plate" : "",
+        valid ? "is-valid" : "",
+        invalid ? "is-invalid" : "",
+      ].join(" ")}
+      htmlFor={id}
+    >
+      {plate ? (
+        <span className="booking-plate">
+          <span className="booking-plate-band" aria-hidden="true">
+            E
+          </span>
+          <input
+            id={id}
+            type="text"
+            required={required}
+            maxLength={maxLength}
+            autoComplete={autoComplete}
+            placeholder={placeholder ?? " "}
+            value={value}
+            aria-invalid={invalid || undefined}
+            aria-describedby={describedBy}
+            onChange={(event) => onChange(event.target.value)}
+            className={controlClass}
+          />
+          <span className="booking-field-label">{label}</span>
+        </span>
+      ) : (
+        <>
+          <span className="booking-field-icon" aria-hidden="true">
+            <FieldGlyph name={icon} />
+          </span>
+          {multiline ? (
+            <textarea
+              id={id}
+              ref={notesRef}
+              rows={3}
+              maxLength={maxLength}
+              autoComplete={autoComplete}
+              placeholder=" "
+              value={value}
+              aria-invalid={invalid || undefined}
+              aria-describedby={describedBy}
+              onChange={(event) => onChange(event.target.value)}
+              className={controlClass}
+            />
+          ) : (
+            <input
+              id={id}
+              type={type}
+              required={required}
+              maxLength={maxLength}
+              autoComplete={autoComplete}
+              inputMode={inputMode}
+              placeholder=" "
+              value={value}
+              aria-invalid={invalid || undefined}
+              aria-describedby={describedBy}
+              onChange={(event) => onChange(event.target.value)}
+              onInvalid={onInvalid}
+              className={controlClass}
+            />
+          )}
+          <span className="booking-field-label">{label}</span>
+        </>
+      )}
+      <span className="booking-field-check" aria-hidden="true">
+        <FieldGlyph name="check" />
+      </span>
+      {invalid && errorMessage ? (
+        <p id={errorId} role="alert" className="booking-field-error is-shown">
+          {errorMessage}
+        </p>
+      ) : null}
+    </label>
+  );
+}
+
+function TallerConfirmation({
+  booking,
+  emailed,
+  managementHref,
+  copied,
+  onCopy,
+  onReset,
+}: {
+  booking: PublicBookingResponse;
+  emailed: boolean;
+  managementHref: string;
+  copied: boolean;
+  onCopy: () => void;
+  onReset: () => void;
+}) {
+  const confirmed = booking.status.toUpperCase() === "CONFIRMED";
+  const reference = `${copy.appointmentRef}${booking.appointmentId}`;
+
+  return (
+    <>
+      <div className="booking-done-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" className="booking-done-check">
+          <path
+            d="M5 12.8 9.8 17.5 19 7"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            pathLength="1"
+          />
+        </svg>
+      </div>
+
+      <p className="booking-done-eyebrow">{copy.successEyebrow}</p>
+      <h2 className="booking-done-title">{copy.successTitle}</h2>
+      <p className="booking-done-lead">
+        {emailed
+          ? "Te hemos enviado la confirmación. Si necesitas cambiar algo, puedes gestionarla cuando quieras."
+          : booking.message || copy.successFallback}
+      </p>
+
+      <div className="booking-done-panel">
+        <div className="booking-done-grid">
+          <div className="booking-done-row">
+            <span className="booking-done-row-icon" aria-hidden="true">
+              <FieldGlyph name="wrench" />
+            </span>
+            <div>
+              <p className="booking-done-kicker">{copy.successService}</p>
+              <p className="booking-done-value">{booking.serviceName}</p>
+            </div>
+          </div>
+          <div className="booking-done-row">
+            <span className="booking-done-row-icon" aria-hidden="true">
+              <FieldGlyph name="person" />
+            </span>
+            <div>
+              <p className="booking-done-kicker">{copy.successProfessional}</p>
+              <p className="booking-done-value">{booking.professionalName}</p>
+            </div>
+          </div>
+          <div className="booking-done-row">
+            <span className="booking-done-row-icon" aria-hidden="true">
+              <FieldGlyph name="calendar" />
+            </span>
+            <div>
+              <p className="booking-done-kicker">{copy.successDateTime}</p>
+              <p className="booking-done-value">{formatBookingDateTime(booking.startAt)}</p>
+            </div>
+          </div>
+          <div className="booking-done-row">
+            <span className="booking-done-row-icon" aria-hidden="true">
+              <FieldGlyph name="check" />
+            </span>
+            <div>
+              <p className="booking-done-kicker">{copy.successStatus}</p>
+              <p className={confirmed ? "booking-done-badge" : "booking-done-badge is-muted"}>
+                {getStatusLabel(booking.status)}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="booking-done-ref">
+          <p className="booking-done-kicker">{copy.successReference}</p>
+          <div className="booking-done-ref-line">
+            <p className="booking-done-value">{reference}</p>
+            <button
+              type="button"
+              className="booking-done-copy"
+              onClick={onCopy}
+              aria-label={copied ? "Copiado" : "Copiar referencia"}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="8" y="8" width="11" height="11" rx="2" />
+                <path d="M5 15.5V6.5A1.5 1.5 0 0 1 6.5 5H15" />
+              </svg>
+            </button>
+            {copied ? (
+              <span className="booking-done-copied" role="status">
+                Copiado
+              </span>
+            ) : null}
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        className="booking-done-ics"
+        onClick={() => downloadAppointmentIcs(booking)}
+      >
+        <FieldGlyph name="calendar" />
+        Añadir al calendario
+      </button>
+
+      <div className="booking-done-actions">
+        <Link href={managementHref} className="booking-done-primary">
+          <span className="booking-done-label">
+            <FieldGlyph name="calendar" />
+            {copy.manageCta}
+          </span>
+        </Link>
+        <button type="button" className="booking-done-secondary" onClick={onReset}>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          {copy.bookAnother}
+        </button>
+        <Link href="/" className="booking-done-ghost">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M14 6 8 12l6 6" />
+          </svg>
+          <span className="booking-done-ghost-label">
+            {copy.backPrefix} {business.brand.shortName}
+            <span className="booking-done-underline" aria-hidden="true" />
+          </span>
+        </Link>
+      </div>
+    </>
+  );
+}
 
 export default function PublicBookingPage() {
   const [
@@ -944,6 +1655,14 @@ export default function PublicBookingPage() {
     setExtraValues,
   ] =
     useState<Record<string, string>>({});
+
+  const [summaryOpen, setSummaryOpen] = useState(false);
+
+  const notesRef = useRef<HTMLTextAreaElement>(null);
+
+  const [referenceCopied, setReferenceCopied] = useState(false);
+
+  const referenceTimer = useRef<number | null>(null);
 
   const [
     bookingResult,
@@ -1321,6 +2040,21 @@ export default function PublicBookingPage() {
     customerForm.email.trim().length > 0 ||
     customerForm.phone.trim().length > 0;
 
+  const formReady =
+    customerForm.firstName.trim().length > 0 &&
+    hasContactMethod;
+
+  useEffect(() => {
+    const node = notesRef.current;
+
+    if (!node) {
+      return;
+    }
+
+    node.style.height = "auto";
+    node.style.height = `${node.scrollHeight}px`;
+  }, [customerForm.notes, step]);
+
   /* =======================================================
      CREATE BOOKING
   ======================================================== */
@@ -1529,6 +2263,8 @@ export default function PublicBookingPage() {
       INITIAL_CUSTOMER_FORM
     );
 
+    setReferenceCopied(false);
+
     setExtraValues(
       {}
     );
@@ -1561,6 +2297,64 @@ export default function PublicBookingPage() {
           step
         );
 
+  const taller =
+    business.theme === "taller";
+
+  const sequence =
+    copy.heroSequence;
+
+  const phase =
+    step === "success"
+      ? (copy.stepFrames?.[
+          copy.stepFrames.length - 1
+        ] ?? 1)
+      : (copy.stepFrames?.[
+          currentStepIndex
+        ] ?? 0);
+
+  const chosenChips: BookingChip[] = [];
+
+  if (
+    currentStepIndex > 0 &&
+    selectedService
+  ) {
+    chosenChips.push({
+      kind: "service",
+      stepIndex: 0,
+      text: selectedService.name,
+      price: formatMoney(
+        Number(selectedService.price),
+        selectedService.currency
+      ),
+    });
+  }
+
+  if (
+    currentStepIndex > 1 &&
+    selectedProfessional
+  ) {
+    chosenChips.push({
+      kind: "professional",
+      stepIndex: 1,
+      text: selectedProfessional.displayName,
+    });
+  }
+
+  if (
+    currentStepIndex > 2 &&
+    selectedDate &&
+    selectedSlot
+  ) {
+    chosenChips.push({
+      kind: "datetime",
+      stepIndex: 2,
+      text: formatChipWhen(
+        selectedDate,
+        selectedSlot.startTime
+      ),
+    });
+  }
+
   const managementHref =
     bookingResult
       ? bookingResult.managementToken
@@ -1569,6 +2363,46 @@ export default function PublicBookingPage() {
           )}`
         : `/reservar/gestionar?appointmentId=${bookingResult.appointmentId}`
       : "/reservar/gestionar";
+
+  async function copyAppointmentReference() {
+    if (!bookingResult) {
+      return;
+    }
+
+    const text = `${copy.appointmentRef}${bookingResult.appointmentId}`;
+    let copied = false;
+
+    try {
+      await navigator.clipboard.writeText(text);
+      copied = true;
+    } catch {
+      try {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.left = "-9999px";
+        document.body.appendChild(area);
+        area.select();
+        copied = document.execCommand("copy");
+        area.remove();
+      } catch {
+        copied = false;
+      }
+    }
+
+    if (!copied) {
+      return;
+    }
+
+    setReferenceCopied(true);
+      if (referenceTimer.current !== null) {
+        window.clearTimeout(referenceTimer.current);
+      }
+      referenceTimer.current = window.setTimeout(() => {
+      setReferenceCopied(false);
+    }, 2000);
+  }
 
   return (
     <div className="min-h-screen bg-(--canvas) text-(--p-2d2723)">
@@ -1579,46 +2413,48 @@ export default function PublicBookingPage() {
             HERO
         ==================================================== */}
 
-        <section className="border-b border-(--p-3a312c)/10 bg-(--hero-bg)">
-          <div className="mx-auto w-full max-w-[1180px] px-5 py-14 sm:px-8 sm:py-16 lg:px-12">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-(--p-856f5f) transition hover:text-(--p-392f29)"
-            >
-              <span aria-hidden="true">
-                ←
-              </span>
-
-              {copy.backPrefix} {business.brand.name}
-            </Link>
-
-            <div className="mt-8 max-w-[760px]">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-(--accent)">
-                {copy.eyebrow}
-              </p>
-
-              <h1 className="mt-4 font-serif text-[clamp(2.8rem,6vw,5.6rem)] leading-[0.95] tracking-[-0.04em] text-(--p-2b2521)">
-                {copy.titleLead}
-
-                <span className="block italic text-(--accent)">
-                  {copy.titleAccent}
-                </span>
-              </h1>
-
-              <p className="mt-6 max-w-[620px] text-base leading-7 text-(--p-6b5f56) sm:text-lg">
-                {copy.description}
-              </p>
-            </div>
-          </div>
-        </section>
+        <BookingHero
+          eyebrow={copy.eyebrow}
+          titleLead={copy.titleLead}
+          titleAccent={copy.titleAccent}
+          description={copy.description}
+          backPrefix={copy.backPrefix}
+          brandName={business.brand.name}
+          sequence={sequence}
+          stepFrames={copy.stepFrames}
+          mode={step === "service" ? "loop" : "hold"}
+          target={phase}
+        />
 
         {/* ===================================================
             BOOKING
         ==================================================== */}
 
-        <section className="mx-auto w-full max-w-[1180px] px-5 py-10 sm:px-8 sm:py-14 lg:px-12 lg:py-16">
+        <section className={taller && sequence && step !== "success" ? "relative z-[2] mx-auto w-full max-w-[1180px] px-5 pb-10 sm:px-8 sm:pb-14 lg:px-12 lg:pb-16" : "mx-auto w-full max-w-[1180px] px-5 py-10 sm:px-8 sm:py-14 lg:px-12 lg:py-16"}>
           {step !==
-            "success" && (
+            "success" &&
+            taller &&
+            sequence && (
+              <BookingStepCard
+                labels={copy.steps}
+                currentStepIndex={currentStepIndex}
+                sequence={sequence}
+                stepFrames={copy.stepFrames}
+                phaseLabels={copy.stepPhaseLabels}
+                target={phase}
+                chips={chosenChips}
+                onStepSelect={(index) => {
+                  const next = stepOrder[index];
+                  if (!next || index >= currentStepIndex) return;
+                  setStep(next);
+                  setError(null);
+                }}
+              />
+            )}
+
+          {step !==
+            "success" &&
+            !(taller && sequence) && (
             <div className="mb-8 overflow-x-auto">
               <div className="flex min-w-[650px] items-center">
                 {copy.steps.map(
@@ -1683,7 +2519,13 @@ export default function PublicBookingPage() {
 
           {/* ERROR */}
 
-          {error && (
+          {error &&
+            !(
+              taller &&
+              step === "customer" &&
+              (error === copy.errorFirstName ||
+                error === copy.errorContact)
+            ) && (
             <div
               role="alert"
               className="mb-6 rounded-[1.25rem] border border-red-900/10 bg-red-50 px-5 py-4 text-sm leading-6 text-red-800"
@@ -1699,19 +2541,14 @@ export default function PublicBookingPage() {
           {step ===
             "service" && (
             <div>
-              <div className="mb-8">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-(--p-987e6c)">
-                  {copy.stepHeadings[0]}
-                </p>
-
-                <h2 className="mt-2 font-serif text-3xl text-(--heading) sm:text-4xl">
-                  {copy.chooseServiceTitle}
-                </h2>
-
-                <p className="mt-3 max-w-[620px] text-sm leading-6 text-(--p-756960)">
-                  {copy.chooseServiceDescription}
-                </p>
-              </div>
+              <StepHeading
+                taller={taller}
+                index={0}
+                eyebrow={copy.stepHeadings[0]}
+                title={copy.chooseServiceTitle}
+                description={copy.chooseServiceDescription}
+                descriptionClass="mt-3 max-w-[620px] text-sm leading-6 text-(--p-756960)"
+              />
 
               {loadingServices ? (
                 <div className="flex min-h-[240px] items-center justify-center rounded-[1.75rem] border border-(--p-3b332e)/10 bg-white/45">
@@ -1735,10 +2572,12 @@ export default function PublicBookingPage() {
               ) : (
                 <div className="grid gap-4 md:grid-cols-2">
                   {services.map(
-                    service => (
+                    (service, index) => {
+                      const icon = serviceIcon(service);
+                      const button = (
                       <button
                         key={
-                          service.id
+                          taller ? undefined : service.id
                         }
                         type="button"
                         disabled={
@@ -1749,10 +2588,19 @@ export default function PublicBookingPage() {
                             service
                           )
                         }
-                        className="group rounded-[1.5rem] border border-(--p-3b332e)/10 bg-white/55 p-6 text-left shadow-[0_12px_35px_rgba(57,47,41,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-(--accent)/30 hover:bg-white hover:shadow-[0_20px_45px_rgba(57,47,41,0.10)] disabled:pointer-events-none disabled:opacity-60"
+                        className={
+                          taller
+                            ? "group h-full rounded-[1.5rem] border border-(--inverse)/10 bg-white p-6 text-left shadow-[0_12px_35px_rgba(28,25,23,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-[#f97316] hover:shadow-[0_20px_45px_rgba(28,25,23,0.12)] disabled:pointer-events-none disabled:opacity-60"
+                            : "group rounded-[1.5rem] border border-(--p-3b332e)/10 bg-white/55 p-6 text-left shadow-[0_12px_35px_rgba(57,47,41,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-(--accent)/30 hover:bg-white hover:shadow-[0_20px_45px_rgba(57,47,41,0.10)] disabled:pointer-events-none disabled:opacity-60"
+                        }
                       >
                         <div className="flex items-start justify-between gap-5">
                           <div>
+                            {icon ? (
+                              <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-full border border-(--inverse)/10 text-[#f97316]">
+                                <TradeIcon name={icon} className="h-5 w-5" />
+                              </span>
+                            ) : null}
                             <h3 className="font-serif text-2xl text-(--p-342c27)">
                               {
                                 service.name
@@ -1768,11 +2616,24 @@ export default function PublicBookingPage() {
                             )}
                           </div>
 
-                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-(--p-3b332e)/10 bg-(--p-f3ece5) text-lg text-(--p-5a493f) transition-transform duration-300 group-hover:translate-x-1">
+                          <span className={taller ? "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-(--inverse)/10 bg-(--canvas) text-lg text-(--ink) transition-transform duration-300 group-hover:translate-x-1 group-hover:border-[#f97316] group-hover:text-[#f97316]" : "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-(--p-3b332e)/10 bg-(--p-f3ece5) text-lg text-(--p-5a493f) transition-transform duration-300 group-hover:translate-x-1"}>
                             →
                           </span>
                         </div>
 
+                        {taller ? (
+                          <div className="mt-6 flex items-end justify-between gap-4 border-t border-(--inverse)/10 pt-4">
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-(--ink-muted)">
+                              {service.durationMinutes} {copy.minuteShort}
+                            </span>
+                            <strong className="font-serif text-3xl font-normal text-(--ink)">
+                              {formatMoney(
+                                Number(service.price),
+                                service.currency
+                              )}
+                            </strong>
+                          </div>
+                        ) : (
                         <div className="mt-6 flex flex-wrap gap-2">
                           <span className="rounded-full bg-(--surface-muted) px-3 py-1.5 text-xs font-medium text-(--p-705d50)">
                             {
@@ -1790,8 +2651,23 @@ export default function PublicBookingPage() {
                             )}
                           </span>
                         </div>
+                        )}
                       </button>
-                    )
+                      );
+
+                      if (!taller) return button;
+
+                      return (
+                        <Reveal
+                          key={service.id}
+                          variant="fade-up"
+                          delay={index * 80}
+                          className="h-full"
+                        >
+                          {button}
+                        </Reveal>
+                      );
+                    }
                   )}
                 </div>
               )}
@@ -1806,6 +2682,7 @@ export default function PublicBookingPage() {
             "professional" &&
             selectedService && (
               <div>
+                {!taller && (
                 <button
                   type="button"
                   onClick={() => {
@@ -1821,33 +2698,24 @@ export default function PublicBookingPage() {
                 >
                   {copy.changeService}
                 </button>
+                )}
 
-                <div className="mb-8">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-(--p-987e6c)">
-                    {copy.stepHeadings[1]}
-                  </p>
-
-                  <h2 className="mt-2 font-serif text-3xl text-(--heading) sm:text-4xl">
-                    {copy.chooseProfessionalTitle}
-                  </h2>
-
-                  <p className="mt-3 text-sm leading-6 text-(--p-756960)">
-                    {
-                      selectedService.name
-                    }{" "}
-                    ·{" "}
-                    {
-                      selectedService.durationMinutes
-                    }{" "}
-                    {copy.minuteShort} ·{" "}
-                    {formatMoney(
-                      Number(
-                        selectedService.price
-                      ),
-                      selectedService.currency
-                    )}
-                  </p>
-                </div>
+                <StepHeading
+                  taller={taller}
+                  index={1}
+                  eyebrow={copy.stepHeadings[1]}
+                  title={copy.chooseProfessionalTitle}
+                  description={copy.chooseProfessionalDescription}
+                  changeLabel={copy.changeService}
+                  onChange={
+                    taller
+                      ? () => {
+                          setStep("service");
+                          setError(null);
+                        }
+                      : undefined
+                  }
+                />
 
                 {loadingProfessionals ? (
                   <div className="flex min-h-[220px] items-center justify-center rounded-[1.75rem] border border-(--p-3b332e)/10 bg-white/45">
@@ -1928,6 +2796,7 @@ export default function PublicBookingPage() {
             selectedService &&
             selectedProfessional && (
               <div>
+                {!taller && (
                 <button
                   type="button"
                   onClick={() => {
@@ -1943,28 +2812,35 @@ export default function PublicBookingPage() {
                 >
                   {copy.changeProfessional}
                 </button>
+                )}
 
-                <div className="mb-8">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-(--p-987e6c)">
-                    {copy.stepHeadings[2]}
-                  </p>
+                <StepHeading
+                  taller={taller}
+                  index={2}
+                  eyebrow={copy.stepHeadings[2]}
+                  title={copy.dateTimeTitle}
+                  description={
+                    <>
+                      <span className="block">
+                        {selectedService.name} {copy.withProfessional}{" "}
+                        {selectedProfessional.displayName} ·{" "}
+                        {selectedService.durationMinutes} {copy.minuteShort}.
+                      </span>
+                      <span className="mt-1 block">{copy.dateTimePrompt}</span>
+                    </>
+                  }
+                  changeLabel={copy.changeProfessional}
+                  onChange={
+                    taller
+                      ? () => {
+                          setStep("professional");
+                          setError(null);
+                        }
+                      : undefined
+                  }
+                />
 
-                  <h2 className="mt-2 font-serif text-3xl text-(--heading) sm:text-4xl">
-                    {copy.dateTimeTitle}
-                  </h2>
-
-                  <p className="mt-3 text-sm leading-6 text-(--p-756960)">
-                    {
-                      selectedService.name
-                    }{" "}
-                    {copy.withProfessional}{" "}
-                    {
-                      selectedProfessional.displayName
-                    }
-                  </p>
-                </div>
-
-                <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+                <div className="grid items-stretch gap-6 md:grid-cols-[0.95fr_1.05fr]">
                   {/* CALENDAR */}
 
                   <div className="rounded-[1.75rem] border border-(--p-3b332e)/10 bg-white/60 p-5 shadow-[0_14px_40px_rgba(57,47,41,0.04)] sm:p-6">
@@ -2002,15 +2878,15 @@ export default function PublicBookingPage() {
 
                   {/* TIMES */}
 
-                  <div className="rounded-[1.75rem] border border-(--p-3b332e)/10 bg-white/60 p-5 shadow-[0_14px_40px_rgba(57,47,41,0.04)] sm:p-6">
-                    <div className="flex items-start justify-between gap-4">
+                  <div className="flex flex-col rounded-[1.75rem] border border-(--p-3b332e)/10 bg-white/60 p-5 shadow-[0_14px_40px_rgba(57,47,41,0.04)] sm:p-6 md:h-0 md:min-h-full md:overflow-hidden">
+                    <div className="flex shrink-0 items-start justify-between gap-4">
                       <div>
                         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-(--p-79685c)">
                           {copy.timesLabel}
                         </p>
 
                         {selectedDate && (
-                          <p className="mt-2 text-xs capitalize leading-5 text-(--p-96877d)">
+                          <p className="mt-2 text-xs leading-5 text-(--p-96877d)">
                             {formatDate(
                               selectedDate
                             )}
@@ -2021,7 +2897,7 @@ export default function PublicBookingPage() {
                       {availability?.available &&
                         availability.totalSlots >
                           0 && (
-                          <span className="rounded-full bg-(--surface-muted) px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-(--p-755f51)">
+                          <span className="rounded-full bg-(--surface-muted) px-3 py-1.5 text-xs font-medium text-(--p-755f51)">
                             {
                               availability.totalSlots
                             }{" "}
@@ -2068,51 +2944,13 @@ export default function PublicBookingPage() {
                         </p>
                       </div>
                     ) : (
-                      <div className="mt-6">
-                        <p className="text-xs leading-5 text-(--p-85776d)">
+                      <div className="mt-6 flex flex-col md:min-h-0 md:flex-1">
+                        <p className="shrink-0 text-xs leading-5 text-(--p-85776d)">
                           {copy.selectTimeHint}
                         </p>
 
-                        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
-                          {availability.slots.map(
-                            slot => {
-                              const selected =
-                                selectedSlot?.startAt ===
-                                slot.startAt;
-
-                              return (
-                                <button
-                                  key={
-                                    slot.startAt
-                                  }
-                                  type="button"
-                                  onClick={() => {
-                                    setSelectedSlot(
-                                      slot
-                                    );
-
-                                    setError(
-                                      null
-                                    );
-                                  }}
-                                  className={[
-                                    "rounded-xl border px-4 py-3.5 text-sm font-semibold transition-all duration-200",
-                                    selected
-                                      ? "border-(--heading) bg-(--heading) text-white shadow-[0_10px_22px_rgba(51,43,38,0.18)]"
-                                      : "border-(--p-3b332e)/12 bg-(--p-fffdfb) text-(--p-4b4038) hover:-translate-y-0.5 hover:border-(--accent)/35 hover:bg-(--p-f4ece5)",
-                                  ].join(" ")}
-                                >
-                                  {formatTime(
-                                    slot.startTime
-                                  )}
-                                </button>
-                              );
-                            }
-                          )}
-                        </div>
-
                         {selectedSlot && (
-                          <div className="mt-6 flex items-center justify-between gap-4 rounded-[1.1rem] bg-(--surface-muted) px-4 py-3.5">
+                          <div className="mt-4 flex shrink-0 items-center justify-between gap-4 rounded-[1.1rem] bg-(--surface-muted) px-4 py-3.5">
                             <div>
                               <p className="text-[9px] font-semibold uppercase tracking-[0.14em] text-(--p-8c7565)">
                                 {copy.selectedTimeLabel}
@@ -2134,6 +2972,35 @@ export default function PublicBookingPage() {
                             </span>
                           </div>
                         )}
+
+                        <TimesScroller>
+                          {(["Mañana", "Tarde"] as const).map((label) => {
+                            const group = availability.slots.filter((slot) =>
+                              label === "Mañana"
+                                ? slotIsMorning(slot.startTime)
+                                : !slotIsMorning(slot.startTime)
+                            );
+
+                            if (group.length === 0) return null;
+
+                            return (
+                              <div key={label}>
+                                <p className="booking-times-heading mb-2 text-[11px] font-medium uppercase tracking-[0.12em] text-(--ink-muted) md:sticky md:top-0 md:z-[1] md:py-2">
+                                  {label}
+                                </p>
+                                <TimeSlotGrid
+                                  slots={group}
+                                  selectedStartAt={selectedSlot?.startAt ?? null}
+                                  taller={taller}
+                                  onSelect={(slot) => {
+                                    setSelectedSlot(slot);
+                                    setError(null);
+                                  }}
+                                />
+                              </div>
+                            );
+                          })}
+                        </TimesScroller>
                       </div>
                     )}
                   </div>
@@ -2150,7 +3017,17 @@ export default function PublicBookingPage() {
                         "customer"
                       )
                     }
-                    className="inline-flex h-13 items-center justify-center rounded-full bg-(--p-302924) px-8 text-xs font-semibold uppercase tracking-[0.16em] text-white shadow-[0_10px_28px_rgba(48,41,36,0.16)] transition hover:-translate-y-0.5 hover:bg-(--p-4b3d34) disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:translate-y-0"
+                    className={[
+                      "inline-flex h-13 items-center justify-center rounded-full px-8 text-xs font-semibold uppercase tracking-[0.16em] transition-[background-color,color,box-shadow,transform] duration-300",
+                      selectedSlot
+                        ? "bg-(--button-bg) text-(--button-text) shadow-[0_10px_28px_rgba(48,41,36,0.16)] hover:-translate-y-0.5 hover:brightness-95"
+                        : "bg-(--inverse)/30 text-(--inverse) shadow-none",
+                    ].join(" ")}
+                    style={
+                      selectedSlot
+                        ? undefined
+                        : { cursor: "not-allowed" }
+                    }
                   >
                     {copy.continueLabel}
                   </button>
@@ -2169,6 +3046,7 @@ export default function PublicBookingPage() {
             selectedSlot &&
             availability && (
               <div>
+                {!taller && (
                 <button
                   type="button"
                   onClick={() => {
@@ -2184,23 +3062,231 @@ export default function PublicBookingPage() {
                 >
                   {copy.changeDateTime}
                 </button>
+                )}
 
-                <div className="grid gap-8 lg:grid-cols-[1fr_0.72fr]">
-                  <div>
-                    <div className="mb-8">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-(--p-987e6c)">
-                        {copy.stepHeadings[3]}
+                <div className="grid min-w-0 grid-cols-1 items-start gap-8 md:grid-cols-[minmax(0,1fr)_360px] md:gap-10">
+                  <div className="order-2 min-w-0 md:order-1">
+                    <StepHeading
+                      taller={taller}
+                      index={3}
+                      eyebrow={copy.stepHeadings[3]}
+                      title={copy.customerTitle}
+                      description={copy.customerDescription}
+                      changeLabel={copy.changeDateTime}
+                      onChange={
+                        taller
+                          ? () => {
+                              setStep("datetime");
+                              setError(null);
+                            }
+                          : undefined
+                      }
+                    />
+
+                    {taller ? (
+                    <form onSubmit={createBooking} className="booking-form-card">
+                      <section className="booking-section">
+                        <h3 className="booking-section-title">
+                          <span>01</span> · Sobre ti
+                        </h3>
+                        <div className="booking-field-grid cols-2">
+                          <PremiumField
+                            id="booking-first-name"
+                            label={copy.firstNameLabel}
+                            icon="person"
+                            required
+                            maxLength={100}
+                            autoComplete="given-name"
+                            value={customerForm.firstName}
+                            valid={customerForm.firstName.trim().length > 0 && error !== copy.errorFirstName}
+                            invalid={error === copy.errorFirstName}
+                            errorId="booking-first-name-error"
+                            errorMessage={copy.errorFirstName}
+                            onChange={(value) => {
+                              updateCustomerField("firstName", value);
+                              if (error === copy.errorFirstName && value.trim()) {
+                                setError(null);
+                              }
+                            }}
+                            onInvalid={(event) => {
+                              event.preventDefault();
+                              setError(copy.errorFirstName);
+                            }}
+                          />
+                          <PremiumField
+                            id="booking-last-name"
+                            label={copy.lastNameLabel}
+                            icon="person"
+                            maxLength={150}
+                            autoComplete="family-name"
+                            value={customerForm.lastName}
+                            valid={customerForm.lastName.trim().length > 0}
+                            invalid={false}
+                            onChange={(value) => updateCustomerField("lastName", value)}
+                          />
+                        </div>
+                      </section>
+
+                      <section className="booking-section">
+                        <h3 className="booking-section-title">
+                          <span>02</span> · Cómo te avisamos
+                        </h3>
+                        <div className="booking-field-grid cols-2">
+                          <PremiumField
+                            id="booking-email"
+                            label={copy.emailLabel}
+                            icon="mail"
+                            type="email"
+                            maxLength={180}
+                            autoComplete="email"
+                            inputMode="email"
+                            value={customerForm.email}
+                            valid={customerForm.email.trim().length > 0 && error !== copy.errorContact}
+                            invalid={error === copy.errorContact}
+                            errorId="booking-contact-error"
+                            hintId="booking-contact-hint"
+                            onChange={(value) => {
+                              updateCustomerField("email", value);
+                              if (
+                                error === copy.errorContact &&
+                                (value.trim() || customerForm.phone.trim())
+                              ) {
+                                setError(null);
+                              }
+                            }}
+                          />
+                          <PremiumField
+                            id="booking-phone"
+                            label={copy.phoneLabel}
+                            icon="phone"
+                            type="tel"
+                            maxLength={40}
+                            autoComplete="tel"
+                            inputMode="tel"
+                            value={customerForm.phone}
+                            valid={customerForm.phone.trim().length > 0 && error !== copy.errorContact}
+                            invalid={error === copy.errorContact}
+                            errorId="booking-contact-error"
+                            hintId="booking-contact-hint"
+                            onChange={(value) => {
+                              updateCustomerField("phone", value);
+                              if (
+                                error === copy.errorContact &&
+                                (value.trim() || customerForm.email.trim())
+                              ) {
+                                setError(null);
+                              }
+                            }}
+                          />
+                        </div>
+                        <p id="booking-contact-hint" className="booking-hint">
+                          {copy.contactHint}
+                        </p>
+                        {error === copy.errorContact ? (
+                          <p id="booking-contact-error" role="alert" className="booking-field-error is-shown">
+                            {copy.errorContact}
+                          </p>
+                        ) : null}
+                      </section>
+
+                      <section className="booking-section">
+                        <h3 className="booking-section-title">
+                          <span>03</span> · Tu coche
+                        </h3>
+                        {extraFields.length > 0 ? (
+                          <div className="booking-field-grid cols-2">
+                            {extraFields.map((field) => (
+                              <PremiumField
+                                key={field.id}
+                                id={`booking-extra-${field.id}`}
+                                label={field.label}
+                                icon="car"
+                                plate={field.id === "plate"}
+                                maxLength={field.id === "plate" ? 12 : 80}
+                                autoComplete="off"
+                                value={extraValues[field.id] ?? ""}
+                                valid={(extraValues[field.id] ?? "").trim().length > 0}
+                                invalid={false}
+                                onChange={(value) =>
+                                  setExtraValues((current) => ({
+                                    ...current,
+                                    [field.id]: value,
+                                  }))
+                                }
+                              />
+                            ))}
+                          </div>
+                        ) : null}
+                        <div className="booking-chips">
+                          {NOTE_SUGGESTIONS.map((suggestion) => (
+                            <button
+                              key={suggestion}
+                              type="button"
+                              className="booking-chip"
+                              onClick={() => {
+                                setCustomerForm((current) => {
+                                  if (current.notes.includes(suggestion)) {
+                                    return current;
+                                  }
+                                  const budget = extraNotesBudget(extraValues, extraFields);
+                                  const next = current.notes.trim()
+                                    ? `${current.notes.replace(/\s+$/, "")} · ${suggestion}`
+                                    : suggestion;
+                                  return { ...current, notes: next.slice(0, budget) };
+                                });
+                              }}
+                            >
+                              {suggestion}
+                            </button>
+                          ))}
+                        </div>
+                        <PremiumField
+                          id="booking-notes"
+                          label={copy.notesLabel}
+                          icon="note"
+                          multiline
+                          notesRef={notesRef}
+                          maxLength={extraNotesBudget(extraValues, extraFields)}
+                          value={customerForm.notes}
+                          valid={customerForm.notes.trim().length > 0}
+                          invalid={false}
+                          onChange={(value) => updateCustomerField("notes", value)}
+                        />
+                      </section>
+
+                      <button
+                        type="submit"
+                        disabled={creatingBooking}
+                        className={[
+                          "booking-submit",
+                          creatingBooking ? "is-busy" : formReady ? "is-ready" : "is-pending",
+                        ].join(" ")}
+                        aria-busy={creatingBooking || undefined}
+                      >
+                        <span className="booking-submit-label">
+                          {creatingBooking ? <LoadingSpinner /> : null}
+                          {creatingBooking ? "Reservando…" : copy.submit}
+                          {creatingBooking ? null : (
+                            <svg
+                              viewBox="0 0 24 24"
+                              aria-hidden="true"
+                              className="h-4 w-4"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.8"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M5 12h14M13 6l6 6-6 6" />
+                            </svg>
+                          )}
+                        </span>
+                      </button>
+                      <p className="booking-legal">
+                        Al confirmar aceptas la <Link href="/privacidad">política de privacidad</Link>.
                       </p>
-
-                      <h2 className="mt-2 font-serif text-3xl text-(--heading) sm:text-4xl">
-                        {copy.customerTitle}
-                      </h2>
-
-                      <p className="mt-3 text-sm leading-6 text-(--p-756960)">
-                        {copy.customerDescription}
-                      </p>
-                    </div>
-
+                    </form>
+                    ) : (
                     <form
                       onSubmit={
                         createBooking
@@ -2289,6 +3375,7 @@ export default function PublicBookingPage() {
                             type="tel"
                             maxLength={40}
                             autoComplete="tel"
+                            inputMode="tel"
                             value={
                               customerForm.phone
                             }
@@ -2379,11 +3466,113 @@ export default function PublicBookingPage() {
                           : copy.submit}
                       </button>
                     </form>
+                    )}
                   </div>
 
                   {/* SUMMARY */}
 
-                  <aside className="h-fit rounded-[1.75rem] border border-(--p-3b332e)/10 bg-(--surface-muted) p-6 lg:sticky lg:top-[100px]">
+                  <aside className="booking-summary-scroll order-1 min-w-0 md:sticky md:top-[120px] md:order-2 md:max-h-[calc(100dvh-140px)] md:self-start md:overflow-y-auto">
+                    <button
+                      type="button"
+                      className="mb-3 flex w-full items-center justify-between rounded-2xl border border-(--p-3b332e)/10 bg-white/80 px-4 py-3 text-(--heading) md:hidden"
+                      style={{ fontSize: "14px", fontWeight: 600 }}
+                      aria-expanded={summaryOpen}
+                      aria-controls="booking-summary-panel"
+                      onClick={() => setSummaryOpen((open) => !open)}
+                    >
+                      Ver resumen de tu cita
+                      <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        className={["h-4 w-4 transition-transform", summaryOpen ? "rotate-180" : ""].join(" ")}
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                      >
+                        <path d="m6 9 6 6 6-6" />
+                      </svg>
+                    </button>
+                    <div id="booking-summary-panel" className={summaryOpen ? "block" : "hidden md:block"}>
+                    {taller ? (
+                      <div className="booking-summary">
+                        {sequence ? (
+                          <div className="booking-summary-thumb">
+                            <BookingCanvas
+                              sequence={sequence}
+                              stepFrames={copy.stepFrames}
+                              mode="hold"
+                              immediate
+                              target={phase}
+                              className="absolute inset-0 h-full w-full"
+                            />
+                            <p className="booking-summary-phase">
+                              {copy.stepPhaseLabels?.[3] ?? "4/4"}
+                            </p>
+                          </div>
+                        ) : null}
+                        <div className="booking-summary-row">
+                          <span className="booking-summary-icon"><FieldGlyph name="wrench" /></span>
+                          <div className="min-w-0">
+                            <p className="booking-summary-kicker">{business.vocabulary.serviceTitle}</p>
+                            <p className="booking-summary-value">{selectedService.name}</p>
+                          </div>
+                        </div>
+                        <div className="booking-summary-row">
+                          <span className="booking-summary-icon"><FieldGlyph name="person" /></span>
+                          <div className="min-w-0">
+                            <p className="booking-summary-kicker">{copy.summaryProfessional}</p>
+                            <p className="booking-summary-value">{selectedProfessional.displayName}</p>
+                          </div>
+                        </div>
+                        <div className="booking-summary-row">
+                          <span className="booking-summary-icon"><FieldGlyph name="calendar" /></span>
+                          <div className="min-w-0">
+                            <p className="booking-summary-kicker">{copy.summaryDate}</p>
+                            <p className="booking-summary-value">{formatSummaryDay(selectedDate)}</p>
+                          </div>
+                        </div>
+                        <div className="booking-summary-row">
+                          <span className="booking-summary-icon"><FieldGlyph name="clock" /></span>
+                          <div className="min-w-0">
+                            <p className="booking-summary-kicker">{copy.summaryTime}</p>
+                            <p className="booking-summary-value">
+                              {formatTime(selectedSlot.startTime)} – {formatTime(selectedSlot.endTime)}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="booking-summary-row">
+                          <span className="booking-summary-icon"><FieldGlyph name="duration" /></span>
+                          <div className="min-w-0">
+                            <p className="booking-summary-kicker">{copy.summaryDuration}</p>
+                            <p className="booking-summary-value">
+                              {selectedService.durationMinutes} {copy.minutes}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="booking-summary-price-block">
+                          <p className="booking-summary-price">
+                            {formatMoney(Number(selectedService.price), selectedService.currency)}
+                          </p>
+                          <p className="booking-summary-note">Precio orientativo</p>
+                        </div>
+                        <ul className="booking-summary-guarantees">
+                          {[
+                            "Presupuesto antes de reparar",
+                            "Sin pago por adelantado",
+                            "Cancela gratis",
+                          ].map((item) => (
+                            <li key={item} className="booking-summary-guarantee">
+                              <span className="booking-summary-check" aria-hidden="true">
+                                <FieldGlyph name="check" />
+                              </span>
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : (
+                    <div className="h-fit rounded-[1.75rem] border border-(--p-3b332e)/10 bg-(--surface-muted) p-6">
                     <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-(--p-8b7261)">
                       {copy.summaryEyebrow}
                     </p>
@@ -2412,7 +3601,7 @@ export default function PublicBookingPage() {
                           {copy.summaryDate}
                         </p>
 
-                        <p className="mt-1 capitalize font-medium text-(--p-423830)">
+                        <p className="mt-1 font-medium text-(--p-423830)">
                           {formatDate(
                             selectedDate
                           )}
@@ -2463,6 +3652,9 @@ export default function PublicBookingPage() {
                         </p>
                       </div>
                     </div>
+                    </div>
+                    )}
+                    </div>
                   </aside>
                 </div>
               </div>
@@ -2475,9 +3667,39 @@ export default function PublicBookingPage() {
           {step ===
             "success" &&
             bookingResult && (
-              <div className="mx-auto max-w-[760px]">
-                <div className="rounded-[2rem] border border-(--p-3b332e)/10 bg-white/60 p-7 text-center shadow-[0_24px_70px_rgba(56,46,40,0.08)] sm:p-10">
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-(--p-ded2c6) text-2xl text-(--p-4f4036)">
+              <div className={taller && sequence ? "booking-success-in mx-auto max-w-[880px]" : "mx-auto max-w-[760px]"}>
+                {taller && sequence && copy.successVisualTitle ? (
+                  <div className="mb-6 overflow-hidden rounded-[1.75rem] bg-[#1c1917]">
+                    <div className="relative h-64 sm:h-72">
+                      <BookingCanvas
+                        sequence={sequence}
+                        stepFrames={copy.stepFrames}
+                        mode="hold"
+                        target={phase}
+                        className="h-full w-full"
+                      />
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#1c1917] via-[#1c1917]/55 to-transparent" />
+                      <p className="absolute bottom-6 left-6 max-w-[12ch] font-serif text-4xl leading-[0.95] text-white sm:text-5xl">
+                        {copy.successVisualTitle}
+                      </p>
+                    </div>
+                  </div>
+                ) : null}
+                <div className={taller && sequence ? "rounded-[2rem] border border-(--inverse)/10 border-t-2 border-t-[#f97316] bg-white p-7 text-left shadow-[0_28px_80px_rgba(28,25,23,0.12)] sm:p-10" : "rounded-[2rem] border border-(--p-3b332e)/10 bg-white/60 p-7 text-center shadow-[0_24px_70px_rgba(56,46,40,0.08)] sm:p-10"}>
+                  {taller ? (
+                    <TallerConfirmation
+                      booking={bookingResult}
+                      emailed={customerForm.email.trim().length > 0}
+                      managementHref={managementHref}
+                      copied={referenceCopied}
+                      onCopy={() => {
+                        void copyAppointmentReference();
+                      }}
+                      onReset={resetBooking}
+                    />
+                  ) : (
+                  <>
+                  <div className={taller && sequence ? "flex h-16 w-16 items-center justify-center rounded-full bg-[#1c1917] text-2xl text-[#f97316]" : "mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-(--p-ded2c6) text-2xl text-(--p-4f4036)"}>
                     ✓
                   </div>
 
@@ -2524,7 +3746,7 @@ export default function PublicBookingPage() {
                           {copy.successDateTime}
                         </p>
 
-                        <p className="mt-1 capitalize font-medium text-(--p-3f352f)">
+                        <p className="mt-1 font-medium text-(--p-3f352f)">
                           {formatBookingDateTime(
                             bookingResult.startAt
                           )}
@@ -2583,6 +3805,8 @@ export default function PublicBookingPage() {
                       {copy.backPrefix} {business.brand.shortName}
                     </Link>
                   </div>
+                  </>
+                  )}
                 </div>
               </div>
             )}

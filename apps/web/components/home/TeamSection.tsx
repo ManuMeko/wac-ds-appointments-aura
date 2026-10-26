@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 
+import { TeamPortrait } from "@/components/home/TeamPortrait";
+import { Reveal } from "@/components/motion/Reveal";
 import { business } from "@/config/business";
 
 /* =========================================================
@@ -10,6 +12,8 @@ import { business } from "@/config/business";
 ========================================================= */
 
 export function TeamSection() {
+  const taller = business.theme === "taller";
+
   return (
     <section id="equipo" className="bg-(--canvas)">
       <div className="mx-auto w-full max-w-[1440px] px-5 py-20 sm:px-8 lg:px-12 lg:py-28 xl:px-16">
@@ -22,9 +26,11 @@ export function TeamSection() {
               {business.teamIntro.eyebrow}
             </p>
 
-            <h2 className="mt-5 max-w-[650px] font-serif text-5xl leading-[0.97] tracking-[-0.035em] text-(--p-2d2723) sm:text-6xl">
-              {business.teamIntro.title}
-            </h2>
+            <Reveal variant="fade-up">
+              <h2 className="mt-5 max-w-[650px] font-serif text-5xl leading-[0.97] tracking-[-0.035em] text-(--p-2d2723) sm:text-6xl">
+                {business.teamIntro.title}
+              </h2>
+            </Reveal>
           </div>
 
           <p className="max-w-[440px] text-sm leading-7 text-(--p-74685f)">
@@ -35,23 +41,36 @@ export function TeamSection() {
         {/* =====================================================
             PROFESSIONALS GRID
         ====================================================== */}
-        <div className="mt-14 grid gap-6 md:grid-cols-3">
-          {business.professionals.map((professional) => {
-            const imageSrc = business.assets.team[professional.id];
+        <div
+          className={
+            taller
+              ? "mt-14 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 md:grid md:grid-cols-3 md:overflow-visible md:pb-0"
+              : "mt-14 grid gap-6 md:grid-cols-3"
+          }
+        >
+          {business.professionals.map((professional, index) => {
+            const imageSrc = professional.image ?? business.assets.team[professional.id];
+            const alt = `${professional.name}, ${professional.role} en ${business.brand.name}`;
 
-            return (
+            const card = (
               <article
                 key={professional.id}
-                className="group overflow-hidden rounded-[1.7rem] border border-(--p-352e29)/10 bg-(--p-eee7df) shadow-[0_20px_60px_rgba(56,46,40,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(56,46,40,0.11)]"
+                className={
+                  taller
+                    ? "group w-[min(82vw,22rem)] shrink-0 snap-center overflow-hidden rounded-[1.7rem] border border-transparent bg-white shadow-[0_22px_60px_rgba(28,25,23,0.1)] transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-[#f97316] hover:shadow-[0_28px_70px_rgba(28,25,23,0.16)] md:w-auto"
+                    : "group overflow-hidden rounded-[1.7rem] border border-(--p-352e29)/10 bg-(--p-eee7df) shadow-[0_20px_60px_rgba(56,46,40,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(56,46,40,0.11)]"
+                }
               >
                 {/* =================================================
                     VISUAL
                 ================================================== */}
                 <div className="relative aspect-[4/5] overflow-hidden bg-(--p-d8c6b7)">
-                  {imageSrc ? (
+                  {taller ? (
+                    <TeamPortrait src={imageSrc ?? ""} alt={alt} initials={professional.initials} />
+                  ) : imageSrc ? (
                     <Image
                       src={imageSrc}
-                      alt={`${professional.name}, ${professional.role} en ${business.brand.name}`}
+                      alt={alt}
                       fill
                       unoptimized={imageSrc.endsWith(".svg")}
                       quality={90}
@@ -67,7 +86,13 @@ export function TeamSection() {
                   )}
 
                   {/* Soft treatment */}
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-(--p-2d211b)/38 via-transparent to-white/[0.03]" />
+                  <div
+                    className={
+                      taller
+                        ? "pointer-events-none absolute inset-0 bg-gradient-to-t from-[#1c1917]/75 via-[#1c1917]/5 to-transparent"
+                        : "pointer-events-none absolute inset-0 bg-gradient-to-t from-(--p-2d211b)/38 via-transparent to-white/[0.03]"
+                    }
+                  />
 
                   <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10" />
 
@@ -110,6 +135,14 @@ export function TeamSection() {
                   </div>
                 </div>
               </article>
+            );
+
+            return taller ? (
+              <Reveal key={professional.id} variant="scale-in" delay={index * 80}>
+                {card}
+              </Reveal>
+            ) : (
+              card
             );
           })}
         </div>

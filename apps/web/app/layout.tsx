@@ -4,6 +4,7 @@ import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Geist } from "next/font/google";
 
 import { business } from "@/config/business";
+import { getSiteUrl } from "@/lib/site";
 
 import "./globals.css";
 
@@ -67,10 +68,7 @@ const cormorant = Cormorant_Garamond({
  * - Open Graph
  * - Twitter cards
  */
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL?.trim() || "http://localhost:3000";
-
-const metadataBase = new URL(siteUrl);
+const metadataBase = new URL(getSiteUrl());
 
 /* =========================================================
    METADATA
@@ -199,13 +197,18 @@ export const metadata: Metadata = {
   /* ---------------------------------------------------------
      ICONS
 
-     app/favicon.ico ya existe y Next.js también lo detecta
-     automáticamente, pero lo declaramos explícitamente.
+     SVG por demo, más el PNG de app/apple-icon.tsx.
+     app/icon.tsx aporta el favicon PNG.
   --------------------------------------------------------- */
 
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
+    icon: [
+      {
+        url: business.theme === "taller" ? "/icons/taller.svg" : "/icons/aura.svg",
+        type: "image/svg+xml",
+      },
+    ],
+    apple: "/apple-icon",
   },
 
   /* ---------------------------------------------------------

@@ -1,45 +1,37 @@
 "use client";
 
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef } from "react";
 
-import type { ScrollSequenceConfig } from "@/data/types";
+import {
+  type FrameStatus,
+  loadFrameSequence,
+  paintCanvasFrame,
+} from "@/components/sequence/frames";
+import { usePrefersReducedMotion } from "@/components/sequence/useFrameSequence";
+import type {
+  ScrollSequenceConfig,
+  ScrollSequenceOverlay,
+  Stat,
+} from "@/data/types";
+import { ArrowIcon } from "@/components/ui/ArrowIcon";
 
 /* =========================================================
    WAC DS · MODEL 01 · APPOINTMENTS
    Secuencia de fotogramas que avanza con el scroll
 ========================================================= */
 
-const PRELOAD_CONCURRENCY = 4;
 const EMPTY_OVERLAYS: NonNullable<ScrollSequenceConfig["overlays"]> = [];
+const LEAD_UNTIL = 0.35;
 
-type FrameStatus = "pending" | "ready" | "error";
-
-function subscribeReducedMotion(onStoreChange: () => void) {
-  const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-  media.addEventListener("change", onStoreChange);
-  return () => media.removeEventListener("change", onStoreChange);
-}
-
-function getReducedMotionSnapshot() {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
-function getReducedMotionServerSnapshot() {
-  return false;
-}
-
-function usePrefersReducedMotion() {
-  return useSyncExternalStore(
-    subscribeReducedMotion,
-    getReducedMotionSnapshot,
-    getReducedMotionServerSnapshot,
-  );
-}
-
-function frameSrc(basePath: string, frameNumber: number, extension: string) {
-  const base = basePath.endsWith("/") ? basePath.slice(0, -1) : basePath;
-  return `${base}/frame_${String(frameNumber).padStart(4, "0")}.${extension}`;
-}
+export type ScrollSequenceLead = {
+  eyebrow: string;
+  title: string;
+  highlightedTitle: string;
+  description: string;
+  primaryCta: { label: string; href: string };
+  secondaryCta: { label: string; href: string };
+  stats: readonly Stat[];
+};
 
 function overlayOpacity(progress: number, from: number, to: number) {
   if (progress < from || progress > to) return 0;
@@ -61,8 +53,10 @@ function overlayOpacity(progress: number, from: number, to: number) {
   return Math.max(0, Math.min(1, opacity));
 }
 
-function readProgress(section: HTMLElement) {
-  const scrollable = section.offsetHeight - window.innerHeight;
+function readProgress(section: HTMLElement, holdVh: number) {
+  const viewport = window.innerHeight;
+  const holdPx = (viewport * Math.max(0, holdVh)) / 100;
+  const scrollable = section.offsetHeight - viewport - holdPx;
   if (scrollable <= 0) return 0;
 
   const scrolled = -section.getBoundingClientRect().top;
@@ -123,72 +117,141 @@ function pinStage(
   stage.style.bottom = "0px";
 }
 
-function neutralFill(section: HTMLElement) {
-  const value = getComputedStyle(section).getPropertyValue("--hero-bg").trim();
-  return value || "#d6d3d1";
-}
-
-function drawCover(
-  context: CanvasRenderingContext2D,
-  image: HTMLImageElement,
-  width: number,
-  height: number,
-) {
-  const sourceWidth = image.naturalWidth;
-  const sourceHeight = image.naturalHeight;
-  if (sourceWidth <= 0 || sourceHeight <= 0) return false;
-
-  const scale = Math.max(width / sourceWidth, height / sourceHeight);
-  const drawnWidth = sourceWidth * scale;
-  const drawnHeight = sourceHeight * scale;
-  const offsetX = (width - drawnWidth) / 2;
-  const offsetY = (height - drawnHeight) / 2;
-
-  context.drawImage(image, offsetX, offsetY, drawnWidth, drawnHeight);
-  return true;
-}
-
-function readyImageAt(
-  images: Array<HTMLImageElement | null>,
-  statuses: FrameStatus[],
-  index: number,
-) {
-  const image = images[index];
-  if (statuses[index] === "ready" && image && image.naturalWidth > 0) {
-    return image;
-  }
-  return null;
-}
-
-function imageForFrame(
-  images: Array<HTMLImageElement | null>,
-  statuses: FrameStatus[],
-  frameIndex: number,
-) {
-  const status = statuses[frameIndex];
-  const direct = readyImageAt(images, statuses, frameIndex);
-  if (direct) return direct;
-
-  for (let index = frameIndex - 1; index >= 0; index -= 1) {
-    const image = readyImageAt(images, statuses, index);
-    if (image) return image;
-  }
-
-  if (status === "pending") return null;
-
-  for (let index = frameIndex + 1; index < images.length; index += 1) {
-    const image = readyImageAt(images, statuses, index);
-    if (image) return image;
-  }
-
-  return null;
+function neutralFill(section: HTMLElement, preferDark: boolean) {
+  const token = preferDark ? "--inverse" : "--hero-bg";
+  const value = getComputedStyle(section).getPropertyValue(token).trim();
+  return value || (preferDark ? "#1c1917" : "#d6d3d1");
 }
 
 type ScrollSequenceProps = {
   sequence: ScrollSequenceConfig;
+  lead?: ScrollSequenceLead;
 };
 
-export function ScrollSequence({ sequence }: ScrollSequenceProps) {
+function OverlayCopy({
+  overlay,
+  onDark,
+}: {
+  overlay: ScrollSequenceOverlay;
+  onDark: boolean;
+}) {
+  const Heading = overlay.level === "h1" ? "h1" : "h2";
+  const end = overlay.align === "end";
+  const titleClass = onDark
+    ? "max-w-[18ch] font-serif text-[clamp(1.7rem,4.8vh,3.35rem)] leading-[0.95] tracking-[-0.04em] text-white"
+    : "max-w-[18ch] font-serif text-4xl leading-[1.02] tracking-[-0.03em] text-(--ink) sm:text-5xl";
+  const bodyClass = onDark
+    ? "mt-4 max-w-[28rem] text-sm leading-6 text-white/88 sm:text-base sm:leading-7"
+    : "mt-4 max-w-[34rem] text-base leading-7 text-(--ink-muted) sm:text-lg";
+  const secondaryClass = onDark
+    ? "scroll-ghost-cta backdrop-blur-[8px]"
+    : "inline-flex h-12 items-center justify-center rounded-full border border-(--inverse)/20 px-7 text-[11px] font-semibold uppercase text-(--ink) transition-colors duration-200 hover:bg-(--inverse)/5";
+
+  return (
+    <div className={end && onDark ? "flex flex-col items-end text-right" : ""}>
+      <div
+        className={
+          onDark ? "mb-5 h-px w-12 bg-(--accent-line)" : "mb-5 h-px w-12 bg-(--accent)"
+        }
+      />
+      <Heading className={titleClass}>{overlay.title}</Heading>
+      {overlay.text ? <p className={bodyClass}>{overlay.text}</p> : null}
+      {overlay.primaryCta || overlay.secondaryCta ? (
+        <div
+          className={`mt-6 flex flex-col gap-3 sm:flex-row ${end && onDark ? "sm:justify-end" : ""}`}
+        >
+          {overlay.primaryCta ? (
+            <a
+              href={overlay.primaryCta.href}
+              className="group inline-flex h-12 items-center justify-center gap-3 rounded-full bg-(--button-bg) px-7 text-[11px] font-semibold uppercase !text-(--button-text) transition-transform duration-200 hover:-translate-y-0.5"
+            >
+              {overlay.primaryCta.label}
+              <span className="transition-transform duration-300 group-hover:translate-x-0.5">
+                <ArrowIcon />
+              </span>
+            </a>
+          ) : null}
+          {overlay.secondaryCta ? (
+            <a
+              href={overlay.secondaryCta.href}
+              className={secondaryClass}
+            >
+              {overlay.secondaryCta.label}
+            </a>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function LeadCopy({
+  lead,
+  onDark,
+}: {
+  lead: ScrollSequenceLead;
+  onDark: boolean;
+}) {
+  const titleClass = onDark
+    ? "max-w-[16ch] font-serif text-[clamp(1.85rem,6.2vh,4.5rem)] leading-[0.92] tracking-[-0.04em] text-white"
+    : "max-w-[12ch] font-serif text-4xl leading-[0.95] tracking-[-0.03em] text-(--ink) sm:text-5xl";
+  const accentClass = onDark ? "text-(--accent-line)" : "text-(--accent)";
+  const bodyClass = onDark
+    ? "mt-3 max-w-[36rem] text-sm leading-6 text-white/88 sm:text-base sm:leading-7"
+    : "mt-4 max-w-[560px] text-base leading-7 text-(--ink-muted) sm:text-lg";
+  const eyebrowClass = onDark
+    ? "text-[11px] font-semibold uppercase text-white/75"
+    : "text-[11px] font-semibold uppercase text-(--ink-muted)";
+  const ruleClass = onDark ? "mb-5 h-px w-12 bg-(--accent-line)" : "mb-5 h-px w-12 bg-(--accent)";
+  const secondaryClass = onDark
+    ? "inline-flex h-12 items-center justify-center rounded-full border border-white/45 px-7 text-[11px] font-semibold uppercase text-white transition-colors duration-200 hover:bg-white/10"
+    : "inline-flex h-12 items-center justify-center rounded-full border border-(--inverse)/20 px-7 text-[11px] font-semibold uppercase text-(--ink) transition-colors duration-200 hover:bg-(--inverse)/5";
+  const statValueClass = onDark
+    ? "block font-serif text-xl font-normal text-white"
+    : "block font-serif text-2xl font-normal text-(--ink)";
+  const statLabelClass = onDark
+    ? "mt-1 block text-[10px] uppercase text-white/70"
+    : "mt-1 block text-[10px] uppercase text-(--ink-muted)";
+  const statRule = onDark ? "border-white/25" : "border-(--inverse)/15";
+
+  return (
+    <div className="mx-auto w-full max-w-[1440px]">
+      <div className={ruleClass} />
+      <p className={eyebrowClass}>{lead.eyebrow}</p>
+      <h1 className={`mt-3 ${titleClass}`}>
+        {lead.title}{" "}
+        <span className={`block ${accentClass}`}>{lead.highlightedTitle}</span>
+      </h1>
+      <p className={bodyClass}>{lead.description}</p>
+      <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+        <a
+          href={lead.primaryCta.href}
+          className="group inline-flex h-12 items-center justify-center gap-3 rounded-full bg-(--button-bg) px-7 text-[11px] font-semibold uppercase !text-(--button-text) transition-transform duration-200 hover:-translate-y-0.5"
+        >
+          {lead.primaryCta.label}
+          <span className="transition-transform duration-300 group-hover:translate-x-0.5">
+            <ArrowIcon />
+          </span>
+        </a>
+        <a href={lead.secondaryCta.href} className={secondaryClass}>
+          {lead.secondaryCta.label}
+        </a>
+      </div>
+      <div
+        className={`mt-5 grid max-w-[640px] grid-cols-2 gap-x-6 gap-y-3 border-t pt-3 sm:grid-cols-4 ${statRule}`}
+      >
+        {lead.stats.map((stat) => (
+          <div key={`${stat.value}-${stat.label}`}>
+            <strong className={statValueClass}>{stat.value}</strong>
+            <span className={statLabelClass}>{stat.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function ScrollSequence({ sequence, lead }: ScrollSequenceProps) {
   const reducedMotion = usePrefersReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -199,9 +262,11 @@ export function ScrollSequence({ sequence }: ScrollSequenceProps) {
   const paintRef = useRef<() => void>(() => {});
 
   const overlays = sequence.overlays ?? EMPTY_OVERLAYS;
-  const trackHeight = Number.isFinite(sequence.heightVh)
-    ? sequence.heightVh
-    : 100;
+  const holdVh = Number.isFinite(sequence.holdVh) ? (sequence.holdVh ?? 0) : 0;
+  const trackHeight =
+    (Number.isFinite(sequence.heightVh) ? sequence.heightVh : 100) +
+    Math.max(0, holdVh);
+  const onVideo = Boolean(lead) || overlays.length > 0;
 
   useEffect(() => {
     const paint = () => {
@@ -210,61 +275,41 @@ export function ScrollSequence({ sequence }: ScrollSequenceProps) {
       const canvas = canvasRef.current;
       if (!section || !stage || !canvas) return;
 
-      const context = canvas.getContext("2d");
-      if (!context) return;
-
       pinStage(section, stage, reducedMotion);
 
-      const bounds = stage.getBoundingClientRect();
-      const cssWidth = bounds.width;
-      const cssHeight = bounds.height;
-      if (cssWidth < 1 || cssHeight < 1) return;
-
-      const pixelRatio = window.devicePixelRatio || 1;
-      const bitmapWidth = Math.max(1, Math.round(cssWidth * pixelRatio));
-      const bitmapHeight = Math.max(1, Math.round(cssHeight * pixelRatio));
-
-      if (canvas.width !== bitmapWidth || canvas.height !== bitmapHeight) {
-        canvas.width = bitmapWidth;
-        canvas.height = bitmapHeight;
-      }
-
-      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-      context.imageSmoothingEnabled = true;
-      context.imageSmoothingQuality = "high";
-
-      const frameCount = Math.max(1, Math.floor(sequence.frameCount));
-      const progress = reducedMotion ? 0 : progressRef.current;
-      const frameIndex = Math.min(
-        frameCount - 1,
-        Math.max(0, Math.round(progress * (frameCount - 1))),
-      );
-      const image = imageForFrame(
+      paintCanvasFrame(
+        canvas,
         imagesRef.current,
         statusRef.current,
-        frameIndex,
+        reducedMotion ? 0 : progressRef.current,
+        sequence.frameCount,
+        neutralFill(section, Boolean(lead)),
       );
 
-      context.fillStyle = neutralFill(section);
-      context.fillRect(0, 0, cssWidth, cssHeight);
-
-      if (image) {
-        drawCover(context, image, cssWidth, cssHeight);
-      }
-
       if (reducedMotion) return;
+
+      const progress = progressRef.current;
+      const leadNode = stage.querySelector<HTMLElement>("[data-scroll-lead]");
+      if (leadNode) {
+        const leadOpacity = overlayOpacity(progress, 0, LEAD_UNTIL);
+        leadNode.style.opacity = leadOpacity.toFixed(3);
+        leadNode.style.pointerEvents = leadOpacity > 0.05 ? "auto" : "none";
+      }
 
       const nodes = stage.querySelectorAll<HTMLElement>("[data-scroll-overlay]");
       nodes.forEach((node) => {
         const index = Number(node.dataset.scrollOverlay);
         const overlay = overlays[index];
         if (!overlay) return;
-        node.style.opacity = overlayOpacity(
-          progress,
-          overlay.from,
-          overlay.to,
-        ).toFixed(3);
+        const opacity = overlayOpacity(progress, overlay.from, overlay.to);
+        node.style.opacity = opacity.toFixed(3);
+        node.style.pointerEvents = opacity > 0.05 ? "auto" : "none";
       });
+
+      const hint = stage.querySelector<HTMLElement>("[data-scroll-hint]");
+      if (hint) {
+        hint.style.opacity = progress > 0.012 ? "0" : "1";
+      }
     };
 
     paintRef.current = paint;
@@ -275,7 +320,7 @@ export function ScrollSequence({ sequence }: ScrollSequenceProps) {
     const updateFromScroll = () => {
       const section = sectionRef.current;
       progressRef.current =
-        reducedMotion || !section ? 0 : readProgress(section);
+        reducedMotion || !section ? 0 : readProgress(section, holdVh);
       paint();
     };
 
@@ -327,90 +372,33 @@ export function ScrollSequence({ sequence }: ScrollSequenceProps) {
       window.removeEventListener("resize", onScroll);
       pixelRatioQuery.removeEventListener("change", onPixelRatio);
     };
-  }, [overlays, reducedMotion, sequence.frameCount]);
+  }, [holdVh, lead, overlays, reducedMotion, sequence.frameCount]);
 
   useEffect(() => {
     paintRef.current();
   });
 
   useEffect(() => {
-    let cancelled = false;
     const count = Math.max(
       0,
       Math.floor(reducedMotion ? 1 : sequence.frameCount),
     );
+    const images = Array.from({ length: count }, () => null);
+    const statuses = Array.from(
+      { length: count },
+      () => "pending" as FrameStatus,
+    );
+    imagesRef.current = images;
+    statusRef.current = statuses;
 
-    imagesRef.current = Array.from({ length: count }, () => null);
-    statusRef.current = Array.from({ length: count }, () => "pending");
-
-    const loadFrame = (index: number) =>
-      new Promise<void>((resolve) => {
-        if (cancelled) {
-          resolve();
-          return;
-        }
-
-        const image = new Image();
-        image.decoding = "async";
-        image.fetchPriority = index === 0 ? "high" : "low";
-
-        const settle = (status: FrameStatus) => {
-          if (!cancelled) {
-            statusRef.current[index] = status;
-            if (status === "ready") imagesRef.current[index] = image;
-            paintRef.current();
-          }
-          resolve();
-        };
-
-        image.onload = () => {
-          if (typeof image.decode === "function") {
-            image.decode().then(
-              () => settle("ready"),
-              () => settle("ready"),
-            );
-            return;
-          }
-          settle("ready");
-        };
-        image.onerror = () => settle("error");
-        image.src = frameSrc(
-          sequence.basePath,
-          index + 1,
-          sequence.fileExtension,
-        );
-      });
-
-    const preload = async () => {
-      if (count < 1) {
-        paintRef.current();
-        return;
-      }
-
-      await loadFrame(0);
-      if (cancelled || reducedMotion || count < 2) return;
-
-      let nextIndex = 1;
-      const workers = Array.from(
-        { length: Math.min(PRELOAD_CONCURRENCY, count - 1) },
-        async () => {
-          while (!cancelled) {
-            const index = nextIndex;
-            nextIndex += 1;
-            if (index >= count) return;
-            await loadFrame(index);
-          }
-        },
-      );
-
-      await Promise.all(workers);
-    };
-
-    void preload();
-
-    return () => {
-      cancelled = true;
-    };
+    return loadFrameSequence({
+      basePath: sequence.basePath,
+      frameCount: count,
+      fileExtension: sequence.fileExtension,
+      images,
+      statuses,
+      onUpdate: () => paintRef.current(),
+    });
   }, [
     reducedMotion,
     sequence.basePath,
@@ -418,70 +406,96 @@ export function ScrollSequence({ sequence }: ScrollSequenceProps) {
     sequence.frameCount,
   ]);
 
+  const stageClass = onVideo
+    ? reducedMotion
+      ? "relative h-screen overflow-hidden bg-(--inverse)"
+      : "pointer-events-none absolute top-0 left-0 z-0 h-screen w-full overflow-hidden bg-(--inverse)"
+    : reducedMotion
+      ? "relative h-screen overflow-hidden bg-(--hero-bg)"
+      : "pointer-events-none absolute top-0 left-0 z-0 h-screen w-full overflow-hidden bg-(--hero-bg)";
+
   return (
     <section
+      id="inicio"
       ref={sectionRef}
-      className="relative bg-(--hero-bg) text-(--ink)"
+      data-scroll-sequence=""
+      className={
+        onVideo
+          ? reducedMotion
+            ? "relative bg-(--canvas) text-(--ink)"
+            : "relative bg-(--inverse)"
+          : "relative bg-(--hero-bg) text-(--ink)"
+      }
       style={reducedMotion ? undefined : { height: `${trackHeight}vh` }}
     >
-      <div
-        ref={stageRef}
-        className={
-          reducedMotion
-            ? "relative h-screen overflow-hidden bg-(--hero-bg)"
-            : "pointer-events-none absolute top-0 left-0 z-0 h-screen w-full overflow-hidden bg-(--hero-bg)"
-        }
-      >
+      <div ref={stageRef} className={stageClass}>
         <canvas
           ref={canvasRef}
           aria-hidden="true"
           className="absolute inset-0 block h-full w-full"
         />
 
+        {onVideo ? (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-28 bg-gradient-to-b from-black/60 to-transparent"
+          />
+        ) : null}
+
+        {reducedMotion || !lead ? null : (
+          <div
+            data-scroll-lead=""
+            className="pointer-events-auto absolute inset-x-0 top-20 bottom-0 z-[2] flex items-end overflow-hidden"
+            style={{ opacity: overlayOpacity(0, 0, LEAD_UNTIL) }}
+          >
+            <div className="w-full bg-gradient-to-t from-black/88 via-black/55 to-transparent px-5 pt-16 pb-8 sm:px-8 sm:pb-12 lg:px-16 lg:pb-14">
+              <LeadCopy lead={lead} onDark />
+            </div>
+          </div>
+        )}
+
         {reducedMotion
           ? null
-          : overlays.map((overlay, index) => (
-              <div
-                key={`${overlay.from}-${overlay.to}-${overlay.title}`}
-                data-scroll-overlay={index}
-                className="pointer-events-none absolute inset-0 flex items-end"
-                style={{
-                  opacity: overlayOpacity(0, overlay.from, overlay.to),
-                }}
-              >
-                <div className="w-full bg-gradient-to-t from-(--inverse)/80 via-(--inverse)/35 to-transparent px-5 pt-32 pb-16 sm:px-8 sm:pb-20 lg:px-16 lg:pb-24">
-                  <div className="mx-auto w-full max-w-[1440px]">
-                    <div className="mb-5 h-px w-12 bg-(--accent)" />
-                    <h2 className="max-w-[14ch] font-serif text-[clamp(2.75rem,6vw,5.25rem)] leading-[0.92] tracking-[-0.045em] text-(--on-inverse)">
-                      {overlay.title}
-                    </h2>
-                    {overlay.text ? (
-                      <p className="mt-5 max-w-[34rem] text-base leading-7 text-(--on-inverse) opacity-85 sm:text-lg sm:leading-8">
-                        {overlay.text}
-                      </p>
-                    ) : null}
+          : overlays.map((overlay, index) => {
+              const visible =
+                overlayOpacity(0, overlay.from, overlay.to) > 0.05;
+              const end = overlay.align === "end";
+
+              return (
+                <div
+                  key={`${overlay.from}-${overlay.to}-${overlay.title}`}
+                  data-scroll-overlay={index}
+                  className={`absolute inset-x-0 top-20 bottom-0 z-[2] flex items-end overflow-hidden pb-16 ${
+                    end ? "justify-end" : "justify-start"
+                  } ${visible ? "pointer-events-auto" : "pointer-events-none"}`}
+                  style={{
+                    opacity: overlayOpacity(0, overlay.from, overlay.to),
+                  }}
+                >
+                  <div className="scroll-overlay-card m-5 max-w-xl backdrop-blur-[12px] sm:m-8 lg:m-12">
+                    <OverlayCopy overlay={overlay} onDark />
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
+
+        {reducedMotion || !onVideo ? null : (
+          <div data-scroll-hint className="scroll-hint" aria-hidden="true">
+            <span>Desliza</span>
+            <span className="scroll-hint-line" />
+          </div>
+        )}
       </div>
 
-      {reducedMotion && overlays.length > 0 ? (
-        <div className="mx-auto grid w-full max-w-[1440px] gap-12 px-5 py-16 sm:px-8 lg:px-12 lg:py-24">
+      {reducedMotion && (lead || overlays.length > 0) ? (
+        <div className="mx-auto grid w-full max-w-[1440px] gap-16 px-5 py-16 sm:px-8 lg:px-12 lg:py-24">
+          {lead ? <LeadCopy lead={lead} onDark={false} /> : null}
           {overlays.map((overlay) => (
             <div
               key={`${overlay.from}-${overlay.to}-${overlay.title}`}
               className="max-w-[720px]"
             >
-              <div className="mb-5 h-px w-12 bg-(--accent)" />
-              <h2 className="font-serif text-4xl leading-[1.02] tracking-[-0.03em] text-(--ink) sm:text-5xl">
-                {overlay.title}
-              </h2>
-              {overlay.text ? (
-                <p className="mt-4 max-w-[560px] text-base leading-7 text-(--ink-muted) sm:text-lg">
-                  {overlay.text}
-                </p>
-              ) : null}
+              <OverlayCopy overlay={overlay} onDark={false} />
             </div>
           ))}
         </div>

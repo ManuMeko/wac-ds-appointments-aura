@@ -1,5 +1,8 @@
 // apps/web/components/home/ReviewsSection.tsx
 
+import { ReviewMarquee } from "@/components/home/ReviewMarquee";
+import { Noise } from "@/components/motion/Noise";
+import { Reveal } from "@/components/motion/Reveal";
 import { StarIcon } from "@/components/ui/StarIcon";
 import { business } from "@/config/business";
 
@@ -9,9 +12,12 @@ import { business } from "@/config/business";
 ========================================================= */
 
 export function ReviewsSection() {
+  const taller = business.theme === "taller";
+
   return (
     <section
       id="opiniones"
+      data-header-ink="light"
       className="relative overflow-hidden bg-(--p-302a26) text-white"
     >
       {/* =====================================================
@@ -20,6 +26,8 @@ export function ReviewsSection() {
       <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-(--p-8e725f)/10 blur-3xl" />
 
       <div className="pointer-events-none absolute -bottom-32 -left-24 h-80 w-80 rounded-full bg-black/10 blur-3xl" />
+
+      <Noise id="noise-opiniones" />
 
       <div className="relative mx-auto w-full max-w-[1440px] px-5 py-20 sm:px-8 lg:px-12 lg:py-28 xl:px-16">
         {/* =====================================================
@@ -31,9 +39,11 @@ export function ReviewsSection() {
               {business.reviewsIntro.eyebrow}
             </p>
 
-            <h2 className="mt-5 font-serif text-5xl leading-[0.97] tracking-[-0.035em] text-(--p-f5eee8) sm:text-6xl">
-              {business.reviewsIntro.title}
-            </h2>
+            <Reveal variant="fade-up">
+              <h2 className="mt-5 font-serif text-5xl leading-[0.97] tracking-[-0.035em] text-(--p-f5eee8) sm:text-6xl">
+                {business.reviewsIntro.title}
+              </h2>
+            </Reveal>
           </div>
 
           <p className="max-w-[390px] text-sm leading-7 text-(--p-a99e96)">
@@ -44,6 +54,11 @@ export function ReviewsSection() {
         {/* =====================================================
             REVIEWS GRID
         ====================================================== */}
+        {taller ? (
+          <Reveal variant="fade-up">
+            <ReviewMarquee reviews={business.reviews} />
+          </Reveal>
+        ) : (
         <div className="mt-14 grid gap-4 lg:grid-cols-3">
           {business.reviews.map((review, index) => (
             <article
@@ -95,6 +110,7 @@ export function ReviewsSection() {
             </article>
           ))}
         </div>
+        )}
       </div>
     </section>
   );

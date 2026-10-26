@@ -2,10 +2,68 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 import { business } from "@/config/business";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
+
+type HeaderChrome = {
+  onVideo: boolean;
+  scrolled: boolean;
+};
+
+const AURA_CHROME: HeaderChrome = { onVideo: false, scrolled: false };
+const VIDEO_TOP_CHROME: HeaderChrome = { onVideo: true, scrolled: false };
+
+let chromeCache: HeaderChrome = VIDEO_TOP_CHROME;
+
+function subscribeHeaderChrome(onChange: () => void) {
+  if (business.theme !== "taller") return () => {};
+
+  window.addEventListener("scroll", onChange, { passive: true });
+  document.addEventListener("scroll", onChange, { passive: true, capture: true });
+  window.addEventListener("resize", onChange, { passive: true });
+
+  return () => {
+    window.removeEventListener("scroll", onChange);
+    document.removeEventListener("scroll", onChange, true);
+    window.removeEventListener("resize", onChange);
+  };
+}
+
+function readHeaderChrome(): HeaderChrome {
+  if (business.theme !== "taller") return AURA_CHROME;
+
+  const scrolledPx = Math.max(
+    window.scrollY,
+    document.documentElement.scrollTop,
+    document.body.scrollTop,
+  );
+  const scrolled = scrolledPx > 12;
+  const probe = 48;
+  const zones = document.querySelectorAll(
+    "[data-scroll-sequence], [data-header-ink='light']",
+  );
+  let onVideo = false;
+  for (const zone of zones) {
+    const rect = zone.getBoundingClientRect();
+    if (rect.top <= probe && rect.bottom > probe) {
+      onVideo = true;
+      break;
+    }
+  }
+
+  if (chromeCache.onVideo === onVideo && chromeCache.scrolled === scrolled) {
+    return chromeCache;
+  }
+
+  chromeCache = { onVideo, scrolled };
+  return chromeCache;
+}
+
+function getHeaderChromeServerSnapshot(): HeaderChrome {
+  return business.theme === "taller" ? VIDEO_TOP_CHROME : AURA_CHROME;
+}
 
 /* =========================================================
    WAC DS · MODEL 01 · APPOINTMENTS
@@ -51,13 +109,32 @@ function CloseIcon() {
 
 export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const chrome = useSyncExternalStore(
+    subscribeHeaderChrome,
+    readHeaderChrome,
+    getHeaderChromeServerSnapshot,
+  );
+  const onVideo = chrome.onVideo;
 
   function closeMobileMenu() {
     setMobileMenuOpen(false);
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-(--p-2d2824)/10 bg-(--canvas)/90 backdrop-blur-xl">
+    <header
+      className={
+        onVideo
+          ? [
+              "fixed inset-x-0 top-0 z-50 text-(--on-inverse) transition-[background-color,border-color,backdrop-filter] duration-300",
+              chrome.scrolled
+                ? "border-b border-white/15 bg-black/45 backdrop-blur-md"
+                : "border-b border-transparent bg-transparent",
+            ].join(" ")
+          : business.theme === "taller"
+            ? "fixed inset-x-0 top-0 z-50 border-b border-(--p-2d2824)/10 bg-(--canvas)/90 backdrop-blur-xl"
+            : "sticky top-0 z-50 border-b border-(--p-2d2824)/10 bg-(--canvas)/90 backdrop-blur-xl"
+      }
+    >
       <div className="mx-auto flex h-[76px] w-full max-w-[1440px] items-center justify-between px-5 sm:px-8 lg:px-12 xl:px-16">
         {/* =====================================================
             BRAND
@@ -68,16 +145,34 @@ export function SiteHeader() {
           className="group flex shrink-0 items-center gap-3"
           onClick={closeMobileMenu}
         >
-          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-(--p-7c6654)/30 bg-(--p-eee5db) font-serif text-lg text-(--p-665143) transition-transform duration-300 group-hover:scale-105">
+          <span
+            className={
+              onVideo
+                ? "flex h-10 w-10 items-center justify-center rounded-full border border-white/35 bg-white/10 font-serif text-lg text-white transition-transform duration-300 group-hover:scale-105"
+                : "flex h-10 w-10 items-center justify-center rounded-full border border-(--p-7c6654)/30 bg-(--p-eee5db) font-serif text-lg text-(--p-665143) transition-transform duration-300 group-hover:scale-105"
+            }
+          >
             {business.brand.monogram}
           </span>
 
           <span className="leading-none">
-            <span className="block font-serif text-[19px] tracking-[0.16em] text-(--p-2b2521)">
+            <span
+              className={
+                onVideo
+                  ? "block font-serif text-[19px] tracking-[0.12em] text-white"
+                  : "block font-serif text-[19px] tracking-[0.16em] text-(--p-2b2521)"
+              }
+            >
               {business.brand.shortName.toUpperCase()}
             </span>
 
-            <span className="mt-1 block text-[9px] font-medium uppercase tracking-[0.34em] text-(--p-8a7565)">
+            <span
+              className={
+                onVideo
+                  ? "mt-1 block text-[9px] font-medium uppercase text-white/75"
+                  : "mt-1 block text-[9px] font-medium uppercase tracking-[0.34em] text-(--p-8a7565)"
+              }
+            >
               {business.brandSuffix}
             </span>
           </span>
@@ -87,14 +182,22 @@ export function SiteHeader() {
             DESKTOP NAVIGATION
         ====================================================== */}
         <nav
-          className="hidden items-center gap-8 text-[13px] font-medium text-(--p-62574f) lg:flex"
+          className={
+            onVideo
+              ? "hidden items-center gap-8 text-[13px] font-medium text-white/85 lg:flex"
+              : "hidden items-center gap-8 text-[13px] font-medium text-(--p-62574f) lg:flex"
+          }
           aria-label="Navegación principal"
         >
           {business.navigation.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className="relative transition-colors duration-200 hover:text-(--p-2a2420) after:absolute after:-bottom-2 after:left-0 after:h-px after:w-0 after:bg-(--accent) after:transition-all after:duration-300 hover:after:w-full"
+              className={
+                onVideo
+                  ? "relative transition-colors duration-200 hover:text-white after:absolute after:-bottom-2 after:left-0 after:h-px after:w-0 after:bg-(--accent-line) after:transition-all after:duration-300 hover:after:w-full"
+                  : "relative transition-colors duration-200 hover:text-(--p-2a2420) after:absolute after:-bottom-2 after:left-0 after:h-px after:w-0 after:bg-(--accent) after:transition-all after:duration-300 hover:after:w-full"
+              }
             >
               {item.label}
             </a>
@@ -130,7 +233,11 @@ export function SiteHeader() {
           aria-expanded={mobileMenuOpen}
           aria-controls="mobile-navigation"
           onClick={() => setMobileMenuOpen((current) => !current)}
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-(--p-3b332e)/15 bg-white/30 text-(--p-312a26) transition-all duration-200 hover:border-(--p-3b332e)/30 hover:bg-white/60 sm:hidden"
+          className={
+            onVideo
+              ? "flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white transition-all duration-200 hover:bg-white/20 sm:hidden"
+              : "flex h-11 w-11 items-center justify-center rounded-full border border-(--p-3b332e)/15 bg-white/30 text-(--p-312a26) transition-all duration-200 hover:border-(--p-3b332e)/30 hover:bg-white/60 sm:hidden"
+          }
         >
           {mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
         </button>

@@ -98,6 +98,14 @@ export const auraSeo = {
 
   themeColor: "#f8f5f0",
 
+  backgroundColor: "#f8f5f0",
+
+  schemaType: ["BeautySalon", "HealthAndBeautyBusiness"],
+
+  priceRange: "€€",
+
+  areaServed: "Madrid",
+
   robots: {
     index: false,
     follow: false,
@@ -596,13 +604,15 @@ const auraBooking = {
   stepHeadings: ["Paso 1 de 4", "Paso 2 de 4", "Paso 3 de 4", "Paso 4 de 4"],
   chooseServiceTitle: "Elige tu tratamiento",
   chooseServiceDescription:
-    "Mostramos únicamente servicios que actualmente admiten nuevas reservas.",
+    "Elige el tratamiento. Te confirmamos precio y tiempo antes de empezar.",
   loadingServices: "Cargando tratamientos...",
   emptyServicesTitle: "No hay tratamientos disponibles",
   emptyServicesBody:
     "En este momento no hay servicios habilitados para reserva online.",
   changeService: "← Cambiar tratamiento",
   chooseProfessionalTitle: "Elige profesional",
+  chooseProfessionalDescription:
+    "Elige quién quieres que se encargue, o deja que asignemos al primero disponible.",
   loadingProfessionals: "Cargando profesionales...",
   emptyProfessionalsTitle: "Sin profesionales disponibles",
   emptyProfessionalsBody:
@@ -610,11 +620,12 @@ const auraBooking = {
   changeProfessional: "← Cambiar profesional",
   dateTimeTitle: "Fecha y hora",
   withProfessional: "con",
+  dateTimePrompt: "Elige el día y la hora que mejor te vengan.",
   chooseDateLabel: "Elige fecha",
   chooseDateHint: "Selecciona el día que mejor te venga.",
   timesLabel: "Horarios",
-  slotSingular: "hora",
-  slotPlural: "horas",
+  slotSingular: "hueco libre",
+  slotPlural: "huecos libres",
   selectDateTitle: "Selecciona una fecha",
   selectDateHint: "Los horarios disponibles aparecerán aquí automáticamente.",
   loadingAvailability: "Consultando disponibilidad...",
@@ -631,7 +642,7 @@ const auraBooking = {
   noDate: "Sin fecha seleccionada",
   customerTitle: "Tus datos",
   customerDescription:
-    "Solo necesitamos los datos necesarios para gestionar tu cita.",
+    "Último paso. Solo necesitamos tus datos para confirmar la cita.",
   firstNameLabel: "Nombre *",
   lastNameLabel: "Apellidos",
   emailLabel: "Email",

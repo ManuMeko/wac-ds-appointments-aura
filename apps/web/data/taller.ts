@@ -15,7 +15,7 @@ export const tallerConfig: DemoConfig = {
   imageAlts: {
     hero: "Taller Motorline con un coche en el elevador y el banco de diagnosis al fondo",
     experience:
-      "Detalle del taller Motorline con herramientas ordenadas y un neumático preparado para el montaje",
+      "Coche en el elevador de Motorline, con el tren de rodaje y el trabajo a la vista",
   },
 
   vocabulary: {
@@ -64,18 +64,34 @@ export const tallerConfig: DemoConfig = {
     titleAccent: "cita.",
     description:
       "Elige servicio, profesional, fecha y hora. Te confirmamos el trabajo antes de tocar el coche.",
+    heroSequence: {
+      basePath: "/images/taller/sequence",
+      frameCount: 180,
+      durationMs: 6000,
+      fileExtension: "webp" as const,
+    },
+    stepFrames: [0, 0.2, 0.42, 0.64, 1],
+    stepPhaseLabels: [
+      "Fase 1/4 · Recepción",
+      "2/4 · Ruedas y frenos",
+      "3/4 · Carrocería",
+      "4/4 · Mecánica",
+    ],
+    successVisualTitle: "Cada pieza, a la vista.",
     backPrefix: "Volver a",
     steps: ["Servicio", "Profesional", "Fecha y hora", "Tus datos"],
     stepHeadings: ["Paso 1 de 4", "Paso 2 de 4", "Paso 3 de 4", "Paso 4 de 4"],
     chooseServiceTitle: "Elige tu servicio",
     chooseServiceDescription:
-      "Mostramos únicamente servicios que actualmente admiten nuevas reservas.",
+      "Elige qué necesita tu coche. Te confirmamos precio y tiempo antes de empezar.",
     loadingServices: "Cargando servicios...",
     emptyServicesTitle: "No hay servicios disponibles",
     emptyServicesBody:
       "En este momento no hay servicios habilitados para reserva online.",
     changeService: "← Cambiar servicio",
     chooseProfessionalTitle: "Elige profesional",
+    chooseProfessionalDescription:
+      "Elige quién quieres que se encargue, o deja que asignemos al primero disponible.",
     loadingProfessionals: "Cargando profesionales...",
     emptyProfessionalsTitle: "Sin profesionales disponibles",
     emptyProfessionalsBody:
@@ -83,11 +99,12 @@ export const tallerConfig: DemoConfig = {
     changeProfessional: "← Cambiar profesional",
     dateTimeTitle: "Fecha y hora",
     withProfessional: "con",
+    dateTimePrompt: "Elige el día y la hora que mejor te vengan.",
     chooseDateLabel: "Elige fecha",
     chooseDateHint: "Selecciona el día que mejor te venga.",
     timesLabel: "Horarios",
-    slotSingular: "hora",
-    slotPlural: "horas",
+    slotSingular: "hueco libre",
+    slotPlural: "huecos libres",
     selectDateTitle: "Selecciona una fecha",
     selectDateHint: "Los horarios disponibles aparecerán aquí automáticamente.",
     loadingAvailability: "Consultando disponibilidad...",
@@ -104,13 +121,13 @@ export const tallerConfig: DemoConfig = {
     noDate: "Sin fecha seleccionada",
     customerTitle: "Tus datos",
     customerDescription:
-      "Solo necesitamos los datos para identificar la cita y el coche. Matrícula y modelo son opcionales.",
+      "Último paso. Solo necesitamos tus datos y la matrícula para preparar la bahía.",
     firstNameLabel: "Nombre *",
     lastNameLabel: "Apellidos",
     emailLabel: "Email",
     phoneLabel: "Teléfono",
     contactHint:
-      "Introduce al menos un email o un teléfono para que podamos identificar tu reserva y enviarte la información de gestión.",
+      "Con uno basta. Te enviaremos la confirmación y podrás gestionar la cita.",
     notesLabel: "Notas para el taller",
     notesPlaceholder: "Opcional. Por ejemplo, un ruido, un testigo o desde cuándo lo notas.",
     submitting: "Reservando...",
@@ -259,7 +276,7 @@ export const tallerConfig: DemoConfig = {
       "Taller mecánico en Madrid para revisiones, mantenimiento, frenos, neumáticos y diagnosis. Cita online y presupuesto claro.",
     locale: "es_ES",
     language: "es",
-    ogImage: "/images/taller/og-motorline.svg",
+    ogImage: "/images/taller/og.webp",
     category: "automotive",
     keywords: [
       "Motorline Taller",
@@ -274,6 +291,10 @@ export const tallerConfig: DemoConfig = {
       "cita taller",
     ],
     themeColor: "#f4f4f5",
+    backgroundColor: "#1c1917",
+    schemaType: "AutoRepair",
+    priceRange: "€€",
+    areaServed: "Madrid",
     robots: {
       index: false,
       follow: false,
@@ -282,12 +303,12 @@ export const tallerConfig: DemoConfig = {
 
   assets: {
     hero: "/images/taller/hero-motorline.svg",
-    experience: "/images/taller/experience-motorline.svg",
-    openGraph: "/images/taller/og-motorline.svg",
+    experience: "/images/taller/elevador.webp",
+    openGraph: "/images/taller/og.webp",
     team: {
-      "javier-ruiz": "/images/taller/team/javier-ruiz.svg",
-      "carlos-mendez": "/images/taller/team/carlos-mendez.svg",
-      "lucia-torres": "/images/taller/team/lucia-torres.svg",
+      "javier-ruiz": "/images/taller/team-javier.webp",
+      "carlos-mendez": "/images/taller/team-carlos.webp",
+      "lucia-torres": "/images/taller/team-lucia.webp",
     },
   },
 
@@ -311,27 +332,49 @@ export const tallerConfig: DemoConfig = {
 
   scrollSequence: {
     basePath: "/images/taller/sequence",
-    frameCount: 120,
+    frameCount: 180,
     fileExtension: "webp",
-    heightVh: 400,
+    heightVh: 280,
+    holdVh: 10,
     overlays: [
       {
         from: 0,
-        to: 0.36,
-        title: "Primero, el coche.",
-        text: "Identificamos el síntoma y el vehículo antes de tocar una pieza.",
+        to: 0.18,
+        align: "start",
+        level: "h1",
+        title: "Tu coche, en manos de confianza.",
+        text: "Taller de mecánica en Madrid. Revisiones, mantenimiento y diagnosis.",
+        primaryCta: { label: "Reservar cita", href: "/reservar" },
+        secondaryCta: { label: "Ver servicios", href: "#servicios" },
       },
       {
-        from: 0.32,
-        to: 0.68,
-        title: "Después, el diagnóstico.",
-        text: "Te decimos qué tiene, qué cuesta y cuándo lo tienes.",
+        from: 0.2,
+        to: 0.38,
+        align: "end",
+        title: "Ruedas, frenos y suspensión.",
+        text: "Revisamos discos, pinzas y amortiguadores pieza a pieza.",
       },
       {
-        from: 0.64,
+        from: 0.4,
+        to: 0.58,
+        align: "start",
+        title: "Carrocería fuera, sin prisas.",
+        text: "Accedemos a lo que hace falta, nada más.",
+      },
+      {
+        from: 0.6,
+        to: 0.8,
+        align: "end",
+        title: "Motor, caja y refrigeración.",
+        text: "Diagnosis electrónica y mecánica antes de tocar nada.",
+      },
+      {
+        from: 0.82,
         to: 1,
-        title: "Sin sorpresas en la factura.",
-        text: "Si aparece algo más, paramos y te llamamos.",
+        align: "start",
+        title: "Cada pieza, a la vista. Sin sorpresas en la factura.",
+        text: "Te enseñamos qué se ha cambiado y por qué.",
+        primaryCta: { label: "Reservar cita", href: "/reservar" },
       },
     ],
   },
@@ -343,12 +386,39 @@ export const tallerConfig: DemoConfig = {
     { value: "0", label: "Cargos ocultos" },
   ],
 
+  proofStats: [
+    { value: "18", label: "años en el taller" },
+    { value: "+4.200", label: "coches revisados al año" },
+    { value: "24", unit: "meses", label: "de garantía en reparaciones" },
+    { value: "98", unit: "%", label: "de clientes que repiten" },
+  ],
+
   philosophy: {
     eyebrow: "Cómo trabajamos",
     title: "Primero el diagnóstico.",
     highlightedTitle: "Después, el presupuesto.",
     description:
       "No cambiamos una pieza porque sí. Si el coche solo necesita un ajuste, eso es lo que hacemos. Y si hace falta una reparación, te decimos por qué.",
+    steps: [
+      {
+        number: "01",
+        title: "Diagnóstico",
+        text: "Revisamos y te explicamos qué tiene el coche.",
+        icon: "diagnosis",
+      },
+      {
+        number: "02",
+        title: "Presupuesto",
+        text: "Precio cerrado antes de tocar nada.",
+        icon: "quote",
+      },
+      {
+        number: "03",
+        title: "Reparación",
+        text: "Solo lo necesario, con las piezas a la vista.",
+        icon: "parts",
+      },
+    ],
   },
 
   servicesIntro: {
@@ -371,6 +441,7 @@ export const tallerConfig: DemoConfig = {
       price: "149 €",
       category: "Mantenimiento",
       featured: true,
+      icon: "revision",
     },
     {
       id: "aceite-filtros",
@@ -382,6 +453,7 @@ export const tallerConfig: DemoConfig = {
       price: "69 €",
       category: "Mantenimiento",
       featured: true,
+      icon: "oil",
     },
     {
       id: "pre-itv",
@@ -393,6 +465,7 @@ export const tallerConfig: DemoConfig = {
       price: "35 €",
       category: "Inspección",
       featured: false,
+      icon: "itv",
     },
     {
       id: "neumaticos",
@@ -404,6 +477,7 @@ export const tallerConfig: DemoConfig = {
       price: "40 €",
       category: "Neumáticos",
       featured: false,
+      icon: "tires",
     },
     {
       id: "frenos",
@@ -415,6 +489,7 @@ export const tallerConfig: DemoConfig = {
       price: "120 €",
       category: "Seguridad",
       featured: true,
+      icon: "brakes",
     },
     {
       id: "diagnosis",
@@ -426,6 +501,7 @@ export const tallerConfig: DemoConfig = {
       price: "45 €",
       category: "Diagnosis",
       featured: true,
+      icon: "diagnosis",
     },
   ],
 
@@ -439,13 +515,14 @@ export const tallerConfig: DemoConfig = {
       "Puedes ver el trabajo. No hace falta adivinar qué se ha tocado.",
     badge: "Presupuesto antes de reparar",
     note: "Cada cita empieza por identificar el coche y el motivo de la visita, no por desmontar.",
+    image: "/images/taller/elevador.webp",
   },
 
   benefits: [
-    { id: "presupuesto", label: "Presupuesto antes de reparar" },
-    { id: "diagnosis", label: "Diagnosis explicada" },
-    { id: "piezas", label: "Piezas que se pueden ver" },
-    { id: "plazo", label: "Plazo de entrega concreto" },
+    { id: "presupuesto", label: "Presupuesto antes de reparar", icon: "quote" },
+    { id: "diagnosis", label: "Diagnosis explicada", icon: "diagnosis" },
+    { id: "piezas", label: "Piezas que se pueden ver", icon: "parts" },
+    { id: "plazo", label: "Plazo de entrega concreto", icon: "schedule" },
   ],
 
   teamIntro: {
@@ -464,6 +541,7 @@ export const tallerConfig: DemoConfig = {
       description:
         "Coordina el taller y se ocupa de la diagnosis. Traduce los códigos de avería a una decisión concreta.",
       specialties: ["Diagnosis", "Revisión oficial", "Organización del taller"],
+      image: "/images/taller/team-javier.webp",
     },
     {
       id: "carlos-mendez",
@@ -473,6 +551,7 @@ export const tallerConfig: DemoConfig = {
       description:
         "Mantenimiento periódico y sistema de frenos. Mide antes de sustituir y deja el recambio a la vista.",
       specialties: ["Aceite y filtros", "Frenos", "Revisiones"],
+      image: "/images/taller/team-carlos.webp",
     },
     {
       id: "lucia-torres",
@@ -482,6 +561,7 @@ export const tallerConfig: DemoConfig = {
       description:
         "Neumáticos, equilibrado y la revisión previa a la ITV. Te dice qué fallaría y qué puede esperar.",
       specialties: ["Neumáticos", "Pre-ITV", "Seguridad"],
+      image: "/images/taller/team-lucia.webp",
     },
   ],
 
