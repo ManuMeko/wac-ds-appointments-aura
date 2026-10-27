@@ -5,3 +5,6 @@ deploy/.env.*
 
 # Copias de pg_dump generadas por deploy/backup.sh
 deploy/backups/
+
+# Copias de pg_dump generadas por infra/seed/reset-dev.ps1
+infra/seed/backups/
