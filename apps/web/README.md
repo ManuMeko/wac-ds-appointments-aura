@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WAC DS · Modelo 01 · Essentials
 
-## Getting Started
+Web estática de Next.js para Cloudflare Pages. Una build publica una sola demo, Aura Studio o Motorline Taller, según `NEXT_PUBLIC_DEMO`.
 
-First, run the development server:
+No hay API, panel ni reserva en servidor. La cita se pide en `#contacto` (WhatsApp, teléfono y email).
+
+## Desarrollo
+
+Desde `apps/web`:
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Copia `apps/web/.env.example` a un archivo local si quieres fijar la demo. No subas secretos.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# PowerShell
+$env:NEXT_PUBLIC_DEMO="aura"
+npm run dev
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+$env:NEXT_PUBLIC_DEMO="taller"
+npm run dev
+```
 
-## Learn More
+## Export estático
 
-To learn more about Next.js, take a look at the following resources:
+`next.config.ts` usa `output: "export"`, `trailingSlash: true` e `images.unoptimized: true`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+$env:NEXT_PUBLIC_DEMO="aura"
+npm run build
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+$env:NEXT_PUBLIC_DEMO="taller"
+npm run build
+```
 
-## Deploy on Vercel
+La salida queda en `apps/web/out/`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Secuencia de scroll de Aura
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+El máster no se commitea. Créalo en `apps/web/clips/aura.mp4` (esa carpeta está en `.gitignore`).
+
+Desde `apps/web`, con `ffmpeg` y `ffprobe` en el PATH:
+
+```powershell
+.\scripts\extract-frames.ps1 -Video .\clips\aura.mp4 -OutputDir .\public\images\aura\sequence -FrameCount 96
+```
+
+El script genera `frame_0001.webp`, `frame_0002.webp`… a **1600 px** de ancho y **calidad 70**. Si la carpeta supera **8 MB**, el script avisa: baja `FrameCount` y vuelve a extraer.
+
+Hasta que existan esos archivos, Aura muestra el hero de siempre.
+
+Después de extraer, abre `apps/web/data/aura.ts` y cambia `frameCount: 0` por el número real de archivos `frame_####.webp`. Con el comando de arriba, 96 fotogramas, el valor es **96**.

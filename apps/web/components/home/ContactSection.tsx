@@ -1,11 +1,9 @@
 // apps/web/components/home/ContactSection.tsx
 
+import { TiltCard } from "@/components/home/TiltCard";
+import { Reveal } from "@/components/motion/Reveal";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
-import {
-  auraContact,
-  auraContactSection,
-  auraOpeningHours,
-} from "@/data/aura";
+import { business } from "@/config/business";
 
 /* =========================================================
    WAC DS · MODEL 01 · APPOINTMENTS
@@ -84,24 +82,26 @@ function ClockIcon() {
 }
 
 export function ContactSection() {
-  const whatsappHref = `https://wa.me/${auraContact.whatsappNumber}`;
-  const phoneHref = `tel:${auraContact.phoneHref}`;
-  const emailHref = `mailto:${auraContact.email}`;
+  const whatsappHref = `https://wa.me/${business.contact.whatsappNumber}`;
+  const phoneHref = `tel:${business.contact.phoneHref}`;
+  const emailHref = `mailto:${business.contact.email}`;
 
   return (
     <section
       id="contacto"
-      className="relative overflow-hidden bg-[#d8c3b2]"
+      className="relative overflow-hidden bg-(--section-sand)"
     >
       {/* =====================================================
           AMBIENT BACKGROUND
       ====================================================== */}
       <div className="pointer-events-none absolute -right-32 -top-32 h-[420px] w-[420px] rounded-full bg-white/20 blur-3xl" />
 
-      <div className="pointer-events-none absolute -bottom-40 -left-32 h-[440px] w-[440px] rounded-full bg-[#9a7c66]/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-40 -left-32 h-[440px] w-[440px] rounded-full bg-(--p-9a7c66)/10 blur-3xl" />
 
       <div className="relative mx-auto w-full max-w-[1440px] px-5 py-20 sm:px-8 lg:px-12 lg:py-28 xl:px-16">
-        <div className="overflow-hidden rounded-[2rem] border border-white/25 bg-[#f6f0e9] shadow-[0_30px_90px_rgba(65,50,40,0.12)]">
+        <Reveal variant="fade-up">
+        <TiltCard>
+        <div className="overflow-hidden rounded-[2rem] border border-white/25 bg-(--p-f6f0e9) shadow-[0_30px_90px_rgba(65,50,40,0.12)]">
           <div className="grid lg:grid-cols-[1.12fr_0.88fr]">
             {/* =================================================
                 PRIMARY CTA AREA
@@ -111,16 +111,18 @@ export function ContactSection() {
                   MAIN CONTENT
               ================================================== */}
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.27em] text-[#947862]">
-                  {auraContactSection.eyebrow}
+                <p className="text-[10px] font-semibold uppercase tracking-[0.27em] text-(--p-947862)">
+                  {business.contactSection.eyebrow}
                 </p>
 
-                <h2 className="mt-5 max-w-[650px] font-serif text-5xl leading-[0.95] tracking-[-0.04em] text-[#2d2723] sm:text-6xl">
-                  {auraContactSection.title}
-                </h2>
+                <Reveal variant="fade-up">
+                  <h2 className="mt-5 max-w-[650px] font-serif text-5xl leading-[0.95] tracking-[-0.04em] text-(--p-2d2723) sm:text-6xl">
+                    {business.contactSection.title}
+                  </h2>
+                </Reveal>
 
-                <p className="mt-7 max-w-[560px] text-base leading-8 text-[#72645a]">
-                  {auraContactSection.description}
+                <p className="mt-7 max-w-[560px] text-base leading-8 text-(--p-72645a)">
+                  {business.contactSection.description}
                 </p>
 
                 {/* =============================================
@@ -131,9 +133,9 @@ export function ContactSection() {
                     href={whatsappHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group inline-flex h-14 items-center justify-center gap-3 rounded-full bg-[#2e2824] px-8 text-[11px] font-semibold uppercase tracking-[0.18em] !text-[#fffaf6] shadow-[0_12px_30px_rgba(46,40,36,0.12)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#4b3e35] hover:shadow-[0_16px_36px_rgba(46,40,36,0.18)]"
+                    className="group inline-flex h-14 items-center justify-center gap-3 rounded-full bg-(--p-2e2824) px-8 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--on-inverse) shadow-[0_12px_30px_rgba(46,40,36,0.12)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4b3e35) hover:shadow-[0_16px_36px_rgba(46,40,36,0.18)]"
                   >
-                    {auraContactSection.whatsappCta.label}
+                    {business.contactSection.whatsappCta.label}
 
                     <span className="transition-transform duration-300 group-hover:translate-x-1">
                       <ArrowIcon />
@@ -142,49 +144,49 @@ export function ContactSection() {
 
                   <a
                     href={phoneHref}
-                    className="group inline-flex h-14 items-center justify-center gap-2 rounded-full border border-[#3e352f]/20 bg-transparent px-8 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#413730] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#3e352f]/35 hover:bg-[#ebe1d8]"
+                    className="group inline-flex h-14 items-center justify-center gap-2 rounded-full border border-(--p-3e352f)/20 bg-transparent px-8 text-[11px] font-semibold uppercase tracking-[0.18em] text-(--p-413730) transition-all duration-300 hover:-translate-y-0.5 hover:border-(--p-3e352f)/35 hover:bg-(--p-ebe1d8)"
                   >
                     <PhoneIcon />
 
-                    {auraContactSection.phoneCta.label}
+                    {business.contactSection.phoneCta.label}
                   </a>
                 </div>
 
                 {/* =============================================
                     CONTACT SHORTCUTS
                 ============================================== */}
-                <div className="mt-10 grid gap-4 border-t border-[#3a312b]/10 pt-8 sm:grid-cols-2">
+                <div className="mt-10 grid gap-4 border-t border-(--p-3a312b)/10 pt-8 sm:grid-cols-2">
                   <a
                     href={phoneHref}
-                    className="group rounded-[1.1rem] border border-[#3a312b]/10 bg-white/25 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#3a312b]/15 hover:bg-white/40"
+                    className="group rounded-[1.1rem] border border-(--p-3a312b)/10 bg-white/25 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-(--p-3a312b)/15 hover:bg-white/40"
                   >
-                    <div className="flex items-center gap-3 text-[#8c715f]">
+                    <div className="flex items-center gap-3 text-(--p-8c715f)">
                       <PhoneIcon />
 
                       <span className="text-[9px] font-semibold uppercase tracking-[0.2em]">
-                        Teléfono
+                        {business.contactSection.phoneLabel}
                       </span>
                     </div>
 
-                    <p className="mt-3 text-sm font-medium text-[#443932]">
-                      {auraContact.phoneDisplay}
+                    <p className="mt-3 text-sm font-medium text-(--p-443932)">
+                      {business.contact.phoneDisplay}
                     </p>
                   </a>
 
                   <a
                     href={emailHref}
-                    className="group rounded-[1.1rem] border border-[#3a312b]/10 bg-white/25 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#3a312b]/15 hover:bg-white/40"
+                    className="group rounded-[1.1rem] border border-(--p-3a312b)/10 bg-white/25 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-(--p-3a312b)/15 hover:bg-white/40"
                   >
-                    <div className="flex items-center gap-3 text-[#8c715f]">
+                    <div className="flex items-center gap-3 text-(--p-8c715f)">
                       <MailIcon />
 
                       <span className="text-[9px] font-semibold uppercase tracking-[0.2em]">
-                        Email
+                        {business.contactSection.emailLabel}
                       </span>
                     </div>
 
-                    <p className="mt-3 break-all text-sm font-medium text-[#443932]">
-                      {auraContact.email}
+                    <p className="mt-3 break-all text-sm font-medium text-(--p-443932)">
+                      {business.contact.email}
                     </p>
                   </a>
                 </div>
@@ -195,9 +197,28 @@ export function ContactSection() {
                   En desktop se empuja hacia abajo para
                   equilibrar visualmente el panel derecho.
               ============================================== */}
-              <div className="mt-12 border-l border-[#8b6d59]/35 pl-5 lg:mt-auto lg:pt-8">
-                <p className="max-w-[510px] font-serif text-xl leading-7 text-[#5d4d42]">
-                  Tu cita empieza con una conversación, no con un tratamiento.
+              {business.theme === "taller" ? (
+                <div className="relative mt-10 hidden min-h-48 flex-1 overflow-hidden rounded-[1.4rem] bg-[linear-gradient(165deg,#292524,#1c1917)] lg:block">
+                  <p className="absolute left-6 top-6 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/65">
+                    {business.brand.locationLabel}
+                  </p>
+                  <span
+                    aria-hidden="true"
+                    className="absolute -bottom-8 left-5 font-serif text-[10rem] leading-none text-transparent [-webkit-text-stroke:1px_rgba(249,115,22,0.55)]"
+                  >
+                    {business.brand.monogram}
+                  </span>
+                </div>
+              ) : null}
+              <div
+                className={
+                  business.theme === "taller"
+                    ? "mt-8 border-l border-(--accent)/35 pl-5"
+                    : "mt-12 border-l border-(--accent)/35 pl-5 lg:mt-auto lg:pt-8"
+                }
+              >
+                <p className="max-w-[510px] font-serif text-xl leading-7 text-(--p-5d4d42)">
+                  {business.contactSection.closingNote}
                 </p>
               </div>
             </div>
@@ -205,56 +226,56 @@ export function ContactSection() {
             {/* =================================================
                 CONTACT DETAILS
             ================================================== */}
-            <aside className="border-t border-[#352e29]/10 bg-[#ebe1d8] p-7 sm:p-10 lg:border-l lg:border-t-0 lg:p-14 xl:p-16">
+            <aside className="border-t border-(--p-352e29)/10 bg-(--p-ebe1d8) p-7 sm:p-10 lg:border-l lg:border-t-0 lg:p-14 xl:p-16">
               <div className="space-y-8">
                 {/* =============================================
                     ADDRESS
                 ============================================== */}
                 <div>
-                  <div className="flex items-center gap-3 text-[#967a66]">
+                  <div className="flex items-center gap-3 text-(--p-967a66)">
                     <LocationIcon />
 
                     <span className="text-[10px] font-semibold uppercase tracking-[0.2em]">
-                      Dirección
+                      {business.contactSection.addressLabel}
                     </span>
                   </div>
 
-                  <p className="mt-4 font-serif text-2xl leading-8 text-[#332c27]">
-                    {auraContact.addressLine1}
+                  <p className="mt-4 font-serif text-2xl leading-8 text-(--p-332c27)">
+                    {business.contact.addressLine1}
                     <br />
-                    {auraContact.addressLine2}
+                    {business.contact.addressLine2}
                   </p>
 
-                  <p className="mt-2 text-sm text-[#74665c]">
-                    {auraContact.city} · {auraContact.country}
+                  <p className="mt-2 text-sm text-(--p-74665c)">
+                    {business.contact.city} · {business.contact.country}
                   </p>
                 </div>
 
-                <div className="h-px bg-[#3c332d]/10" />
+                <div className="h-px bg-(--p-3c332d)/10" />
 
                 {/* =============================================
                     OPENING HOURS
                 ============================================== */}
                 <div>
-                  <div className="flex items-center gap-3 text-[#967a66]">
+                  <div className="flex items-center gap-3 text-(--p-967a66)">
                     <ClockIcon />
 
                     <span className="text-[10px] font-semibold uppercase tracking-[0.2em]">
-                      Horario
+                      {business.contactSection.hoursLabel}
                     </span>
                   </div>
 
                   <div className="mt-5 space-y-3 text-sm">
-                    {auraOpeningHours.map((item) => (
+                    {business.openingHours.map((item) => (
                       <div
                         key={`${item.days}-${item.hours}`}
-                        className="flex items-center justify-between gap-5 border-b border-[#3c332d]/[0.07] pb-3 last:border-b-0 last:pb-0"
+                        className="flex items-center justify-between gap-5 border-b border-(--p-3c332d)/[0.07] pb-3 last:border-b-0 last:pb-0"
                       >
-                        <span className="text-[#5f534a]">
+                        <span className="text-(--p-5f534a)">
                           {item.days}
                         </span>
 
-                        <span className="text-right font-medium text-[#473c35]">
+                        <span className="text-right font-medium text-(--p-473c35)">
                           {item.hours}
                         </span>
                       </div>
@@ -262,59 +283,58 @@ export function ContactSection() {
                   </div>
                 </div>
 
-                <div className="h-px bg-[#3c332d]/10" />
+                <div className="h-px bg-(--p-3c332d)/10" />
 
                 {/* =============================================
                     DIRECT CONTACT
                 ============================================== */}
                 <div>
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#967a66]">
-                    Contacto directo
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-(--p-967a66)">
+                    {business.contactSection.directContactLabel}
                   </span>
 
-                  <div className="mt-4 space-y-3 text-sm text-[#5f534a]">
+                  <div className="mt-4 space-y-3 text-sm text-(--p-5f534a)">
                     <a
                       href={phoneHref}
-                      className="flex w-fit items-center gap-2 transition-colors duration-200 hover:text-[#8b6e59]"
+                      className="flex w-fit items-center gap-2 transition-colors duration-200 hover:text-(--accent-line)"
                     >
                       <PhoneIcon />
 
-                      {auraContact.phoneDisplay}
+                      {business.contact.phoneDisplay}
                     </a>
 
                     <a
                       href={emailHref}
-                      className="flex w-fit items-center gap-2 transition-colors duration-200 hover:text-[#8b6e59]"
+                      className="flex w-fit items-center gap-2 transition-colors duration-200 hover:text-(--accent-line)"
                     >
                       <MailIcon />
 
-                      {auraContact.email}
+                      {business.contact.email}
                     </a>
                   </div>
                 </div>
 
-                <div className="h-px bg-[#3c332d]/10" />
+                <div className="h-px bg-(--p-3c332d)/10" />
 
                 {/* =============================================
                     BOOKING NOTE
                 ============================================== */}
-                <div className="rounded-[1.25rem] border border-[#3c332d]/10 bg-white/30 p-5">
-                  <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#967a66]">
-                    Atención personalizada
+                <div className="rounded-[1.25rem] border border-(--p-3c332d)/10 bg-white/30 p-5">
+                  <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-(--p-967a66)">
+                    {business.contactSection.guidanceTitle}
                   </p>
 
-                  <p className="mt-3 text-sm leading-6 text-[#66584f]">
-                    Si no sabes qué tratamiento elegir, escríbenos. Nuestro
-                    equipo puede orientarte antes de reservar.
+                  <p className="mt-3 text-sm leading-6 text-(--p-66584f)">
+                    {business.contactSection.guidanceBody}
                   </p>
 
                   <a
                     href={whatsappHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group mt-4 inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#4c4038] transition-colors duration-200 hover:text-[#8b6e59]"
+                    className="group mt-4 inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-(--p-4c4038) transition-colors duration-200 hover:text-(--accent-line)"
                   >
-                    Resolver dudas
+                    {business.contactSection.guidanceCta}
 
                     <span className="transition-transform duration-300 group-hover:translate-x-1">
                       <ArrowIcon />
@@ -325,6 +345,8 @@ export function ContactSection() {
             </aside>
           </div>
         </div>
+        </TiltCard>
+        </Reveal>
       </div>
     </section>
   );

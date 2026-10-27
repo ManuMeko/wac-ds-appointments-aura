@@ -3,7 +3,7 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Geist } from "next/font/google";
 
-import { auraBrand, auraSeo } from "@/data/aura";
+import { business } from "@/config/business";
 
 import "./globals.css";
 
@@ -88,34 +88,21 @@ export const metadata: Metadata = {
   --------------------------------------------------------- */
 
   title: {
-    default: auraSeo.defaultTitle,
-    template: auraSeo.titleTemplate,
+    default: business.seo.defaultTitle,
+    template: business.seo.titleTemplate,
   },
 
   /* ---------------------------------------------------------
      GENERAL SEO
   --------------------------------------------------------- */
 
-  description: auraSeo.description,
+  description: business.seo.description,
 
-  applicationName: auraSeo.siteName,
+  applicationName: business.seo.siteName,
 
-  category: "beauty",
+  category: business.seo.category,
 
-  keywords: [
-    "Aura Studio",
-    "estética",
-    "belleza",
-    "bienestar",
-    "centro de estética",
-    "estética Madrid",
-    "tratamientos faciales",
-    "estética avanzada",
-    "masajes",
-    "cuidado personal",
-    "tratamientos personalizados",
-    "bienestar Madrid",
-  ],
+  keywords: [...business.seo.keywords],
 
   creator: "WAC DS",
 
@@ -147,17 +134,17 @@ export const metadata: Metadata = {
      NO debe indexarse mientras siga siendo una demostración.
 
      Cuando el starter se utilice para un cliente real:
-     auraSeo.robots.index = true
-     auraSeo.robots.follow = true
+     business.seo.robots.index = true
+     business.seo.robots.follow = true
   --------------------------------------------------------- */
 
   robots: {
-    index: auraSeo.robots.index,
-    follow: auraSeo.robots.follow,
+    index: business.seo.robots.index,
+    follow: business.seo.robots.follow,
 
     googleBot: {
-      index: auraSeo.robots.index,
-      follow: auraSeo.robots.follow,
+      index: business.seo.robots.index,
+      follow: business.seo.robots.follow,
 
       "max-image-preview": "large",
       "max-snippet": -1,
@@ -172,25 +159,25 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
 
-    locale: auraSeo.locale,
+    locale: business.seo.locale,
 
     url: "/",
 
-    siteName: auraSeo.siteName,
+    siteName: business.seo.siteName,
 
-    title: auraSeo.defaultTitle,
+    title: business.seo.defaultTitle,
 
-    description: auraSeo.description,
+    description: business.seo.description,
 
     images: [
       {
-        url: auraSeo.ogImage,
+        url: business.seo.ogImage,
 
         width: 1536,
 
         height: 1024,
 
-        alt: `${auraBrand.name} · ${auraBrand.tagline}`,
+        alt: `${business.brand.name} · ${business.brand.tagline}`,
       },
     ],
   },
@@ -202,23 +189,29 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
 
-    title: auraSeo.defaultTitle,
+    title: business.seo.defaultTitle,
 
-    description: auraSeo.description,
+    description: business.seo.description,
 
-    images: [auraSeo.ogImage],
+    images: [business.seo.ogImage],
   },
 
   /* ---------------------------------------------------------
      ICONS
 
-     app/favicon.ico ya existe y Next.js también lo detecta
-     automáticamente, pero lo declaramos explícitamente.
+     SVG de la demo activa. Sustituye al favicon.ico que
+     no estaba en public/.
   --------------------------------------------------------- */
 
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
+    icon: [
+      {
+        url: business.theme === "taller" ? "/icons/taller.svg" : "/icons/aura.svg",
+        type: "image/svg+xml",
+      },
+    ],
+    shortcut:
+      business.theme === "taller" ? "/icons/taller.svg" : "/icons/aura.svg",
   },
 
   /* ---------------------------------------------------------
@@ -226,7 +219,7 @@ export const metadata: Metadata = {
   --------------------------------------------------------- */
 
   other: {
-    "content-language": "es",
+    "content-language": business.seo.language,
   },
 };
 
@@ -244,11 +237,11 @@ export const viewport: Viewport = {
   themeColor: [
     {
       media: "(prefers-color-scheme: light)",
-      color: "#f8f5f0",
+      color: business.seo.themeColor,
     },
     {
       media: "(prefers-color-scheme: dark)",
-      color: "#f8f5f0",
+      color: business.seo.themeColor,
     },
   ],
 
@@ -270,7 +263,8 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang={auraSeo.language}
+      lang={business.seo.language}
+      data-theme={business.theme}
       className={`${geistSans.variable} ${cormorant.variable}`}
       suppressHydrationWarning
     >

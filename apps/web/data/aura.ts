@@ -1,5 +1,7 @@
 // apps/web/data/aura.ts
 
+import type { DemoConfig } from "@/data/types";
+
 /**
  * ============================================================
  * WAC DS · MODEL 01 · APPOINTMENTS
@@ -20,113 +22,10 @@
  */
 
 /* ============================================================
-   TYPES
-============================================================ */
-
-export type AuraNavigationItem = {
-  label: string;
-  href: string;
-};
-
-export type AuraStat = {
-  value: string;
-  label: string;
-};
-
-export type AuraService = {
-  id: string;
-  number: string;
-  name: string;
-  description: string;
-  duration: string;
-  price: string;
-  category: string;
-  featured: boolean;
-};
-
-export type AuraProfessional = {
-  id: string;
-  name: string;
-  role: string;
-  initials: string;
-  description: string;
-  specialties: string[];
-};
-
-export type AuraReview = {
-  id: string;
-  author: string;
-  quote: string;
-  rating: number;
-};
-
-export type AuraBenefit = {
-  id: string;
-  label: string;
-};
-
-export type AuraOpeningHour = {
-  days: string;
-  hours: string;
-};
-
-export type AuraContact = {
-  phoneDisplay: string;
-  phoneHref: string;
-  whatsappNumber: string;
-  email: string;
-  addressLine1: string;
-  addressLine2: string;
-  city: string;
-  country: string;
-};
-
-export type AuraSocialLink = {
-  name: string;
-  href: string;
-};
-
-export type AuraLegalLink = {
-  label: string;
-  href: string;
-};
-
-export type AuraSeoConfig = {
-  siteName: string;
-  defaultTitle: string;
-  titleTemplate: string;
-  description: string;
-  locale: string;
-  language: string;
-  ogImage: string;
-  robots: {
-    index: boolean;
-    follow: boolean;
-  };
-};
-
-export type AuraAssetsConfig = {
-  hero: string;
-  experience: string;
-  openGraph: string;
-  team: {
-    lauraMartin: string;
-    andreaLopez: string;
-    sofiaGarcia: string;
-  };
-};
-
-export type AuraDemoConfig = {
-  enabled: boolean;
-  label: string;
-  legalNotice: string;
-};
-
-/* ============================================================
    DEMO
 ============================================================ */
 
-export const auraDemo: AuraDemoConfig = {
+export const auraDemo = {
   enabled: true,
 
   label: "Demo comercial WAC DS",
@@ -164,7 +63,7 @@ export const auraBrand = {
    SEO / METADATA
 ============================================================ */
 
-export const auraSeo: AuraSeoConfig = {
+export const auraSeo = {
   siteName: "Aura Studio",
 
   defaultTitle: "Aura Studio · Estética, belleza y bienestar",
@@ -180,6 +79,33 @@ export const auraSeo: AuraSeoConfig = {
 
   ogImage: "/images/aura/og-aura-studio.png",
 
+  category: "beauty",
+
+  keywords: [
+    "Aura Studio",
+    "estética",
+    "belleza",
+    "bienestar",
+    "centro de estética",
+    "estética Madrid",
+    "tratamientos faciales",
+    "estética avanzada",
+    "masajes",
+    "cuidado personal",
+    "tratamientos personalizados",
+    "bienestar Madrid",
+  ],
+
+  themeColor: "#f8f5f0",
+
+  backgroundColor: "#f8f5f0",
+
+  schemaType: ["BeautySalon", "HealthAndBeautyBusiness"],
+
+  priceRange: "€€",
+
+  areaServed: "Madrid",
+
   robots: {
     index: false,
     follow: false,
@@ -190,7 +116,7 @@ export const auraSeo: AuraSeoConfig = {
    ASSETS
 ============================================================ */
 
-export const auraAssets: AuraAssetsConfig = {
+export const auraAssets: DemoConfig["assets"] = {
   hero: "/images/aura/hero-aura-studio.png",
 
   experience: "/images/aura/experience-aura-studio.png",
@@ -198,11 +124,9 @@ export const auraAssets: AuraAssetsConfig = {
   openGraph: "/images/aura/og-aura-studio.png",
 
   team: {
-    lauraMartin: "/images/aura/team/laura-martin.png",
-
-    andreaLopez: "/images/aura/team/andrea-lopez.png",
-
-    sofiaGarcia: "/images/aura/team/sofia-garcia.png",
+    "laura-martin": "/images/aura/team/laura-martin.png",
+    "andrea-lopez": "/images/aura/team/andrea-lopez.png",
+    "sofia-garcia": "/images/aura/team/sofia-garcia.png",
   },
 };
 
@@ -210,7 +134,7 @@ export const auraAssets: AuraAssetsConfig = {
    NAVIGATION
 ============================================================ */
 
-export const auraNavigation: AuraNavigationItem[] = [
+export const auraNavigation = [
   {
     label: "Servicios",
     href: "/#servicios",
@@ -262,7 +186,7 @@ export const auraHero = {
    HERO STATS
 ============================================================ */
 
-export const auraStats: AuraStat[] = [
+export const auraStats = [
   {
     value: "+8",
     label: "Años experiencia",
@@ -308,13 +232,15 @@ export const auraServicesIntro = {
   description:
     "Protocolos personalizados, productos seleccionados y el tiempo necesario para hacer las cosas bien.",
 
+  featuredLabel: "Destacado",
+
   cta: {
     label: "Consultar todos los tratamientos",
     href: "#contacto",
   },
 } as const;
 
-export const auraServices: AuraService[] = [
+export const auraServices = [
   {
     id: "facial-treatment",
     number: "01",
@@ -377,13 +303,17 @@ export const auraExperience = {
 
   visualDescription:
     "Un entorno diseñado para que puedas desconectar del exterior durante un rato.",
+
+  badge: "Ritual Aura",
+
+  note: "Cada sesión está diseñada para que el tratamiento empiece antes incluso de entrar en cabina.",
 } as const;
 
 /* ============================================================
    BENEFITS
 ============================================================ */
 
-export const auraBenefits: AuraBenefit[] = [
+export const auraBenefits = [
   {
     id: "personal-diagnosis",
     label: "Diagnóstico personalizado",
@@ -415,7 +345,7 @@ export const auraTeamIntro = {
     "Formación continua, criterio profesional y una forma cercana de entender el cuidado personal.",
 } as const;
 
-export const auraProfessionals: AuraProfessional[] = [
+export const auraProfessionals = [
   {
     id: "laura-martin",
     name: "Laura Martín",
@@ -465,9 +395,12 @@ export const auraReviewsIntro = {
   eyebrow: "Opiniones",
 
   title: "Lo que más valoramos es que quieras volver.",
+
+  aside:
+    "La experiencia se mide también en cómo te sientes al salir y en las ganas de volver.",
 } as const;
 
-export const auraReviews: AuraReview[] = [
+export const auraReviews = [
   {
     id: "claudia-m",
     author: "Claudia M.",
@@ -495,7 +428,7 @@ export const auraReviews: AuraReview[] = [
    CONTACT
 ============================================================ */
 
-export const auraContact: AuraContact = {
+export const auraContact = {
   phoneDisplay: "+34 600 000 000",
 
   phoneHref: "+34600000000",
@@ -513,11 +446,27 @@ export const auraContact: AuraContact = {
   country: "España",
 };
 
+/**
+ * Titular jurídico. Los corchetes se sustituyen antes de publicar.
+ * El email de privacidad es el de contacto de la demo.
+ */
+export const auraLegal = {
+  legalName: "[RAZÓN SOCIAL]",
+  taxId: "[NIF / CIF]",
+  address: "[DOMICILIO FISCAL / SOCIAL]",
+  registry: "[DATOS REGISTRALES]",
+  privacyEmail: auraContact.email,
+  hostingProvider: "[PROVEEDOR DE HOSTING]",
+  hostingCountry: "[PAÍS DEL HOSTING]",
+  emailProvider: "[PROVEEDOR DE EMAIL]",
+  retention: "[PLAZO DE CONSERVACIÓN]",
+} as const;
+
 /* ============================================================
    OPENING HOURS
 ============================================================ */
 
-export const auraOpeningHours: AuraOpeningHour[] = [
+export const auraOpeningHours = [
   {
     days: "Lunes — Viernes",
     hours: "10:00 — 20:00",
@@ -551,13 +500,33 @@ export const auraContactSection = {
   phoneCta: {
     label: "Llamar ahora",
   },
+
+  phoneLabel: "Teléfono",
+
+  emailLabel: "Email",
+
+  addressLabel: "Dirección",
+
+  hoursLabel: "Horario",
+
+  directContactLabel: "Contacto directo",
+
+  closingNote:
+    "Tu cita empieza con una conversación, no con un tratamiento.",
+
+  guidanceTitle: "Atención personalizada",
+
+  guidanceBody:
+    "Si no sabes qué tratamiento elegir, escríbenos. Nuestro equipo puede orientarte antes de reservar.",
+
+  guidanceCta: "Resolver dudas",
 } as const;
 
 /* ============================================================
    SOCIAL
 ============================================================ */
 
-export const auraSocialLinks: AuraSocialLink[] = [
+export const auraSocialLinks = [
   {
     name: "Instagram",
     href: "#",
@@ -572,7 +541,7 @@ export const auraSocialLinks: AuraSocialLink[] = [
    LEGAL
 ============================================================ */
 
-export const auraLegalLinks: AuraLegalLink[] = [
+export const auraLegalLinks = [
   {
     label: "Aviso legal",
     href: "/aviso-legal",
@@ -598,10 +567,246 @@ export const auraFooter = {
 } as const;
 
 /* ============================================================
+   COPY
+============================================================ */
+
+const auraVocabulary = {
+  service: "tratamiento",
+  services: "tratamientos",
+  serviceTitle: "Tratamiento",
+} as const;
+
+const auraHeader = {
+  bookingCta: "Pedir cita",
+} as const;
+
+const auraImageAlts = {
+  hero: "Cabina premium de Aura Studio con camilla de tratamiento, iluminación cálida y elementos de bienestar",
+  experience:
+    "Detalle de la experiencia Aura Studio con productos de bienestar, textiles suaves y ambiente de tratamiento premium",
+} as const;
+
+const auraLegalCopy = {
+  noticeObject:
+    "El sitio web tiene como finalidad ofrecer información sobre Aura Studio, sus servicios, tratamientos, profesionales, horarios, medios de contacto y otras cuestiones relacionadas con su actividad.",
+  noticeClosing:
+    "Vuelve a descubrir nuestros tratamientos y nuestra forma de entender el bienestar.",
+  privacyClosing:
+    "Tus datos deben tratarse con el mismo cuidado que ponemos en cada experiencia.",
+  demoNotices: {
+    legal:
+      "Aura Studio es una empresa ficticia utilizada como demostración del Modelo 01 · Appointments de WAC DS. Los datos jurídicos que aparecen entre corchetes deben sustituirse por los datos reales del titular antes de publicar este proyecto para un cliente.",
+    privacy:
+      "Aura Studio es una empresa ficticia utilizada como demostración comercial. Los datos jurídicos indicados entre corchetes deben sustituirse por los datos reales del responsable del tratamiento antes de publicar esta web para un cliente.",
+    cookies:
+      "Aura Studio es una empresa ficticia utilizada como demostración del Modelo 01 · Appointments de WAC DS. Esta política deberá adaptarse a las cookies, proveedores y servicios realmente utilizados por cada cliente antes de publicar la web.",
+  },
+} as const;
+
+const auraBookingStatuses = {
+  CONFIRMED: "Confirmada",
+  PENDING: "Pendiente de confirmación",
+  COMPLETED: "Completada",
+  CANCELLED: "Cancelada",
+  NO_SHOW: "No asistió",
+} as const;
+
+const auraBooking = {
+  eyebrow: "Reserva online",
+  titleLead: "Reserva tu",
+  titleAccent: "momento.",
+  description:
+    "Elige tratamiento, profesional, fecha y hora. Nosotros nos encargamos del resto.",
+  backPrefix: "Volver a",
+  steps: ["Tratamiento", "Profesional", "Fecha y hora", "Tus datos"],
+  stepHeadings: ["Paso 1 de 4", "Paso 2 de 4", "Paso 3 de 4", "Paso 4 de 4"],
+  chooseServiceTitle: "Elige tu tratamiento",
+  chooseServiceDescription:
+    "Elige el tratamiento. Te confirmamos precio y tiempo antes de empezar.",
+  loadingServices: "Cargando tratamientos...",
+  emptyServicesTitle: "No hay tratamientos disponibles",
+  emptyServicesBody:
+    "En este momento no hay servicios habilitados para reserva online.",
+  changeService: "← Cambiar tratamiento",
+  chooseProfessionalTitle: "Elige profesional",
+  chooseProfessionalDescription:
+    "Elige quién quieres que se encargue, o deja que asignemos al primero disponible.",
+  loadingProfessionals: "Cargando profesionales...",
+  emptyProfessionalsTitle: "Sin profesionales disponibles",
+  emptyProfessionalsBody:
+    "No hay profesionales habilitados actualmente para este tratamiento.",
+  changeProfessional: "← Cambiar profesional",
+  dateTimeTitle: "Fecha y hora",
+  withProfessional: "con",
+  dateTimePrompt: "Elige el día y la hora que mejor te vengan.",
+  chooseDateLabel: "Elige fecha",
+  chooseDateHint: "Selecciona el día que mejor te venga.",
+  timesLabel: "Horarios",
+  slotSingular: "hueco libre",
+  slotPlural: "huecos libres",
+  selectDateTitle: "Selecciona una fecha",
+  selectDateHint: "Los horarios disponibles aparecerán aquí automáticamente.",
+  loadingAvailability: "Consultando disponibilidad...",
+  emptyTimesTitle: "Sin horarios disponibles",
+  emptyTimesHint: "Prueba con otro día del calendario.",
+  selectTimeHint: "Selecciona una hora para continuar.",
+  selectedTimeLabel: "Hora seleccionada",
+  continueLabel: "Continuar",
+  changeDateTime: "← Cambiar fecha u hora",
+  previousMonth: "Mes anterior",
+  nextMonth: "Mes siguiente",
+  selectDay: "Selecciona un día",
+  today: "Hoy",
+  noDate: "Sin fecha seleccionada",
+  customerTitle: "Tus datos",
+  customerDescription:
+    "Último paso. Solo necesitamos tus datos para confirmar la cita.",
+  firstNameLabel: "Nombre *",
+  lastNameLabel: "Apellidos",
+  emailLabel: "Email",
+  phoneLabel: "Teléfono",
+  contactHint:
+    "Introduce al menos un email o un teléfono para que podamos identificar tu reserva y enviarte la información de gestión.",
+  notesLabel: "Notas para el centro",
+  notesPlaceholder: "Opcional",
+  submitting: "Reservando...",
+  submit: "Confirmar reserva",
+  summaryEyebrow: "Tu cita",
+  summaryProfessional: "Profesional",
+  summaryDate: "Fecha",
+  summaryTime: "Hora",
+  summaryDuration: "Duración",
+  summaryPrice: "Precio",
+  minuteShort: "min",
+  minutes: "minutos",
+  successEyebrow: "Reserva realizada",
+  successTitle: "Tu cita está registrada",
+  successFallback: "Hemos registrado correctamente tu reserva.",
+  successService: "Tratamiento",
+  successProfessional: "Profesional",
+  successDateTime: "Fecha y hora",
+  successStatus: "Estado",
+  successReference: "Referencia",
+  appointmentRef: "Cita #",
+  manageCta: "Gestionar mi cita",
+  bookAnother: "Reservar otra cita",
+  errorLoadServices: "No se pudieron cargar los servicios disponibles.",
+  errorLoadProfessionals: "No se pudieron cargar los profesionales disponibles.",
+  errorLoadAvailabilityDate:
+    "No se pudo consultar la disponibilidad para esa fecha.",
+  errorLoadAvailability: "No se pudo consultar la disponibilidad.",
+  errorMissingSelection:
+    "Faltan datos de la reserva. Vuelve a seleccionar fecha y hora.",
+  errorFirstName: "Introduce tu nombre para continuar.",
+  errorContact:
+    "Introduce al menos un email o un teléfono para poder gestionar tu cita.",
+  errorCreate: "No se pudo crear la reserva.",
+  statuses: auraBookingStatuses,
+} as const;
+
+const auraManageBooking = {
+  backToBooking: "← Volver a reservas",
+  eyebrow: "Reserva online",
+  titleLead: "Gestiona tu",
+  titleAccent: "cita.",
+  description:
+    "Consulta los detalles de tu reserva y, cuando esté permitido, cambia el horario o cancélala.",
+  loading: "Recuperando tu cita...",
+  missingTitle: "No encontramos una cita accesible",
+  invalidTitle: "El acceso a esta cita no está disponible",
+  errorTitle: "No pudimos cargar tu cita",
+  invalidBody:
+    "El enlace de gestión puede haber caducado, haber sido revocado o no corresponder a esta reserva. Por seguridad, no podemos mostrar otra cita.",
+  missingBody:
+    "Para gestionar una reserva necesitas acceder desde su enlace privado o desde el navegador donde realizaste la reserva, siempre que la credencial siga vigente.",
+  credentialNote:
+    "Cada credencial permite acceder únicamente a la reserva para la que fue emitida.",
+  bookCta: "Reservar una cita",
+  summaryEyebrow: "Tu reserva",
+  withProfessional: "con",
+  dateTimeLabel: "Fecha y hora",
+  durationLabel: "Duración",
+  minutes: "minutos",
+  customerLabel: "Cliente",
+  referenceLabel: "Referencia",
+  appointmentRef: "Cita #",
+  rescheduleEyebrow: "Reprogramar",
+  rescheduleTitle: "Cambiar fecha y hora",
+  rescheduleBody:
+    "Puedes elegir otro hueco disponible manteniendo el mismo tratamiento y profesional.",
+  rescheduleDisabled:
+    "La reprogramación online no está habilitada para este negocio.",
+  rescheduleClosed: "Esta cita ya no puede reprogramarse online.",
+  rescheduleCta: "Cambiar horario",
+  cancelEyebrow: "Cancelación",
+  cancelTitle: "Cancelar la cita",
+  cancelBody: "La cancelación es definitiva. El horario volverá a quedar libre.",
+  cancelDisabled: "La cancelación online no está habilitada.",
+  cancelClosed: "Esta cita ya no puede cancelarse online.",
+  cancelCta: "Cancelar cita",
+  confirmCancelTitle: "¿Cancelar esta cita?",
+  confirmCancelBody: "Esta acción no se puede deshacer desde esta página.",
+  cancelling: "Cancelando...",
+  confirmCancel: "Sí, cancelar",
+  back: "Volver",
+  newDateEyebrow: "Nueva fecha",
+  rescheduleFlowTitle: "Reprogramar tu cita",
+  dateLabel: "Fecha",
+  timesLabel: "Horarios",
+  pickDateHint: "Selecciona una fecha para consultar la disponibilidad.",
+  loadingAvailability: "Consultando...",
+  emptyTimes: "No hay horarios disponibles para esta fecha.",
+  cancelChange: "Cancelar cambio",
+  confirmNewTime: "Confirmar nuevo horario",
+  cancelledEyebrow: "Reserva cancelada",
+  cancelledTitle: "Esta cita ya no está activa",
+  cancelledBody:
+    "El horario ha quedado liberado. Si quieres volver a visitarnos, puedes crear una nueva reserva.",
+  backHomePrefix: "Volver a",
+  bookAnother: "Reservar otra cita",
+  errorLoad: "No se pudo recuperar la cita.",
+  errorCredentialMismatch:
+    "La credencial no corresponde a la reserva solicitada.",
+  errorAvailabilityMismatch:
+    "La disponibilidad recibida no corresponde a la selección.",
+  errorAvailability: "No se pudo consultar la disponibilidad.",
+  errorSession: "La sesión de gestión no corresponde a esta cita.",
+  errorCancel: "No se pudo cancelar la cita.",
+  errorRescheduleVerify:
+    "El cambio se ha enviado, pero no se pudo verificar la información actualizada. Recarga la página antes de intentarlo de nuevo.",
+  errorRescheduleMismatch: "La respuesta no corresponde a la cita solicitada.",
+  errorReschedule: "No se pudo reprogramar la cita.",
+  invalidDate: "Fecha no disponible",
+  rescheduleRegionLabel: "Reprogramar cita",
+} as const;
+
+/* ============================================================
    COMPLETE CONFIGURATION
 ============================================================ */
 
-export const auraConfig = {
+export const auraConfig: DemoConfig = {
+  slug: "aura-studio",
+
+  theme: "aura",
+
+  brandSuffix: "Studio",
+
+  imageAlts: auraImageAlts,
+
+  vocabulary: auraVocabulary,
+
+  header: auraHeader,
+
+  bookingExtraFields: [],
+
+  legal: auraLegal,
+
+  legalCopy: auraLegalCopy,
+
+  booking: auraBooking,
+
+  manageBooking: auraManageBooking,
+
   demo: auraDemo,
 
   brand: auraBrand,
@@ -613,6 +818,63 @@ export const auraConfig = {
   navigation: auraNavigation,
 
   hero: auraHero,
+
+  /**
+   * Secuencia de scroll de Aura.
+   * frameCount es el número de archivos
+   * public/images/aura/sequence/frame_####.webp.
+   * Mientras sea 0, o falte frame_0001.webp, la home pinta HeroSection.
+   * Tras extraer, cambia ese 0 por el número real de fotogramas.
+   * Con el comando del README (96 fotogramas) el valor es 96.
+   */
+  scrollSequence: {
+    basePath: "/images/aura/sequence",
+    frameCount: 0,
+    fileExtension: "webp",
+    heightVh: 280,
+    holdVh: 10,
+    overlays: [
+      {
+        from: 0,
+        to: 0.18,
+        align: "start",
+        level: "h1",
+        title: `${auraHero.title} ${auraHero.highlightedTitle}`,
+        text: auraHero.description,
+        primaryCta: auraHero.primaryCta,
+        secondaryCta: auraHero.secondaryCta,
+      },
+      {
+        from: 0.2,
+        to: 0.38,
+        align: "end",
+        title: auraPhilosophy.title,
+        text: auraPhilosophy.description,
+      },
+      {
+        from: 0.4,
+        to: 0.58,
+        align: "start",
+        title: auraExperience.visualTitle,
+        text: auraExperience.visualDescription,
+      },
+      {
+        from: 0.6,
+        to: 0.8,
+        align: "end",
+        title: auraExperience.title,
+        text: auraExperience.description,
+      },
+      {
+        from: 0.82,
+        to: 1,
+        align: "start",
+        title: auraBrand.signature.title,
+        text: auraContactSection.closingNote,
+        primaryCta: auraHero.primaryCta,
+      },
+    ],
+  },
 
   stats: auraStats,
 
@@ -645,4 +907,4 @@ export const auraConfig = {
   legalLinks: auraLegalLinks,
 
   footer: auraFooter,
-} as const;
+};
