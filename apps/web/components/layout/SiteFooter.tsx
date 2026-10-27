@@ -138,7 +138,7 @@ function TallerFooter() {
             {business.hero.title} {business.hero.highlightedTitle}
           </h2>
           <a className="home-cta-fill" href={business.hero.primaryCta.href}>
-            Reservar cita
+            {business.hero.primaryCta.label}
           </a>
         </div>
       </section>

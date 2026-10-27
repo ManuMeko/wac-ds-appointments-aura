@@ -25,7 +25,7 @@ export const tallerConfig: DemoConfig = {
   },
 
   header: {
-    bookingCta: "Reservar cita en el taller",
+    bookingCta: "Pedir cita",
   },
 
   legal: {
@@ -340,7 +340,7 @@ export const tallerConfig: DemoConfig = {
     highlightedTitle: "en manos de confianza.",
     description:
       "Revisiones, mantenimiento y diagnosis con un criterio claro: te explicamos el trabajo, el plazo y el precio antes de empezar.",
-    primaryCta: { label: "Reservar cita en el taller", href: "#contacto" },
+    primaryCta: { label: "Pedir cita", href: "#contacto" },
     secondaryCta: { label: "Ver servicios", href: "#servicios" },
   },
 
@@ -358,7 +358,7 @@ export const tallerConfig: DemoConfig = {
         level: "h1",
         title: "Tu coche, en manos de confianza.",
         text: "Taller de mecánica en Madrid. Revisiones, mantenimiento y diagnosis.",
-        primaryCta: { label: "Reservar cita", href: "#contacto" },
+        primaryCta: { label: "Pedir cita", href: "#contacto" },
         secondaryCta: { label: "Ver servicios", href: "#servicios" },
       },
       {
@@ -388,7 +388,7 @@ export const tallerConfig: DemoConfig = {
         align: "start",
         title: "Cada pieza, a la vista. Sin sorpresas en la factura.",
         text: "Te enseñamos qué se ha cambiado y por qué.",
-        primaryCta: { label: "Reservar cita", href: "#contacto" },
+        primaryCta: { label: "Pedir cita", href: "#contacto" },
       },
     ],
   },
@@ -631,7 +631,7 @@ export const tallerConfig: DemoConfig = {
     eyebrow: "Cita y contacto",
     title: "Cuéntanos qué le pasa al coche.",
     description:
-      "Llama, escribe o reserva hora. Si nos dices la matrícula y el síntoma, preparamos la bahía antes de que llegues.",
+      "Llama o escríbenos por WhatsApp. Si nos dices la matrícula y el síntoma, preparamos la bahía antes de que llegues.",
     whatsappCta: { label: "Escribir por WhatsApp" },
     phoneCta: { label: "Llamar al taller" },
     phoneLabel: "Teléfono",

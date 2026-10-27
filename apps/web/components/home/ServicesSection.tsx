@@ -142,7 +142,7 @@ export function ServicesSection() {
                 <p>Cuéntanos el síntoma y te orientamos.</p>
                 <div className="home-service-help-actions">
                   <a className="home-cta-fill" href="#contacto">
-                    Reservar diagnosis
+                    {business.servicesIntro.cta.label}
                   </a>
                   <a
                     className="home-cta-ghost"

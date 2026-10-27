@@ -486,7 +486,7 @@ export const auraOpeningHours = [
 ============================================================ */
 
 export const auraContactSection = {
-  eyebrow: "Reserva tu momento",
+  eyebrow: "Pide tu cita",
 
   title: "Cuéntanos qué necesitas.",
 
@@ -517,7 +517,7 @@ export const auraContactSection = {
   guidanceTitle: "Atención personalizada",
 
   guidanceBody:
-    "Si no sabes qué tratamiento elegir, escríbenos. Nuestro equipo puede orientarte antes de reservar.",
+    "Si no sabes qué tratamiento elegir, escríbenos. Nuestro equipo puede orientarte antes de pedir cita.",
 
   guidanceCta: "Resolver dudas",
 } as const;

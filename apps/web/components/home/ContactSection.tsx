@@ -1,5 +1,7 @@
 // apps/web/components/home/ContactSection.tsx
 
+import Image from "next/image";
+
 import { TiltCard } from "@/components/home/TiltCard";
 import { Reveal } from "@/components/motion/Reveal";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
@@ -198,16 +200,21 @@ export function ContactSection() {
                   equilibrar visualmente el panel derecho.
               ============================================== */}
               {business.theme === "taller" ? (
-                <div className="relative mt-10 hidden min-h-48 flex-1 overflow-hidden rounded-[1.4rem] bg-[linear-gradient(165deg,#292524,#1c1917)] lg:block">
+                <div className="relative mt-10 hidden min-h-48 flex-1 overflow-hidden rounded-[1.4rem] lg:block">
+                  <Image
+                    src="/images/taller/elevador.webp"
+                    alt=""
+                    fill
+                    sizes="(min-width: 1024px) 36rem, 100vw"
+                    className="object-cover"
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#1c1917]/70 to-transparent"
+                  />
                   <p className="absolute left-6 top-6 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/65">
                     {business.brand.locationLabel}
                   </p>
-                  <span
-                    aria-hidden="true"
-                    className="absolute -bottom-8 left-5 font-serif text-[10rem] leading-none text-transparent [-webkit-text-stroke:1px_rgba(249,115,22,0.55)]"
-                  >
-                    {business.brand.monogram}
-                  </span>
                 </div>
               ) : null}
               <div
