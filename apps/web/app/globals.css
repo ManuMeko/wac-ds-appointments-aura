@@ -1990,6 +1990,285 @@ button:focus-visible {
   }
 }
 
+/* =========================================================
+   BUSINESS PANEL · TALLER · PÁGINAS INTERNAS
+   Fuera de capa: gana al color blanco !important de Aura
+   sin modificar esa regla.
+========================================================= */
+
+[data-theme="taller"] .business-panel :is(button, a):is(
+  [class*="bg-[#342d28]"],
+  [class*="bg-[#332c27]"],
+  [class*="bg-[#5f5147]"]
+) {
+  background-color: var(--button-bg);
+  color: var(--button-text) !important;
+}
+
+[data-theme="taller"] .business-panel :is(button, a):is(
+  [class*="bg-[#342d28]"],
+  [class*="bg-[#332c27]"],
+  [class*="bg-[#5f5147]"]
+):hover {
+  background-color: var(--accent-strong);
+  color: var(--on-inverse) !important;
+}
+
+/* Badges: una receta. Positivo, pendiente, neutro, cancelado, inactivo. */
+
+[data-theme="taller"] .business-panel :is(
+  [class*="bg-[#edf4ee]"],
+  [class*="bg-[#edf5ef]"]
+) {
+  border: 1px solid color-mix(in srgb, var(--accent-line) 42%, white);
+  background-color: color-mix(in srgb, var(--accent-line) 16%, white);
+  color: var(--accent-strong);
+}
+
+[data-theme="taller"] .business-panel :is(
+  [class*="bg-[#f7f0e5]"],
+  [class*="bg-[#f8f0e5]"],
+  [class*="bg-[#faf2e7]"]
+) {
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, white);
+  background-color: var(--notice-bg);
+  color: var(--accent);
+}
+
+[data-theme="taller"] .business-panel :is(
+  [class*="bg-[#edf1f5]"],
+  [class*="bg-[#eef2f5]"]
+) {
+  border: 1px solid var(--border);
+  background-color: var(--surface-muted);
+  color: var(--ink);
+}
+
+[data-theme="taller"] .business-panel :is(
+  [class*="bg-[#f7eaea]"],
+  [class*="bg-[#faeeee]"]
+) {
+  border: 1px solid color-mix(in srgb, #9f1239 28%, white);
+  background-color: color-mix(in srgb, #9f1239 8%, white);
+  color: #9f1239;
+}
+
+[data-theme="taller"] .business-panel :is(
+  [class*="bg-[#f1eeee]"],
+  [class*="bg-[#f2efef]"]
+) {
+  border: 1px solid var(--border);
+  background-color: var(--canvas);
+  color: var(--ink-muted);
+}
+
+[data-theme="taller"] .business-panel [class*="rounded-full"] > :is(
+  [class*="bg-[#719079]"]
+) {
+  background-color: var(--accent-strong);
+}
+
+[data-theme="taller"] .business-panel [class*="rounded-full"] > :is(
+  [class*="bg-[#b28a56]"]
+) {
+  background-color: var(--accent);
+}
+
+[data-theme="taller"] .business-panel [class*="rounded-full"] > :is(
+  [class*="bg-[#718596]"]
+) {
+  background-color: var(--ink);
+}
+
+[data-theme="taller"] .business-panel [class*="rounded-full"] > :is(
+  [class*="bg-[#b76f6f]"]
+) {
+  background-color: #9f1239;
+}
+
+[data-theme="taller"] .business-panel [class*="rounded-full"] > :is(
+  [class*="bg-[#817575]"]
+) {
+  background-color: var(--ink-muted);
+}
+
+/* Acciones de tabla: neutras, pausa, activar, desactivar. */
+
+[data-theme="taller"] .business-panel :is(button, a)[class*="rounded-full"][class*="border-[#ddd3cb]"]:is(
+  [class*="text-[#65584f]"],
+  [class*="text-[#61544c]"]
+) {
+  border-color: var(--border);
+  background-color: var(--surface);
+  color: var(--ink);
+}
+
+[data-theme="taller"] .business-panel :is(button, a)[class*="rounded-full"][class*="border-[#ddd3cb]"]:is(
+  [class*="text-[#65584f]"],
+  [class*="text-[#61544c]"]
+):hover {
+  border-color: var(--border);
+  background-color: var(--surface-muted);
+  color: var(--ink);
+}
+
+[data-theme="taller"] .business-panel :is(button, a):is(
+  [class*="bg-[#fffaf4]"],
+  [class*="text-[#8b6d47]"],
+  [class*="text-[#866c4c]"]
+) {
+  border-color: color-mix(in srgb, var(--accent) 32%, white);
+  background-color: var(--notice-bg);
+  color: var(--accent);
+}
+
+[data-theme="taller"] .business-panel :is(button, a):is(
+  [class*="bg-[#fffaf4]"],
+  [class*="text-[#8b6d47]"],
+  [class*="text-[#866c4c]"]
+):hover {
+  border-color: color-mix(in srgb, var(--accent) 48%, white);
+  background-color: color-mix(in srgb, var(--notice-bg) 70%, var(--accent-line));
+  color: var(--accent-strong);
+}
+
+[data-theme="taller"] .business-panel :is(button, a):is(
+  [class*="bg-[#f4f8f4]"],
+  [class*="text-[#55705a]"]
+) {
+  border-color: color-mix(in srgb, var(--accent-line) 42%, white);
+  background-color: color-mix(in srgb, var(--accent-line) 16%, white);
+  color: var(--accent-strong);
+}
+
+[data-theme="taller"] .business-panel :is(button, a):is(
+  [class*="bg-[#f4f8f4]"],
+  [class*="text-[#55705a]"]
+):hover {
+  border-color: color-mix(in srgb, var(--accent-line) 58%, white);
+  background-color: color-mix(in srgb, var(--accent-line) 28%, white);
+  color: var(--accent-strong);
+}
+
+[data-theme="taller"] .business-panel :is(button, a):is(
+  [class*="text-[#925d5d]"],
+  [class*="text-[#8d5e5e]"]
+) {
+  border-color: color-mix(in srgb, #9f1239 28%, white);
+  background-color: color-mix(in srgb, #9f1239 8%, white);
+  color: #9f1239;
+}
+
+[data-theme="taller"] .business-panel :is(button, a):is(
+  [class*="text-[#925d5d]"],
+  [class*="text-[#8d5e5e]"]
+):hover {
+  border-color: color-mix(in srgb, #9f1239 42%, white);
+  background-color: color-mix(in srgb, #9f1239 14%, white);
+  color: #9f1239;
+}
+
+/* Radio único de tarjetas, modales y avisos. */
+
+[data-theme="taller"] .business-panel :is(article, section, aside)[class*="rounded-["],
+[data-theme="taller"] .business-panel [role="dialog"],
+[data-theme="taller"] .business-panel .fixed[class*="rounded-"],
+[data-theme="taller"] .business-panel .fixed > [class*="rounded-["],
+[data-theme="taller"] .business-panel .sticky [class*="rounded-["] {
+  border-radius: 24px !important;
+}
+
+/* Tarjetas de estado sin clase bp-metric: mismo aspecto que las métricas. */
+
+[data-theme="taller"] .business-panel :is(
+  section[class*="md:grid-cols-3"],
+  section[class*="xl:grid-cols-4"]
+) > article:not(.bp-metric) {
+  display: flex;
+  flex-direction: column;
+  border-color: var(--panel-border);
+  background: var(--panel-surface);
+  box-shadow: var(--panel-shadow-rest);
+  padding: 1.25rem 1.35rem;
+}
+
+[data-theme="taller"] .business-panel :is(
+  section[class*="md:grid-cols-3"],
+  section[class*="xl:grid-cols-4"]
+) > article:not(.bp-metric) > :first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  color: var(--panel-text-muted);
+}
+
+[data-theme="taller"] .business-panel :is(
+  section[class*="md:grid-cols-3"],
+  section[class*="xl:grid-cols-4"]
+) > article:not(.bp-metric) > :first-child::before {
+  content: "";
+  width: 1.75rem;
+  height: 1.75rem;
+  flex: none;
+  border-radius: 10px;
+  background-color: rgba(249, 115, 22, 0.14);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f97316' stroke-width='1.8' stroke-linecap='round'><path d='M4 19V9M10 19V5M16 19v-7M22 19H2'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 15px 15px;
+}
+
+[data-theme="taller"] .business-panel :is(
+  section[class*="md:grid-cols-3"],
+  section[class*="xl:grid-cols-4"]
+) > article:not(.bp-metric) > :nth-child(2) {
+  margin-top: 0.85rem;
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: var(--panel-text);
+}
+
+[data-theme="taller"] .business-panel :is(
+  section[class*="md:grid-cols-3"],
+  section[class*="xl:grid-cols-4"]
+) > article:not(.bp-metric) > :nth-child(3) {
+  margin-top: 0.45rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--panel-text-secondary);
+}
+
+/* Cabecera del detalle de cita, al ritmo del resto de páginas. */
+
+[data-theme="taller"] .business-panel h1[class*="mt-1"][class*="tracking-[-0.04em]"][class*="md:text-4xl"] {
+  margin-top: 0.5rem;
+  letter-spacing: -0.03em;
+}
+
+[data-theme="taller"] .business-panel h1[class*="mt-1"][class*="tracking-[-0.04em]"][class*="md:text-4xl"] + p {
+  margin-top: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  [data-theme="taller"] .business-panel h1[class*="mt-1"][class*="tracking-[-0.04em]"][class*="md:text-4xl"] + p {
+    font-size: 1rem;
+  }
+}
+
+[data-theme="taller"] .business-panel div[class*="space-y-6"][class*="pb-10"]:has(
+  h1[class*="mt-1"][class*="tracking-[-0.04em]"]
+) > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 1.75rem;
+}
+
 [data-theme="taller"] .business-login {
   background: var(--canvas);
   color: var(--ink);
