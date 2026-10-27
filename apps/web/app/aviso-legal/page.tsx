@@ -24,26 +24,6 @@ export const metadata: Metadata = {
   },
 };
 
-/* =========================================================
-   DEMO LEGAL CONFIGURATION
-
-   IMPORTANTE:
-   Aura Studio es una demo ficticia de WAC DS.
-
-   Antes de utilizar este starter para un cliente real deben
-   sustituirse estos datos por los datos jurídicos y fiscales
-   reales del titular del sitio web.
-========================================================= */
-
-const legalOwner = {
-  businessName: business.brand.name,
-  legalName: "[RAZÓN SOCIAL / NOMBRE COMPLETO DEL TITULAR]",
-  taxId: "[NIF / CIF]",
-  registeredAddress: "[DOMICILIO FISCAL / SOCIAL]",
-  registryInformation: "[DATOS REGISTRALES, SI PROCEDE]",
-  contactEmail: business.contact.email,
-};
-
 const sections = [
   {
     id: "titular",
@@ -211,32 +191,34 @@ export default function LegalNoticePage() {
                 <dl className="mt-8 overflow-hidden rounded-[1.4rem] border border-(--heading)/10 bg-(--p-f1ebe4)">
                   <LegalDataRow
                     label="Nombre comercial"
-                    value={legalOwner.businessName}
+                    value={business.brand.name}
                   />
 
                   <LegalDataRow
                     label="Titular / razón social"
-                    value={legalOwner.legalName}
+                    value={business.legal.legalName}
                   />
 
                   <LegalDataRow
                     label="NIF / CIF"
-                    value={legalOwner.taxId}
+                    value={business.legal.taxId}
                   />
 
                   <LegalDataRow
                     label="Domicilio"
-                    value={legalOwner.registeredAddress}
+                    value={business.legal.address}
                   />
 
-                  <LegalDataRow
-                    label="Datos registrales"
-                    value={legalOwner.registryInformation}
-                  />
+                  {business.legal.registry?.trim() ? (
+                    <LegalDataRow
+                      label="Datos registrales"
+                      value={business.legal.registry}
+                    />
+                  ) : null}
 
                   <LegalDataRow
                     label="Correo electrónico"
-                    value={legalOwner.contactEmail}
+                    value={business.legal.privacyEmail}
                     last
                   />
                 </dl>

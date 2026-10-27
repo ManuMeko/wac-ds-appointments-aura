@@ -151,11 +151,29 @@ export type BookingExtraField = {
 export type LegalCopy = {
   noticeObject: string;
   noticeClosing: string;
+  privacyClosing: string;
   demoNotices: {
     legal: string;
     privacy: string;
     cookies: string;
   };
+};
+
+/**
+ * Titular y encargados. Los valores entre corchetes son
+ * placeholders: no son datos reales del cliente.
+ * `registry` vacío oculta la fila de datos registrales.
+ */
+export type LegalIdentity = {
+  legalName: string;
+  taxId: string;
+  address: string;
+  registry?: string;
+  privacyEmail: string;
+  hostingProvider: string;
+  hostingCountry: string;
+  emailProvider: string;
+  retention: string;
 };
 
 export type BookingStatuses = {
@@ -363,6 +381,7 @@ export type DemoConfig = {
   vocabulary: Vocabulary;
   header: HeaderCopy;
   bookingExtraFields: readonly BookingExtraField[];
+  legal: LegalIdentity;
   legalCopy: LegalCopy;
   booking: BookingCopy;
   manageBooking: ManageBookingCopy;

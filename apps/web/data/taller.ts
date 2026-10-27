@@ -28,6 +28,18 @@ export const tallerConfig: DemoConfig = {
     bookingCta: "Reservar cita en el taller",
   },
 
+  legal: {
+    legalName: "[RAZÓN SOCIAL]",
+    taxId: "[NIF / CIF]",
+    address: "[DOMICILIO FISCAL / SOCIAL]",
+    registry: "[DATOS REGISTRALES]",
+    privacyEmail: "hola@motorline-taller.example",
+    hostingProvider: "[PROVEEDOR DE HOSTING]",
+    hostingCountry: "[PAÍS DEL HOSTING]",
+    emailProvider: "[PROVEEDOR DE EMAIL]",
+    retention: "[PLAZO DE CONSERVACIÓN]",
+  },
+
   bookingExtraFields: [
     {
       id: "plate",
@@ -48,6 +60,8 @@ export const tallerConfig: DemoConfig = {
       "El sitio web tiene como finalidad ofrecer información sobre Motorline Taller, sus servicios de mecánica, profesionales, horarios, medios de contacto y otras cuestiones relacionadas con su actividad.",
     noticeClosing:
       "Vuelve cuando quieras: te explicamos el trabajo antes de hacerlo y el precio antes de empezar.",
+    privacyClosing:
+      "Tus datos se usan para gestionar la cita y avisarte de lo que corresponda.",
     demoNotices: {
       legal:
         "Motorline Taller es una empresa ficticia utilizada como demostración del Modelo 01 · Appointments de WAC DS. Los datos jurídicos que aparecen entre corchetes deben sustituirse por los datos reales del titular antes de publicar este proyecto para un cliente.",

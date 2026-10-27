@@ -24,25 +24,6 @@ export const metadata: Metadata = {
   },
 };
 
-/* =========================================================
-   DEMO PRIVACY CONFIGURATION
-
-   IMPORTANTE:
-   Aura Studio es una demo ficticia de WAC DS.
-
-   Antes de utilizar este starter para un cliente real deben
-   sustituirse estos datos por los datos jurídicos y fiscales
-   reales del responsable del tratamiento.
-========================================================= */
-
-const privacyOwner = {
-  businessName: business.brand.name,
-  legalName: "[RAZÓN SOCIAL / NOMBRE COMPLETO DEL RESPONSABLE]",
-  taxId: "[NIF / CIF]",
-  registeredAddress: "[DOMICILIO FISCAL / SOCIAL]",
-  privacyEmail: business.contact.email,
-};
-
 const sections = [
   {
     id: "responsable",
@@ -212,27 +193,27 @@ export default function PrivacyPage() {
                 <dl className="mt-8 overflow-hidden rounded-[1.4rem] border border-(--heading)/10 bg-(--p-f1ebe4)">
                   <LegalDataRow
                     label="Nombre comercial"
-                    value={privacyOwner.businessName}
+                    value={business.brand.name}
                   />
 
                   <LegalDataRow
                     label="Responsable"
-                    value={privacyOwner.legalName}
+                    value={business.legal.legalName}
                   />
 
                   <LegalDataRow
                     label="NIF / CIF"
-                    value={privacyOwner.taxId}
+                    value={business.legal.taxId}
                   />
 
                   <LegalDataRow
                     label="Domicilio"
-                    value={privacyOwner.registeredAddress}
+                    value={business.legal.address}
                   />
 
                   <LegalDataRow
                     label="Email de contacto"
-                    value={privacyOwner.privacyEmail}
+                    value={business.legal.privacyEmail}
                     last
                   />
                 </dl>
@@ -249,18 +230,23 @@ export default function PrivacyPage() {
 
                 <div className="mt-6 space-y-5 text-base leading-8 text-(--ink-muted)">
                   <p>
-                    Dependiendo del uso que se realice del sitio web, podrán
-                    tratarse datos identificativos y de contacto como nombre,
-                    número de teléfono, dirección de correo electrónico y la
-                    información incluida voluntariamente en comunicaciones o
-                    solicitudes.
+                    Al reservar una cita se tratan el nombre, los apellidos, el
+                    correo electrónico, el teléfono y las notas de la reserva.
                   </p>
 
+                  {business.bookingExtraFields.length > 0 ? (
+                    <p>
+                      También se tratan{" "}
+                      {formatFieldLabels(business.bookingExtraFields)} del
+                      vehículo, que se guardan junto con las notas de la
+                      reserva.
+                    </p>
+                  ) : null}
+
                   <p>
-                    En futuras versiones que incorporen reservas online podrán
-                    tratarse además los datos necesarios para gestionar citas,
-                    servicios solicitados y comunicaciones relacionadas con la
-                    reserva.
+                    Si la persona escribe por teléfono, correo electrónico o
+                    WhatsApp, se tratan los datos que incluya en esa
+                    comunicación.
                   </p>
                 </div>
               </section>
@@ -276,16 +262,14 @@ export default function PrivacyPage() {
 
                 <div className="mt-6 space-y-5 text-base leading-8 text-(--ink-muted)">
                   <p>
-                    Los datos podrán utilizarse para atender consultas,
-                    solicitudes de información y comunicaciones realizadas a
-                    través de los canales disponibles en el sitio.
+                    Los datos se utilizan para gestionar la cita y para enviar
+                    los correos de confirmación, cambio, cancelación y
+                    recordatorio.
                   </p>
 
                   <p>
-                    Cuando se habiliten sistemas de reserva, podrán utilizarse
-                    para gestionar citas, confirmar disponibilidad, realizar
-                    comunicaciones operativas y prestar los servicios
-                    solicitados.
+                    También pueden utilizarse para atender consultas y
+                    solicitudes enviadas por los canales de contacto del sitio.
                   </p>
                 </div>
               </section>
@@ -320,10 +304,7 @@ export default function PrivacyPage() {
                 />
 
                 <p className="mt-6 text-base leading-8 text-(--ink-muted)">
-                  Los datos se conservarán durante el tiempo necesario para
-                  cumplir la finalidad para la que fueron recogidos y, cuando
-                  corresponda, durante los plazos exigidos por la normativa
-                  aplicable.
+                  Los datos de la reserva se conservan durante {business.legal.retention}. Si una norma exige un plazo mayor, se aplica ese plazo.
                 </p>
               </section>
 
@@ -345,10 +326,11 @@ export default function PrivacyPage() {
                   </p>
 
                   <p>
-                    Determinados proveedores tecnológicos podrán actuar como
-                    encargados del tratamiento cuando presten servicios de
-                    alojamiento, comunicaciones, reservas, analítica u otros
-                    servicios necesarios para la operación del sitio.
+                    El envío de los correos de la cita lo realiza {business.legal.emailProvider}. Si ese proveedor trata los datos fuera del Espacio Económico Europeo, la transferencia internacional se ampara en garantías adecuadas.
+                  </p>
+
+                  <p>
+                    El alojamiento del sitio y de la base de datos corresponde a {business.legal.hostingProvider} ({business.legal.hostingCountry}).
                   </p>
                 </div>
               </section>
@@ -372,19 +354,18 @@ export default function PrivacyPage() {
                   <p>
                     Las solicitudes podrán dirigirse a{" "}
                     <a
-                      href={`mailto:${privacyOwner.privacyEmail}`}
+                      href={`mailto:${business.legal.privacyEmail}`}
                       className="font-medium text-(--p-5d4b40) underline decoration-(--accent)/35 underline-offset-4 transition-colors hover:text-(--accent)"
                     >
-                      {privacyOwner.privacyEmail}
+                      {business.legal.privacyEmail}
                     </a>
                     .
                   </p>
 
                   <p>
-                    Asimismo, la persona interesada podrá presentar una
-                    reclamación ante la autoridad de protección de datos
-                    competente cuando considere que el tratamiento no se ajusta
-                    a la normativa aplicable.
+                    También puede presentar una reclamación ante la Agencia
+                    Española de Protección de Datos (AEPD) si considera que el
+                    tratamiento no se ajusta a la normativa.
                   </p>
                 </div>
               </section>
@@ -462,8 +443,7 @@ export default function PrivacyPage() {
                 </p>
 
                 <p className="mt-3 max-w-[540px] font-serif text-3xl leading-tight text-(--p-302925)">
-                  Tus datos deben tratarse con el mismo cuidado que ponemos en
-                  cada experiencia.
+                  {business.legalCopy.privacyClosing}
                 </p>
               </div>
 
@@ -490,6 +470,23 @@ export default function PrivacyPage() {
 /* =========================================================
    LOCAL COMPONENTS
 ========================================================= */
+
+function formatFieldLabels(
+  fields: readonly { label: string }[],
+): string {
+  const labels = fields.map(
+    (field) => `la ${field.label.toLocaleLowerCase("es")}`,
+  );
+
+  if (labels.length === 1) {
+    return labels[0] ?? "";
+  }
+
+  const head = labels.slice(0, -1).join(", ");
+  const tail = labels[labels.length - 1] ?? "";
+
+  return `${head} y ${tail}`;
+}
 
 type LegalSectionHeaderProps = {
   number: string;

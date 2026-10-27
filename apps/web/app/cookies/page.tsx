@@ -24,25 +24,6 @@ export const metadata: Metadata = {
   },
 };
 
-/* =========================================================
-   DEMO COOKIES CONFIGURATION
-
-   IMPORTANTE:
-   Aura Studio es una demo ficticia de WAC DS.
-
-   Esta página debe adaptarse al cliente real y, sobre todo,
-   a las cookies y servicios realmente utilizados en producción.
-
-   No deben declararse cookies o proveedores inexistentes,
-   ni omitirse tecnologías que sí estén activas.
-========================================================= */
-
-const cookieOwner = {
-  businessName: business.brand.name,
-  legalName: "[RAZÓN SOCIAL / NOMBRE COMPLETO DEL TITULAR]",
-  privacyEmail: business.contact.email,
-};
-
 const sections = [
   {
     id: "que-son",
@@ -86,46 +67,61 @@ const sections = [
   },
 ];
 
-/* =========================================================
-   COOKIE TABLE DATA
-
-   Esta demo se plantea inicialmente como sitio estático y no
-   presupone el uso de cookies analíticas, publicitarias o de
-   personalización.
-
-   Cuando el cliente real incorpore Google Analytics, Meta Pixel,
-   chat externo, reservas, mapas, vídeos embebidos, etc., esta
-   tabla deberá actualizarse.
-========================================================= */
-
 const cookieCategories = [
   {
     category: "Técnicas / necesarias",
     purpose:
       "Permiten el funcionamiento esencial, la seguridad y la correcta prestación de funcionalidades básicas del sitio.",
-    consent: "No cuando sean estrictamente necesarias",
-    status: "Según implementación",
+    consent: "No. Son estrictamente necesarias",
+    status: "En uso",
   },
   {
     category: "Preferencias",
     purpose:
       "Permiten recordar determinadas elecciones realizadas por la persona usuaria.",
     consent: "Sí, salvo excepciones legalmente aplicables",
-    status: "No previstas en la demo inicial",
+    status: "No se utilizan",
   },
   {
     category: "Analíticas",
     purpose:
       "Permiten medir el uso del sitio web y obtener estadísticas agregadas para mejorar su funcionamiento.",
     consent: "Sí",
-    status: "No previstas en la demo inicial",
+    status: "No se utilizan",
   },
   {
     category: "Publicidad / marketing",
     purpose:
       "Permiten crear perfiles, medir campañas o mostrar publicidad personalizada.",
     consent: "Sí",
-    status: "No previstas en la demo inicial",
+    status: "No se utilizan",
+  },
+];
+
+const technicalStorage = [
+  {
+    name: "wacds_access_token",
+    provider: "localStorage · propio",
+    purpose: "Sesión del panel",
+    duration: "Hasta cerrar sesión en el panel",
+  },
+  {
+    name: "wacds_refresh_token",
+    provider: "localStorage · propio",
+    purpose: "Sesión del panel",
+    duration: "Hasta cerrar sesión en el panel",
+  },
+  {
+    name: "wacds_business_session",
+    provider: "localStorage · propio",
+    purpose: "Sesión del panel",
+    duration: "Hasta cerrar sesión en el panel",
+  },
+  {
+    name: "wacds_booking_management_<id>",
+    provider: "sessionStorage · propio",
+    purpose: "Gestión de la cita",
+    duration: "Hasta cerrar la pestaña",
   },
 ];
 
@@ -324,14 +320,11 @@ export default function CookiesPage() {
 
                 <div className="mt-6 space-y-5 text-base leading-8 text-(--ink-muted)">
                   <p>
-                    La versión inicial de esta demo no presupone la instalación
-                    de cookies analíticas, publicitarias o de personalización.
-                  </p>
-
-                  <p>
-                    En una implementación real deberán identificarse y
-                    documentarse únicamente las cookies y tecnologías que se
-                    encuentren efectivamente activas en el sitio web.
+                    Este sitio no usa cookies de analítica ni de publicidad. El
+                    almacenamiento de esta tabla es técnico y estrictamente
+                    necesario: mantiene la sesión del panel y permite gestionar
+                    la cita reservada. Por eso no se muestra un banner de
+                    consentimiento.
                   </p>
                 </div>
 
@@ -343,19 +336,25 @@ export default function CookiesPage() {
                     <CookieTableHeader label="Duración" />
                   </div>
 
-                  <div className="grid grid-cols-1 bg-(--p-f7f2ec) sm:grid-cols-4">
-                    <CookieTableCell value="Por determinar según producción" />
-                    <CookieTableCell value="Por determinar" />
-                    <CookieTableCell value="Según servicios activados" />
-                    <CookieTableCell value="Según cada cookie" last />
-                  </div>
+                  {technicalStorage.map((item) => (
+                    <div
+                      key={item.name}
+                      className="grid grid-cols-1 border-t border-(--heading)/10 bg-(--p-f7f2ec) sm:grid-cols-4"
+                    >
+                      <CookieTableCell value={item.name} />
+                      <CookieTableCell value={item.provider} />
+                      <CookieTableCell value={item.purpose} />
+                      <CookieTableCell value={item.duration} last />
+                    </div>
+                  ))}
                 </div>
 
                 <div className="mt-6 rounded-[1.2rem] border border-(--p-9b775e)/15 bg-(--notice-bg)/60 p-5">
                   <p className="text-sm leading-6 text-(--p-66584f)">
-                    Antes de desplegar este starter para un cliente real deberá
-                    realizarse una revisión técnica de las cookies efectivamente
-                    instaladas y actualizar esta sección.
+                    Si se añade analítica u otra tecnología que no sea
+                    estrictamente necesaria, hará falta el consentimiento previo
+                    de la persona usuaria y esta tabla deberá actualizarse antes
+                    de activarla.
                   </p>
                 </div>
               </section>
@@ -495,17 +494,17 @@ export default function CookiesPage() {
                   <dl className="overflow-hidden rounded-[1.4rem] border border-(--heading)/10 bg-(--p-f1ebe4)">
                     <LegalDataRow
                       label="Nombre comercial"
-                      value={cookieOwner.businessName}
+                      value={business.brand.name}
                     />
 
                     <LegalDataRow
                       label="Titular"
-                      value={cookieOwner.legalName}
+                      value={business.legal.legalName}
                     />
 
                     <LegalDataRow
                       label="Email"
-                      value={cookieOwner.privacyEmail}
+                      value={business.legal.privacyEmail}
                       last
                     />
                   </dl>
@@ -645,7 +644,7 @@ function CookieTableCell({
   return (
     <div
       className={[
-        "border-b border-(--heading)/10 px-4 py-4 sm:border-b-0 sm:border-r",
+        "border-b border-(--heading)/10 px-4 py-4 last:border-b-0 sm:border-b-0 sm:border-r",
         last ? "sm:border-r-0" : "",
       ].join(" ")}
     >

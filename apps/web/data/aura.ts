@@ -446,6 +446,22 @@ export const auraContact = {
   country: "España",
 };
 
+/**
+ * Titular jurídico. Los corchetes se sustituyen antes de publicar.
+ * El email de privacidad es el de contacto de la demo.
+ */
+export const auraLegal = {
+  legalName: "[RAZÓN SOCIAL]",
+  taxId: "[NIF / CIF]",
+  address: "[DOMICILIO FISCAL / SOCIAL]",
+  registry: "[DATOS REGISTRALES]",
+  privacyEmail: auraContact.email,
+  hostingProvider: "[PROVEEDOR DE HOSTING]",
+  hostingCountry: "[PAÍS DEL HOSTING]",
+  emailProvider: "[PROVEEDOR DE EMAIL]",
+  retention: "[PLAZO DE CONSERVACIÓN]",
+} as const;
+
 /* ============================================================
    OPENING HOURS
 ============================================================ */
@@ -575,6 +591,8 @@ const auraLegalCopy = {
     "El sitio web tiene como finalidad ofrecer información sobre Aura Studio, sus servicios, tratamientos, profesionales, horarios, medios de contacto y otras cuestiones relacionadas con su actividad.",
   noticeClosing:
     "Vuelve a descubrir nuestros tratamientos y nuestra forma de entender el bienestar.",
+  privacyClosing:
+    "Tus datos deben tratarse con el mismo cuidado que ponemos en cada experiencia.",
   demoNotices: {
     legal:
       "Aura Studio es una empresa ficticia utilizada como demostración del Modelo 01 · Appointments de WAC DS. Los datos jurídicos que aparecen entre corchetes deben sustituirse por los datos reales del titular antes de publicar este proyecto para un cliente.",
@@ -780,6 +798,8 @@ export const auraConfig: DemoConfig = {
   header: auraHeader,
 
   bookingExtraFields: [],
+
+  legal: auraLegal,
 
   legalCopy: auraLegalCopy,
 
