@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Locale;
 
 @Slf4j
@@ -148,6 +149,42 @@ public class DevelopmentAuthBootstrap
     private String staffLastName;
 
     // =========================================================
+    // MOTORLINE OWNER CONFIGURATION
+    // =========================================================
+
+    /**
+     * Owner opcional de Motorline Taller.
+     *
+     * Email y contraseña llegan solo por el entorno.
+     * Si ambos están vacíos, este bloque no hace nada.
+     * La contraseña no se reutiliza desde la cuenta de Aura.
+     */
+    @Value(
+        "${app.bootstrap.dev-taller-owner.business-slug:motorline-taller}"
+    )
+    private String tallerOwnerBusinessSlug;
+
+    @Value(
+        "${app.bootstrap.dev-taller-owner.email:}"
+    )
+    private String tallerOwnerEmail;
+
+    @Value(
+        "${app.bootstrap.dev-taller-owner.password:}"
+    )
+    private String tallerOwnerPassword;
+
+    @Value(
+        "${app.bootstrap.dev-taller-owner.first-name:Owner}"
+    )
+    private String tallerOwnerFirstName;
+
+    @Value(
+        "${app.bootstrap.dev-taller-owner.last-name:Motorline}"
+    )
+    private String tallerOwnerLastName;
+
+    // =========================================================
     // BOOTSTRAP
     // =========================================================
 
@@ -245,12 +282,226 @@ public class DevelopmentAuthBootstrap
             )
         );
 
+        bootstrapTallerOwner();
+
         log.info(
             "Development authentication bootstrap completed. "
                 + "businessId={}, businessSlug={}",
             business.getId(),
             normalizedBusinessSlug
         );
+    }
+
+    // =========================================================
+    // MOTORLINE OWNER BOOTSTRAP
+    // =========================================================
+
+    /**
+     * Crea el OWNER de Motorline solo cuando el entorno
+     * trae email y contraseña a la vez.
+     *
+     * El negocio tiene que existir (seed). Este método
+     * no crea el business ni escribe la contraseña en claro.
+     */
+    private void bootstrapTallerOwner() {
+
+        boolean emailMissing =
+            tallerOwnerEmail == null
+                || tallerOwnerEmail.isBlank();
+
+        boolean passwordMissing =
+            tallerOwnerPassword == null
+                || tallerOwnerPassword.isBlank();
+
+        if (
+            emailMissing
+                && passwordMissing
+        ) {
+
+            log.info(
+                "Development Motorline owner bootstrap skipped."
+            );
+
+            return;
+        }
+
+        if (
+            emailMissing
+                || passwordMissing
+        ) {
+            throw new IllegalStateException(
+                "DEV_TALLER_OWNER_EMAIL y "
+                    + "DEV_TALLER_OWNER_PASSWORD "
+                    + "deben configurarse juntas."
+            );
+        }
+
+        DevelopmentAccount account =
+            new DevelopmentAccount(
+                "OWNER",
+                tallerOwnerEmail,
+                tallerOwnerPassword,
+                tallerOwnerFirstName,
+                tallerOwnerLastName,
+                BusinessRole.OWNER
+            );
+
+        validateDevelopmentAccount(
+            account
+        );
+
+        String normalizedTallerEmail =
+            normalizeEmail(
+                tallerOwnerEmail
+            );
+
+        rejectIfEmailMatchesAuraAccount(
+            normalizedTallerEmail
+        );
+
+        String normalizedTallerSlug =
+            normalizeSlug(
+                tallerOwnerBusinessSlug
+            );
+
+        Business tallerBusiness =
+            businessRepository
+                .findBySlugIgnoreCase(
+                    normalizedTallerSlug
+                )
+                .orElseThrow(() ->
+                    new IllegalStateException(
+                        "No existe ningún negocio con slug '"
+                            + normalizedTallerSlug
+                            + "'."
+                    )
+                );
+
+        if (
+            !tallerBusiness.isActive()
+        ) {
+            throw new IllegalStateException(
+                "El negocio '"
+                    + normalizedTallerSlug
+                    + "' está desactivado."
+            );
+        }
+
+        rejectIfEmailBelongsToAnotherBusiness(
+            normalizedTallerEmail,
+            tallerBusiness
+        );
+
+        bootstrapAccount(
+            tallerBusiness,
+            account
+        );
+    }
+
+    private void rejectIfEmailMatchesAuraAccount(
+        String normalizedTallerEmail
+    ) {
+
+        boolean sameAsAuraAccount =
+            normalizedTallerEmail.equals(
+                normalizeEmail(
+                    ownerEmail
+                )
+            )
+                || normalizedTallerEmail.equals(
+                    normalizeEmail(
+                        adminEmail
+                    )
+                )
+                || normalizedTallerEmail.equals(
+                    normalizeEmail(
+                        staffEmail
+                    )
+                );
+
+        if (
+            sameAsAuraAccount
+        ) {
+            throw new IllegalStateException(
+                "El email del owner de Motorline debe ser "
+                    + "distinto de las cuentas de desarrollo de Aura."
+            );
+        }
+    }
+
+    /**
+     * El login entra en la membership activa más antigua.
+     * Una segunda membership no abriría el panel de Motorline.
+     */
+    private void rejectIfEmailBelongsToAnotherBusiness(
+        String normalizedEmail,
+        Business tallerBusiness
+    ) {
+
+        User existingUser =
+            userRepository
+                .findByEmailIgnoreCase(
+                    normalizedEmail
+                )
+                .orElse(
+                    null
+                );
+
+        if (
+            existingUser == null
+                || existingUser.getId() == null
+        ) {
+            return;
+        }
+
+        List<BusinessMembership> memberships =
+            businessMembershipRepository
+                .findAllByUserIdOrderByCreatedAtAsc(
+                    existingUser.getId()
+                );
+
+        if (
+            memberships == null
+                || memberships.isEmpty()
+        ) {
+            return;
+        }
+
+        for (
+            BusinessMembership membership
+                : memberships
+        ) {
+
+            if (
+                membership == null
+                    || membership.getBusiness() == null
+                    || membership
+                        .getBusiness()
+                        .getId() == null
+            ) {
+                throw new IllegalStateException(
+                    "La membership existente del owner "
+                        + "de Motorline no es válida."
+                );
+            }
+
+            boolean sameBusiness =
+                membership
+                    .getBusiness()
+                    .getId()
+                    .equals(
+                        tallerBusiness.getId()
+                    );
+
+            if (
+                !sameBusiness
+            ) {
+                throw new IllegalStateException(
+                    "El email del owner de Motorline ya "
+                        + "pertenece a otro negocio."
+                );
+            }
+        }
     }
 
     // =========================================================
