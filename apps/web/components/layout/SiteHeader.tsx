@@ -13,7 +13,9 @@ type HeaderChrome = {
 };
 
 const AURA_CHROME: HeaderChrome = { onVideo: false, scrolled: false };
+const PAGE_SCROLLED_CHROME: HeaderChrome = { onVideo: false, scrolled: true };
 const VIDEO_TOP_CHROME: HeaderChrome = { onVideo: true, scrolled: false };
+const VIDEO_SCROLLED_CHROME: HeaderChrome = { onVideo: true, scrolled: true };
 
 let chromeCache: HeaderChrome = VIDEO_TOP_CHROME;
 
@@ -51,11 +53,22 @@ function readHeaderChrome(): HeaderChrome {
     }
   }
 
-  if (!onVideo) return AURA_CHROME;
-  if (!scrolled) return VIDEO_TOP_CHROME;
-  if (chromeCache.onVideo && chromeCache.scrolled) return chromeCache;
+  const next: HeaderChrome = onVideo
+    ? scrolled
+      ? VIDEO_SCROLLED_CHROME
+      : VIDEO_TOP_CHROME
+    : scrolled
+      ? PAGE_SCROLLED_CHROME
+      : AURA_CHROME;
 
-  chromeCache = { onVideo: true, scrolled: true };
+  if (
+    chromeCache.onVideo === next.onVideo &&
+    chromeCache.scrolled === next.scrolled
+  ) {
+    return chromeCache;
+  }
+
+  chromeCache = next;
   return chromeCache;
 }
 
@@ -114,6 +127,10 @@ export function SiteHeader({
   );
   const onVideo = chrome.onVideo;
   const auraOnVideo = onVideo && business.theme !== "taller";
+  // La home lleva overflow-x: hidden, así que sticky no se ancla.
+  // Cambiar fixed/sticky al cruzar el vídeo mueve el layout y el
+  // snapshot rebota: el header se queda fixed en toda la secuencia.
+  const pinHeader = overSequence || onVideo || business.theme === "taller";
 
   function closeMobileMenu() {
     setMobileMenuOpen(false);
@@ -136,7 +153,7 @@ export function SiteHeader({
                 ? "border-b border-white/15 bg-black/45 backdrop-blur-md"
                 : "border-b border-transparent bg-transparent",
             ].join(" ")
-          : business.theme === "taller"
+          : pinHeader
             ? "fixed inset-x-0 top-0 z-50 border-b border-(--p-2d2824)/10 bg-(--canvas)/90 backdrop-blur-xl"
             : "sticky top-0 z-50 border-b border-(--p-2d2824)/10 bg-(--canvas)/90 backdrop-blur-xl"
       }

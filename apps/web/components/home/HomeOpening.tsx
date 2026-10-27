@@ -2,7 +2,6 @@
 
 import { HeroSection } from "@/components/home/HeroSection";
 import { ScrollSequence } from "@/components/home/ScrollSequence";
-import { usePrefersReducedMotion } from "@/components/sequence/useFrameSequence";
 import type { DemoId, ScrollSequenceConfig } from "@/data/types";
 
 export function HomeOpening({
@@ -14,9 +13,7 @@ export function HomeOpening({
   sequence?: ScrollSequenceConfig;
   skin: DemoId;
 }) {
-  const reducedMotion = usePrefersReducedMotion();
-  const showHero =
-    !ready || !sequence || (skin === "aura" && reducedMotion);
+  const showHero = !ready || !sequence;
 
   if (showHero) return <HeroSection />;
 

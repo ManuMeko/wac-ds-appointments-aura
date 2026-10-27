@@ -52,4 +52,4 @@ El script genera `frame_0001.webp`, `frame_0002.webp`… a **1600 px** de ancho 
 
 Hasta que existan esos archivos, Aura muestra el hero de siempre.
 
-Después de extraer, abre `apps/web/data/aura.ts` y cambia `frameCount: 0` por el número real de archivos `frame_####.webp`. Con el comando de arriba, 96 fotogramas, el valor es **96**.
+`frameCount` en `apps/web/data/aura.ts` tiene que coincidir con el número de archivos `frame_####.webp`. Con el comando de arriba son **96**, que es el valor actual. Si vuelves a extraer otra cantidad, cambia ese número.

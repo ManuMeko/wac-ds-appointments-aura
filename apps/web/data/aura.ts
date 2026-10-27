@@ -823,20 +823,20 @@ export const auraConfig: DemoConfig = {
    * Secuencia de scroll de Aura.
    * frameCount es el número de archivos
    * public/images/aura/sequence/frame_####.webp.
-   * Mientras sea 0, o falte frame_0001.webp, la home pinta HeroSection.
-   * Tras extraer, cambia ese 0 por el número real de fotogramas.
-   * Con el comando del README (96 fotogramas) el valor es 96.
+   * Si falta frame_0001.webp, la home pinta HeroSection.
+   * El vídeo dura 10 s: cada overlay cubre 2 s, con un
+   * fundido corto en el corte para que la tarjeta no parpadee.
    */
   scrollSequence: {
     basePath: "/images/aura/sequence",
-    frameCount: 0,
+    frameCount: 96,
     fileExtension: "webp",
     heightVh: 280,
     holdVh: 10,
     overlays: [
       {
         from: 0,
-        to: 0.18,
+        to: 0.24,
         align: "start",
         level: "h1",
         title: `${auraHero.title} ${auraHero.highlightedTitle}`,
@@ -845,28 +845,28 @@ export const auraConfig: DemoConfig = {
         secondaryCta: auraHero.secondaryCta,
       },
       {
-        from: 0.2,
-        to: 0.38,
+        from: 0.16,
+        to: 0.44,
         align: "end",
         title: auraPhilosophy.title,
         text: auraPhilosophy.description,
       },
       {
-        from: 0.4,
-        to: 0.58,
+        from: 0.36,
+        to: 0.64,
         align: "start",
         title: auraExperience.visualTitle,
         text: auraExperience.visualDescription,
       },
       {
-        from: 0.6,
-        to: 0.8,
+        from: 0.56,
+        to: 0.84,
         align: "end",
         title: auraExperience.title,
         text: auraExperience.description,
       },
       {
-        from: 0.82,
+        from: 0.76,
         to: 1,
         align: "start",
         title: auraBrand.signature.title,
