@@ -31,6 +31,9 @@ const nextConfig: NextConfig = {
 
      output: "export"
 
+     output: "standalone" es el runtime de Next dentro de Docker.
+     Sigue sirviendo las rutas dinámicas; no es un export estático.
+
      Esto permite rutas dinámicas como:
 
      /business/appointments/19
@@ -49,7 +52,14 @@ const nextConfig: NextConfig = {
 
      quality "90" is not configured
      quality "92" is not configured
+
+     La imagen Docker define NEXT_IMAGE_UNOPTIMIZED=true.
+     Así /_next/image no exige la dependencia nativa sharp,
+     que este proyecto no declara. En local el optimizador
+     sigue activo.
   ======================================================= */
+
+  output: "standalone",
 
   images: {
     qualities: [
@@ -57,6 +67,7 @@ const nextConfig: NextConfig = {
       90,
       92,
     ],
+    unoptimized: process.env.NEXT_IMAGE_UNOPTIMIZED === "true",
   },
 
   /* =======================================================

@@ -1,0 +1,7 @@
+# Secretos de despliegue. deploy/.env.example sí se versiona.
+deploy/.env
+deploy/.env.*
+!deploy/.env.example
+
+# Copias de pg_dump generadas por deploy/backup.sh
+deploy/backups/

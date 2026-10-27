@@ -1,0 +1,120 @@
+name: wac-ds-appointments
+
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  api:
+    image: wac-ds-appointments-api:local
+    build:
+      context: ../apps/api
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: "8080"
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ISSUER: ${JWT_ISSUER:-wac-ds-appointments}
+      APP_SECURITY_CORS_ALLOWED_ORIGINS: ${APP_SECURITY_CORS_ALLOWED_ORIGINS}
+      APP_BOOTSTRAP_DEV_OWNER_ENABLED: ${APP_BOOTSTRAP_DEV_OWNER_ENABLED:-false}
+      APP_SECURITY_RATE_LIMIT_ENABLED: ${APP_SECURITY_RATE_LIMIT_ENABLED:-true}
+      APP_SECURITY_RATE_LIMIT_LOGIN_PER_MINUTE: ${APP_SECURITY_RATE_LIMIT_LOGIN_PER_MINUTE:-10}
+      APP_SECURITY_RATE_LIMIT_PUBLIC_BOOKING_PER_MINUTE: ${APP_SECURITY_RATE_LIMIT_PUBLIC_BOOKING_PER_MINUTE:-10}
+      APP_SECURITY_RATE_LIMIT_WINDOW_SECONDS: ${APP_SECURITY_RATE_LIMIT_WINDOW_SECONDS:-60}
+      PUBLIC_FRONTEND_BASE_URL: ${PUBLIC_FRONTEND_BASE_URL}
+      PUBLIC_BOOKING_CONFIRMATION_EMAIL_ENABLED: ${PUBLIC_BOOKING_CONFIRMATION_EMAIL_ENABLED:-true}
+      REMINDER_EMAIL_REAL_DELIVERY_ENABLED: ${REMINDER_EMAIL_REAL_DELIVERY_ENABLED:-false}
+      REMINDER_SCHEDULER_ENABLED: ${REMINDER_SCHEDULER_ENABLED:-false}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL:-}
+      RESEND_FROM_NAME: ${RESEND_FROM_NAME:-WAC D.S. Appointments}
+      RESEND_REPLY_TO: ${RESEND_REPLY_TO:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - "bash -c 'exec 3<>/dev/tcp/127.0.0.1/8080 && printf \"GET /actuator/health HTTP/1.0\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n\" >&3 && grep -q UP <&3'"
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+
+  web-aura:
+    image: wac-ds-web:aura
+    build:
+      context: ../apps/web
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_DEMO: aura
+        NEXT_PUBLIC_API_URL: https://${API_DOMAIN}
+        NEXT_PUBLIC_SITE_URL: https://${AURA_DOMAIN}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:3000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  web-taller:
+    image: wac-ds-web:taller
+    build:
+      context: ../apps/web
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_DEMO: taller
+        NEXT_PUBLIC_API_URL: https://${API_DOMAIN}
+        NEXT_PUBLIC_SITE_URL: https://${TALLER_DOMAIN}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:3000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    environment:
+      AURA_DOMAIN: ${AURA_DOMAIN}
+      TALLER_DOMAIN: ${TALLER_DOMAIN}
+      API_DOMAIN: ${API_DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      api:
+        condition: service_healthy
+      web-aura:
+        condition: service_healthy
+      web-taller:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,21 @@
+{
+	email {$ACME_EMAIL}
+}
+
+{$AURA_DOMAIN} {
+	encode gzip
+	reverse_proxy web-aura:3000
+}
+
+{$TALLER_DOMAIN} {
+	encode gzip
+	reverse_proxy web-taller:3000
+}
+
+# reverse_proxy de Caddy 2 envía X-Forwarded-For y
+# X-Forwarded-Proto por defecto. No se reescriben aquí:
+# header_up los duplicaría.
+{$API_DOMAIN} {
+	encode gzip
+	reverse_proxy api:8080
+}

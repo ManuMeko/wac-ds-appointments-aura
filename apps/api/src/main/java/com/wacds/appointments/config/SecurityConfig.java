@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -644,9 +646,22 @@ public class SecurityConfig {
     public SecretKey jwtSecretKey(
 
         @Value("${app.security.jwt.secret}")
-        String jwtSecret
+        String jwtSecret,
+
+        Environment environment
 
     ) {
+
+        if (
+            environment.acceptsProfiles(
+                Profiles.of("prod")
+            )
+        ) {
+
+            JwtSecretRules.requireProductionSecret(
+                jwtSecret
+            );
+        }
 
         if (
             jwtSecret == null
