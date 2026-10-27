@@ -17,6 +17,8 @@ import {
 } from "next/navigation";
 
 import { business } from "@/config/business";
+import { Noise } from "@/components/motion/Noise";
+import { Reveal } from "@/components/motion/Reveal";
 import {
   apiPost,
   clearBusinessSession,
@@ -490,7 +492,7 @@ export default function BusinessLayout({
     isLoginPage
   ) {
     return (
-      <div className="min-h-screen bg-[#f5f1ec] text-[#2f2925]">
+      <div className="business-login min-h-screen bg-[#f5f1ec] text-[#2f2925]">
         {children}
       </div>
     );
@@ -534,6 +536,7 @@ export default function BusinessLayout({
         =================================================== */}
 
         <aside className="bp-sidebar hidden w-[272px] shrink-0 border-r lg:flex lg:flex-col">
+          <Noise id="noise-business-sidebar" />
 
           {/* BRAND */}
 
@@ -756,9 +759,11 @@ export default function BusinessLayout({
           ================================================= */}
 
           <main className="flex-1">
-            <div className="mx-auto w-full max-w-[1600px] px-5 py-6 md:px-8 md:py-8 xl:px-10">
-              {children}
-            </div>
+            <Reveal variant="fade-up">
+              <div className="mx-auto w-full max-w-[1600px] px-5 py-6 md:px-8 md:py-8 xl:px-10">
+                {children}
+              </div>
+            </Reveal>
           </main>
 
           {/* =================================================

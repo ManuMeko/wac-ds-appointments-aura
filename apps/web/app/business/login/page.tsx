@@ -10,6 +10,8 @@ import {
   useRouter,
 } from "next/navigation";
 
+import { Noise } from "@/components/motion/Noise";
+import { Reveal } from "@/components/motion/Reveal";
 import {
   ApiError,
   apiPost,
@@ -354,7 +356,9 @@ export default function BusinessLoginPage() {
   return (
     <div className="flex min-h-[calc(100vh-140px)] items-center justify-center py-8 md:py-12">
       <div className="w-full max-w-[470px]">
+        <Reveal variant="scale-in">
         <div className="rounded-[30px] border border-[#e2d9d1] bg-white p-6 shadow-[0_22px_70px_rgba(58,44,36,0.08)] sm:p-8 md:p-10">
+          <Noise id="noise-business-login" />
           <div className="text-center">
             <div className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[#a18b7d]">
               WAC D.S.
@@ -530,6 +534,7 @@ export default function BusinessLoginPage() {
             </div>
           </div>
         </div>
+        </Reveal>
 
         <p className="mt-5 text-center text-xs leading-5 text-[#94867c]">
           WAC D.S. · Gestión de reservas y citas

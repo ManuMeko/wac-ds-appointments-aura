@@ -1462,6 +1462,621 @@ button:focus-visible {
 }
 
 /* =========================================================
+   BUSINESS PANEL · TALLER
+   Solo con data-theme="taller". Aura conserva el bloque de arriba.
+========================================================= */
+
+[data-theme="taller"] .business-panel {
+  --panel-canvas: var(--canvas);
+  --panel-surface: var(--surface);
+  --panel-text: var(--ink);
+  --panel-text-secondary: var(--ink-muted);
+  --panel-text-muted: var(--ink-muted);
+  --panel-border: var(--border);
+  --panel-primary: var(--button-bg);
+  --panel-primary-hover: var(--accent-strong);
+  --panel-secondary-border: var(--border);
+  --panel-shadow-rest: 0 18px 50px rgba(28, 25, 23, 0.06);
+  --panel-shadow-raised: 0 28px 70px rgba(28, 25, 23, 0.16);
+}
+
+[data-theme="taller"] .business-panel :focus-visible {
+  outline: 2px solid var(--accent-line);
+  outline-offset: 2px;
+}
+
+[data-theme="taller"] .business-panel input:focus,
+[data-theme="taller"] .business-panel select:focus,
+[data-theme="taller"] .business-panel textarea:focus {
+  border-color: var(--accent-line);
+}
+
+[data-theme="taller"] .business-panel [class*="placeholder:text-[#"]::placeholder {
+  color: var(--ink-muted);
+}
+
+[data-theme="taller"] .bp-metric > :first-child::before,
+[data-theme="taller"] .bp-empty:not(:has(svg))::before {
+  background-color: rgba(249, 115, 22, 0.14);
+}
+
+[data-theme="taller"] .bp-metric > :first-child::before {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f97316' stroke-width='1.8' stroke-linecap='round'><path d='M4 19V9M10 19V5M16 19v-7M22 19H2'/></svg>");
+}
+
+[data-theme="taller"] .bp-empty:not(:has(svg))::before {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f97316' stroke-width='1.7' stroke-linecap='round'><rect x='3.5' y='5' width='17' height='15' rx='2'/><path d='M3.5 10h17M8 3.5v3M16 3.5v3'/></svg>");
+}
+
+[data-theme="taller"] .bp-sidebar {
+  position: relative;
+  background: var(--inverse);
+  color: var(--on-inverse);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="taller"] .bp-sidebar > :not(svg) {
+  position: relative;
+  z-index: 1;
+}
+
+[data-theme="taller"] .bp-header {
+  background: color-mix(in srgb, var(--canvas) 90%, transparent);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+}
+
+[data-theme="taller"] .business-panel thead th {
+  background: var(--canvas);
+  color: var(--ink-muted) !important;
+}
+
+[data-theme="taller"] .business-panel tbody td {
+  color: var(--ink);
+}
+
+[data-theme="taller"] .business-panel tbody tr:hover {
+  background: color-mix(in srgb, var(--canvas) 70%, white);
+}
+
+[data-theme="taller"] .business-panel main > .reveal {
+  animation: aura-fade-up 700ms ease both;
+}
+
+/* Arenas y cremas del panel → superficies del taller.
+   No incluye avisos verdes, rojos, ámbar ni estados de cita. */
+
+[data-theme="taller"] .business-panel :is(
+  .bg-\[\#eee7df\],
+  .bg-\[\#eee7df\]\/60,
+  .bg-\[\#eee8df\],
+  .bg-\[\#eee8e0\],
+  .bg-\[\#eee9e4\],
+  .bg-\[\#efe8e1\],
+  .bg-\[\#e1d6cc\],
+  .bg-\[\#e8ded4\],
+  .bg-\[\#e8ded5\],
+  .bg-\[\#e8e0d7\],
+  .bg-\[\#e9dfd6\],
+  .bg-\[\#e9e1da\],
+  .bg-\[\#f0e9e2\],
+  .bg-\[\#f0ebe6\],
+  .bg-\[\#f1ece7\],
+  .bg-\[\#f2ece7\],
+  .bg-\[\#f2ede7\],
+  .bg-\[\#f3ece6\],
+  .bg-\[\#f3ede7\],
+  .bg-\[\#f3eee9\],
+  .bg-\[\#f4eee8\],
+  .bg-\[\#f4efea\],
+  .bg-\[\#f5f0ec\],
+  .bg-\[\#f5f1ec\],
+  .bg-\[\#f5f1ed\],
+  .bg-\[\#f5f2ef\],
+  .bg-\[\#f6f2ed\],
+  .bg-\[\#f6f2ee\],
+  .bg-\[\#f7f1eb\],
+  .bg-\[\#f7f3ef\],
+  .bg-\[\#f8f4f0\],
+  .bg-\[\#f8f5f1\],
+  .bg-\[\#f8f5f2\]
+) {
+  background-color: var(--surface-muted);
+}
+
+[data-theme="taller"] .business-panel :is(
+  .bg-\[\#eee8e2\],
+  .bg-\[\#eee8e3\],
+  .bg-\[\#f0ebe7\],
+  .bg-\[\#faf7f3\],
+  .bg-\[\#faf7f4\],
+  .bg-\[\#faf8f5\],
+  .bg-\[\#faf8f6\],
+  .bg-\[\#fbf9f6\],
+  .bg-\[\#fbf9f7\],
+  .bg-\[\#fcfaf8\],
+  .bg-\[\#fdfbf9\],
+  .bg-\[\#fffdfa\],
+  .bg-\[\#fffdfa\]\/95
+) {
+  background-color: var(--canvas);
+}
+
+[data-theme="taller"] .business-panel :is(
+  .bg-\[\#211c18\],
+  .bg-\[\#221c19\],
+  .bg-\[\#221d19\],
+  .bg-\[\#241f1c\],
+  .bg-\[\#332c27\],
+  .bg-\[\#342d28\],
+  .bg-\[\#5f5147\]
+) {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+}
+
+[data-theme="taller"] .business-panel :is(
+  .hover\:bg-\[\#eee7df\]:hover,
+  .hover\:bg-\[\#eee7e1\]:hover,
+  .hover\:bg-\[\#f0e9e2\]:hover,
+  .hover\:bg-\[\#f2ece7\]:hover,
+  .hover\:bg-\[\#f3ece6\]:hover,
+  .hover\:bg-\[\#f3eee9\]:hover,
+  .hover\:bg-\[\#f5f0ec\]:hover,
+  .hover\:bg-\[\#f5f1ed\]:hover,
+  .hover\:bg-\[\#f6f2ee\]:hover,
+  .hover\:bg-\[\#f7f3ef\]:hover,
+  .hover\:bg-\[\#f8f4f0\]:hover,
+  .hover\:bg-\[\#f8f5f2\]:hover,
+  .hover\:bg-\[\#faf7f3\]:hover,
+  .hover\:bg-\[\#faf7f4\]:hover,
+  .hover\:bg-\[\#faf8f6\]:hover,
+  .hover\:bg-\[\#fcfaf8\]:hover
+) {
+  background-color: var(--surface-muted);
+}
+
+[data-theme="taller"] .business-panel :is(
+  .hover\:bg-\[\#211c18\]:hover,
+  .hover\:bg-\[\#221c19\]:hover,
+  .hover\:bg-\[\#221d19\]:hover,
+  .hover\:bg-\[\#241f1c\]:hover
+) {
+  background-color: var(--accent-strong);
+  color: var(--button-text);
+}
+
+[data-theme="taller"] .business-panel :is(
+  .border-\[\#bdaea2\],
+  .border-\[\#bfaea1\],
+  .border-\[\#c3b8b0\],
+  .border-\[\#c5b7ac\],
+  .border-\[\#c7b5a7\],
+  .border-\[\#c9b8aa\],
+  .border-\[\#c9bbb0\],
+  .border-\[\#c9c0ba\],
+  .border-\[\#cabdb2\],
+  .border-\[\#cbbdb2\],
+  .border-\[\#cfc2b7\],
+  .border-\[\#cfc3b8\],
+  .border-\[\#d5c8bd\],
+  .border-\[\#d6c9be\],
+  .border-\[\#d8cdc4\],
+  .border-\[\#d8cec6\],
+  .border-\[\#d9ccc1\],
+  .border-\[\#d9cfc7\],
+  .border-\[\#ddcfc6\],
+  .border-\[\#ddd1c7\],
+  .border-\[\#ddd2c8\],
+  .border-\[\#ddd3c9\],
+  .border-\[\#ddd3cb\],
+  .border-\[\#ddd4ca\],
+  .border-\[\#ddd7d4\],
+  .border-\[\#ded3c8\],
+  .border-\[\#ded3c9\],
+  .border-\[\#ded3cb\],
+  .border-\[\#ded4cb\],
+  .border-\[\#ded4cc\],
+  .border-\[\#ded5cd\],
+  .border-\[\#ded5ce\],
+  .border-\[\#dfd4ca\],
+  .border-\[\#dfd5cb\],
+  .border-\[\#dfd6ce\],
+  .border-\[\#e0d6cd\],
+  .border-\[\#e0d6ce\],
+  .border-\[\#e0d7ce\],
+  .border-\[\#e1d8d0\],
+  .border-\[\#e1d8d1\],
+  .border-\[\#e2d7cc\],
+  .border-\[\#e2d7ce\],
+  .border-\[\#e2d9d0\],
+  .border-\[\#e2d9d1\],
+  .border-\[\#e2dad3\],
+  .border-\[\#e3d8ce\],
+  .border-\[\#e3dad2\],
+  .border-\[\#e3dbd3\],
+  .border-\[\#e4d9cf\],
+  .border-\[\#e4dbd3\],
+  .border-\[\#e4dcd4\],
+  .border-\[\#e4dcd6\],
+  .border-\[\#e5dbd1\],
+  .border-\[\#e5dcd3\],
+  .border-\[\#e5ddd5\],
+  .border-\[\#e5ddd6\],
+  .border-\[\#e5dfdb\],
+  .border-\[\#e6dbd0\],
+  .border-\[\#e6ddd4\],
+  .border-\[\#e6ddd5\],
+  .border-\[\#e7dcd2\],
+  .border-\[\#e7dfd8\],
+  .border-\[\#e8dfd7\],
+  .border-\[\#e8dfd8\],
+  .border-\[\#e8e0d7\],
+  .border-\[\#e8e1d8\],
+  .border-\[\#e9e2d9\],
+  .border-\[\#ebe3dc\],
+  .border-\[\#ebe3dd\],
+  .border-\[\#eee7e1\],
+  .border-\[\#eee8e2\],
+  .border-\[\#f0eae4\]
+) {
+  border-color: var(--border);
+}
+
+[data-theme="taller"] .business-panel :is(
+  .divide-\[\#eee7e1\],
+  .divide-\[\#eee8e2\],
+  .divide-\[\#eee8e3\],
+  .divide-\[\#f0eae4\]
+) > :not(:last-child) {
+  border-color: var(--border);
+}
+
+[data-theme="taller"] .business-panel :is(
+  .text-\[\#211c18\],
+  .text-\[\#221c19\],
+  .text-\[\#221d19\],
+  .text-\[\#241f1b\],
+  .text-\[\#241f1c\],
+  .text-\[\#2e2824\],
+  .text-\[\#2f2925\],
+  .text-\[\#302923\],
+  .text-\[\#302a26\],
+  .text-\[\#312b27\],
+  .text-\[\#332c27\],
+  .text-\[\#332d29\],
+  .text-\[\#342c26\],
+  .text-\[\#342d28\],
+  .text-\[\#342e2a\],
+  .text-\[\#352f2b\],
+  .text-\[\#382f2a\],
+  .text-\[\#3b332e\],
+  .text-\[\#3b342f\],
+  .text-\[\#3c342f\],
+  .text-\[\#3d3530\],
+  .text-\[\#3e3731\],
+  .text-\[\#3f3732\],
+  .text-\[\#3f3832\],
+  .text-\[\#40362f\],
+  .text-\[\#403630\],
+  .text-\[\#413a34\],
+  .text-\[\#423933\],
+  .text-\[\#433b35\],
+  .text-\[\#443a34\],
+  .text-\[\#443b35\],
+  .text-\[\#4a4039\],
+  .text-\[\#4a403a\],
+  .text-\[\#4c4038\],
+  .text-\[\#4d443d\],
+  .text-\[\#4e433b\],
+  .text-\[\#4e443e\],
+  .text-\[\#51463f\],
+  .text-\[\#514840\],
+  .text-\[\#554941\]
+) {
+  color: var(--ink);
+}
+
+[data-theme="taller"] .business-panel :is(
+  .text-\[\#574e47\],
+  .text-\[\#58473c\],
+  .text-\[\#5b5149\],
+  .text-\[\#5c5148\],
+  .text-\[\#5c524a\],
+  .text-\[\#5e5149\],
+  .text-\[\#5e534b\],
+  .text-\[\#5f5046\],
+  .text-\[\#5f5147\],
+  .text-\[\#5f534b\],
+  .text-\[\#5f544d\],
+  .text-\[\#61544c\],
+  .text-\[\#61554e\],
+  .text-\[\#62564f\],
+  .text-\[\#62574e\],
+  .text-\[\#64574f\],
+  .text-\[\#65584f\],
+  .text-\[\#655950\],
+  .text-\[\#66594f\],
+  .text-\[\#665950\],
+  .text-\[\#665a50\],
+  .text-\[\#665a52\],
+  .text-\[\#67594e\],
+  .text-\[\#67594f\],
+  .text-\[\#675a52\],
+  .text-\[\#68594f\],
+  .text-\[\#69594e\],
+  .text-\[\#6c5f57\],
+  .text-\[\#6c6158\],
+  .text-\[\#6e5d52\],
+  .text-\[\#6e6057\],
+  .text-\[\#6f6259\],
+  .text-\[\#6f6359\],
+  .text-\[\#705a4c\],
+  .text-\[\#71645b\],
+  .text-\[\#72645b\],
+  .text-\[\#74665d\],
+  .text-\[\#755f51\],
+  .text-\[\#756559\],
+  .text-\[\#75665d\],
+  .text-\[\#75685d\],
+  .text-\[\#75685f\],
+  .text-\[\#76685f\],
+  .text-\[\#766a60\],
+  .text-\[\#77665b\],
+  .text-\[\#776a61\],
+  .text-\[\#786a61\],
+  .text-\[\#79695b\],
+  .text-\[\#7b6d64\],
+  .text-\[\#7c6e65\],
+  .text-\[\#7d6f66\],
+  .text-\[\#817269\],
+  .text-\[\#81736a\],
+  .text-\[\#82746a\],
+  .text-\[\#82746b\],
+  .text-\[\#837269\],
+  .text-\[\#84766c\],
+  .text-\[\#857469\],
+  .text-\[\#85766c\],
+  .text-\[\#85786e\],
+  .text-\[\#86776d\],
+  .text-\[\#877970\],
+  .text-\[\#88796f\],
+  .text-\[\#887970\],
+  .text-\[\#897769\],
+  .text-\[\#897b71\],
+  .text-\[\#897c72\],
+  .text-\[\#8a6e5e\],
+  .text-\[\#8a796d\],
+  .text-\[\#8a7a6e\],
+  .text-\[\#8b796e\],
+  .text-\[\#8b7d72\],
+  .text-\[\#8b7d73\],
+  .text-\[\#8c7c71\],
+  .text-\[\#8c7e74\],
+  .text-\[\#8d7968\],
+  .text-\[\#8d7d72\],
+  .text-\[\#8d7f75\],
+  .text-\[\#8e7b6d\],
+  .text-\[\#8e7c70\],
+  .text-\[\#8e7e73\],
+  .text-\[\#8e827a\],
+  .text-\[\#8f796c\],
+  .text-\[\#8f8076\],
+  .text-\[\#90796a\],
+  .text-\[\#907b6e\],
+  .text-\[\#928278\],
+  .text-\[\#938277\],
+  .text-\[\#93857b\],
+  .text-\[\#94857b\],
+  .text-\[\#94867c\],
+  .text-\[\#94877c\],
+  .text-\[\#958477\],
+  .text-\[\#958478\],
+  .text-\[\#958479\],
+  .text-\[\#95867c\],
+  .text-\[\#96857a\],
+  .text-\[\#96877b\],
+  .text-\[\#96877c\],
+  .text-\[\#98877b\],
+  .text-\[\#98887c\],
+  .text-\[\#998679\],
+  .text-\[\#998a80\],
+  .text-\[\#998b81\],
+  .text-\[\#9a8577\],
+  .text-\[\#9a877a\],
+  .text-\[\#9a8879\],
+  .text-\[\#9a887b\],
+  .text-\[\#9a887c\],
+  .text-\[\#9a8a80\],
+  .text-\[\#9a8b81\],
+  .text-\[\#9a8c82\],
+  .text-\[\#9a8d82\],
+  .text-\[\#9b8070\],
+  .text-\[\#9b8678\],
+  .text-\[\#9b8c82\],
+  .text-\[\#9b8d83\],
+  .text-\[\#9c8d83\],
+  .text-\[\#9d8170\],
+  .text-\[\#9d8779\],
+  .text-\[\#a08a7c\],
+  .text-\[\#a08e81\],
+  .text-\[\#a09389\],
+  .text-\[\#a18a7a\],
+  .text-\[\#a18b7d\],
+  .text-\[\#a18d80\],
+  .text-\[\#a19389\],
+  .text-\[\#a28f82\],
+  .text-\[\#a49384\],
+  .text-\[\#a49386\],
+  .text-\[\#a49387\],
+  .text-\[\#a8998e\],
+  .text-\[\#a99281\],
+  .text-\[\#ac9d92\],
+  .text-\[\#ae998b\],
+  .text-\[\#afa198\],
+  .text-\[\#b3a69c\],
+  .text-\[\#b3a69d\],
+  .text-\[\#b4aaa2\],
+  .text-\[\#b9a18e\],
+  .text-\[\#b9a79a\],
+  .text-\[\#b9a89c\],
+  .text-\[\#bba79a\],
+  .text-\[\#bca393\],
+  .text-\[\#bda99a\]
+) {
+  color: var(--ink-muted);
+}
+
+[data-theme="taller"] .business-panel :is(
+  .hover\:text-\[\#241f1b\]:hover,
+  .hover\:text-\[\#2e2824\]:hover,
+  .hover\:text-\[\#302a26\]:hover,
+  .hover\:text-\[\#342d28\]:hover,
+  .hover\:text-\[\#40362f\]:hover
+) {
+  color: var(--ink);
+}
+
+[data-theme="taller"] .bp-sidebar [class*="text-[#"] {
+  color: var(--on-inverse);
+}
+
+[data-theme="taller"] .bp-sidebar [class*="border-[#"] {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="taller"] .bp-sidebar .bg-white\/70 {
+  background-color: var(--inverse-raised);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="taller"] .bp-sidebar nav > .mb-3[class*="text-[#"] {
+  color: color-mix(in srgb, var(--on-inverse) 55%, transparent);
+}
+
+[data-theme="taller"] .bp-sidebar .bp-nav-link {
+  color: color-mix(in srgb, var(--on-inverse) 78%, transparent);
+}
+
+[data-theme="taller"] .bp-sidebar .bp-nav-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--on-inverse);
+}
+
+[data-theme="taller"] .bp-sidebar .bp-nav-link-active,
+[data-theme="taller"] .bp-sidebar .bp-nav-link-active:hover {
+  background: var(--button-bg);
+  color: var(--button-text);
+  box-shadow: none;
+}
+
+[data-theme="taller"] .bp-sidebar .bp-nav-link-active .bg-white {
+  background-color: var(--button-text);
+}
+
+@layer utilities {
+  [data-theme="taller"] .business-panel :is(button, a)[class*="bg-[#342d28]"],
+  [data-theme="taller"] .business-panel :is(button, a)[class*="bg-[#332c27]"],
+  [data-theme="taller"] .business-panel :is(button, a)[class*="bg-[#5f5147]"] {
+    background-color: var(--button-bg);
+    color: var(--button-text) !important;
+  }
+
+  [data-theme="taller"] .business-panel :is(button, a)[class*="bg-[#342d28]"]:hover,
+  [data-theme="taller"] .business-panel :is(button, a)[class*="bg-[#332c27]"]:hover,
+  [data-theme="taller"] .business-panel :is(button, a)[class*="bg-[#5f5147]"]:hover {
+    background-color: var(--accent-strong);
+    color: var(--button-text) !important;
+  }
+}
+
+[data-theme="taller"] .business-login {
+  background: var(--canvas);
+  color: var(--ink);
+}
+
+[data-theme="taller"] .business-login .rounded-\[30px\] {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  border-color: var(--border);
+  background: var(--surface);
+  box-shadow: 0 18px 50px rgba(28, 25, 23, 0.06);
+}
+
+[data-theme="taller"] .business-login .rounded-\[30px\] > :not(svg) {
+  position: relative;
+  z-index: 1;
+}
+
+[data-theme="taller"] .business-login .tracking-\[0\.3em\] {
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+}
+
+[data-theme="taller"] .business-login h1 {
+  color: var(--ink);
+}
+
+[data-theme="taller"] .business-login :is(
+  .text-\[\#817269\],
+  .text-\[\#8e7c70\],
+  .text-\[\#837269\],
+  .text-\[\#9a877a\],
+  .text-\[\#786b62\],
+  .text-\[\#94867c\],
+  .text-\[\#a18b7d\]
+) {
+  color: var(--ink-muted);
+}
+
+[data-theme="taller"] .business-login h1.text-\[\#302a26\] {
+  color: var(--ink);
+}
+
+[data-theme="taller"] .business-login input {
+  border-color: var(--border);
+  background: var(--canvas);
+  color: var(--ink);
+}
+
+[data-theme="taller"] .business-login input::placeholder {
+  color: var(--ink-muted);
+}
+
+[data-theme="taller"] .business-login input:focus {
+  border-color: var(--accent-line);
+  background: var(--surface);
+}
+
+[data-theme="taller"] .business-login .bg-\[\#f7f3ef\] {
+  background: var(--surface-muted);
+}
+
+[data-theme="taller"] .business-login :is(
+  .border-\[\#e2d9d1\],
+  .border-\[\#e1d8d0\],
+  .border-\[\#eee7e1\]
+) {
+  border-color: var(--border);
+}
+
+[data-theme="taller"] .business-login button[class*="bg-[#342d28]"] {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+}
+
+[data-theme="taller"] .business-login button[class*="bg-[#342d28]"]:hover {
+  background-color: var(--accent-strong);
+  color: var(--button-text);
+}
+
+[data-theme="taller"] .business-login :focus-visible {
+  outline: 2px solid var(--accent-line);
+  outline-offset: 2px;
+}
+
+/* =========================================================
    BOOKING · STEP 4
 ========================================================= */
 
