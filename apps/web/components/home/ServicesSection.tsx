@@ -1,10 +1,16 @@
 // apps/web/components/home/ServicesSection.tsx
 
+"use client";
+
 import { PinAside } from "@/components/home/PinAside";
 import { Reveal } from "@/components/motion/Reveal";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
 import { TradeIcon } from "@/components/ui/TradeIcon";
 import { business } from "@/config/business";
+import {
+  formatPublicPrice,
+  useHomeAvailability,
+} from "@/lib/homeAvailability";
 
 /* =========================================================
    WAC DS · MODEL 01 · APPOINTMENTS
@@ -14,6 +20,24 @@ import { business } from "@/config/business";
 export function ServicesSection() {
   const taller = business.theme === "taller";
   const whatsappHref = `https://wa.me/${business.contact.whatsappNumber}`;
+  const availability = useHomeAvailability();
+  const catalog =
+    availability?.status === "ready" ? availability.catalog : null;
+
+  function liveMeta(bookingSlug: string | undefined, fallback: {
+    duration: string;
+    price: string;
+  }) {
+    const match = bookingSlug
+      ? catalog?.find((service) => service.slug === bookingSlug)
+      : undefined;
+    if (!match) return fallback;
+    const price = formatPublicPrice(match.price, match.currency);
+    return {
+      duration: `${match.durationMinutes} min`,
+      price: price ?? fallback.price,
+    };
+  }
 
   const intro = (
     <>
@@ -45,10 +69,19 @@ export function ServicesSection() {
 
           <div className={taller ? "min-w-0" : "border-t border-(--p-342d28)/15"}>
             {business.services.map((service, index) => {
+              const meta = liveMeta(service.bookingSlug, {
+                duration: service.duration,
+                price: service.price,
+              });
+              const bookingHref = service.bookingSlug
+                ? `/reservar?servicio=${encodeURIComponent(service.bookingSlug)}`
+                : "/reservar";
+
               if (!taller) {
                 return (
-                  <article
+                  <a
                     key={service.id}
+                    href={bookingHref}
                     className="group grid gap-5 border-b border-(--p-342d28)/15 py-7 transition-all duration-300 sm:grid-cols-[60px_1fr_auto] sm:items-center"
                   >
                     <span className="font-serif text-lg text-(--p-a08a79)">
@@ -85,20 +118,20 @@ export function ServicesSection() {
 
                     <div className="flex items-center gap-6 sm:flex-col sm:items-end sm:gap-1">
                       <span className="text-sm text-(--p-665a52)">
-                        {service.duration}
+                        {meta.duration}
                       </span>
 
                       <strong className="font-serif text-xl font-normal text-(--p-302925)">
-                        {service.price}
+                        {meta.price}
                       </strong>
                     </div>
-                  </article>
+                  </a>
                 );
               }
 
               return (
                 <Reveal key={service.id} delay={index * 90}>
-                  <a href="/reservar" className="home-service-row group">
+                  <a href={bookingHref} className="home-service-row group">
                     <span className="home-service-num">{service.number}</span>
 
                     <div className="min-w-0">
@@ -125,8 +158,8 @@ export function ServicesSection() {
                     </div>
 
                     <div className="home-service-meta">
-                      <span className="home-duration">{service.duration}</span>
-                      <strong className="home-price">{service.price}</strong>
+                      <span className="home-duration">{meta.duration}</span>
+                      <strong className="home-price">{meta.price}</strong>
                       <span className="home-service-arrow" aria-hidden="true">
                         <ArrowIcon />
                       </span>
@@ -141,7 +174,7 @@ export function ServicesSection() {
                 <h3>¿No sabes qué necesita tu coche?</h3>
                 <p>Cuéntanos el síntoma y te orientamos.</p>
                 <div className="home-service-help-actions">
-                  <a className="home-cta-fill" href="/reservar">
+                  <a className="home-cta-fill" href="/reservar?servicio=diagnosis">
                     Reservar diagnosis
                   </a>
                   <a

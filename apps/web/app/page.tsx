@@ -5,6 +5,8 @@ import type { Metadata } from "next";
 import { ContactSection } from "@/components/home/ContactSection";
 import { ExperienceSection } from "@/components/home/ExperienceSection";
 import { HeroSection } from "@/components/home/HeroSection";
+import { LiveSlots } from "@/components/home/LiveSlots";
+import { OwnerControlSection } from "@/components/home/OwnerControlSection";
 import { PhilosophySection } from "@/components/home/PhilosophySection";
 import { ReviewsSection } from "@/components/home/ReviewsSection";
 import { ScrollSequence } from "@/components/home/ScrollSequence";
@@ -70,10 +72,12 @@ export default function Home() {
         {sequence ? <ScrollSequence sequence={sequence} /> : <HeroSection />}
         <PhilosophySection />
         <ServicesSection />
+        <LiveSlots />
         <ExperienceSection />
         <StatBand />
         <TeamSection />
         <ReviewsSection />
+        <OwnerControlSection />
         <ContactSection />
       </main>
 

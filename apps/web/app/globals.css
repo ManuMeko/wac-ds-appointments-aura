@@ -4041,3 +4041,312 @@ button:focus-visible {
     transform: none;
   }
 }
+
+@keyframes booking-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.booking-step-in {
+  animation: booking-step-in 320ms ease;
+}
+
+[data-theme="taller"] .owner-panel-card {
+  border-top: 2px solid #f97316;
+}
+
+[data-theme="aura"] .booking-done-mark {
+  display: flex;
+  width: 56px;
+  height: 56px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #efe5db;
+  color: #6f5848;
+}
+
+[data-theme="aura"] .booking-done-check {
+  width: 28px;
+  height: 28px;
+}
+
+[data-theme="aura"] .booking-done-check path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: booking-check-draw 600ms ease forwards;
+}
+
+[data-theme="aura"] .booking-done-eyebrow {
+  margin-top: 16px;
+  color: #8b725f;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+[data-theme="aura"] .booking-done-title {
+  padding-top: 8px;
+  color: var(--heading);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 40px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+[data-theme="aura"] .booking-done-lead {
+  max-width: 36rem;
+  padding-top: 12px;
+  color: var(--ink-muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+[data-theme="aura"] .booking-done-panel {
+  margin-top: 28px;
+  border-radius: 24px;
+  background: #f6f0e9;
+  padding: 8px 22px 18px;
+}
+
+[data-theme="aura"] .booking-done-grid {
+  display: grid;
+  gap: 4px;
+}
+
+@media (min-width: 640px) {
+  [data-theme="aura"] .booking-done-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 24px;
+  }
+}
+
+[data-theme="aura"] .booking-done-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  min-width: 0;
+  padding: 12px 0;
+}
+
+[data-theme="aura"] .booking-done-row-icon {
+  display: flex;
+  width: 16px;
+  height: 16px;
+  flex: none;
+  margin-top: 1px;
+  color: #a08a79;
+}
+
+[data-theme="aura"] .booking-done-row-icon svg,
+[data-theme="aura"] .booking-done-ics svg,
+[data-theme="aura"] .booking-done-label svg,
+[data-theme="aura"] .booking-done-secondary svg,
+[data-theme="aura"] .booking-done-ghost svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+[data-theme="aura"] .booking-done-kicker {
+  color: #8b7c72;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+[data-theme="aura"] .booking-done-value {
+  margin-top: 4px;
+  color: #302924;
+  font-size: 15px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+[data-theme="aura"] .booking-done-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  margin-top: 6px;
+  border-radius: 999px;
+  background: #e7f6ee;
+  padding: 0 10px;
+  color: #166534;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+[data-theme="aura"] .booking-done-badge.is-muted {
+  background: #efe8e1;
+  color: #6f5848;
+}
+
+[data-theme="aura"] .booking-done-ref {
+  margin-top: 4px;
+  border-top: 1px solid rgba(48, 41, 36, 0.08);
+  padding-top: 14px;
+}
+
+[data-theme="aura"] .booking-done-ref-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+[data-theme="aura"] .booking-done-copy {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: transparent;
+  color: #6f5848;
+}
+
+[data-theme="aura"] .booking-done-copy svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+}
+
+[data-theme="aura"] .booking-done-copied {
+  color: #166534;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+[data-theme="aura"] .booking-done-ics {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  background: transparent;
+  color: #6f5848;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+[data-theme="aura"] .booking-done-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+[data-theme="aura"] .booking-done-primary,
+[data-theme="aura"] .booking-done-secondary,
+[data-theme="aura"] .booking-done-ghost {
+  display: inline-flex;
+  height: 52px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 0 22px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: none;
+}
+
+[data-theme="aura"] .booking-done-primary {
+  background: #302924;
+  color: #fffaf5;
+  -webkit-text-fill-color: #fffaf5;
+}
+
+[data-theme="aura"] .booking-done-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #fffaf5;
+  -webkit-text-fill-color: #fffaf5;
+}
+
+[data-theme="aura"] .booking-done-secondary {
+  border: 1px solid rgba(48, 41, 36, 0.18);
+  background: #fff;
+  color: #302924;
+}
+
+[data-theme="aura"] .booking-done-ghost {
+  background: transparent;
+  color: #302924;
+}
+
+[data-theme="aura"] .booking-done-ghost-label {
+  position: relative;
+}
+
+[data-theme="aura"] .booking-done-underline {
+  position: absolute;
+  right: 0;
+  bottom: -3px;
+  left: 0;
+  height: 1px;
+  background: #8b725f;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 280ms ease;
+}
+
+[data-theme="aura"] .booking-done-ghost:hover .booking-done-underline {
+  transform: scaleX(1);
+}
+
+@media (min-width: 768px) {
+  [data-theme="aura"] .booking-done-actions {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  [data-theme="aura"] .booking-done-ghost {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  [data-theme="aura"] .booking-done-primary,
+  [data-theme="aura"] .booking-done-secondary,
+  [data-theme="aura"] .booking-done-ghost {
+    width: 100%;
+  }
+
+  [data-theme="aura"] .booking-done-title {
+    font-size: 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .booking-step-in {
+    animation: none;
+  }
+
+  [data-theme="aura"] .booking-done-check path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  [data-theme="aura"] .booking-done-underline {
+    transition: none;
+  }
+}

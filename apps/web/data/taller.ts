@@ -456,6 +456,7 @@ export const tallerConfig: DemoConfig = {
       category: "Mantenimiento",
       featured: true,
       icon: "revision",
+      bookingSlug: "revision-oficial",
     },
     {
       id: "aceite-filtros",
@@ -468,6 +469,7 @@ export const tallerConfig: DemoConfig = {
       category: "Mantenimiento",
       featured: true,
       icon: "oil",
+      bookingSlug: "aceite-filtros",
     },
     {
       id: "pre-itv",
@@ -480,6 +482,7 @@ export const tallerConfig: DemoConfig = {
       category: "Inspección",
       featured: false,
       icon: "itv",
+      bookingSlug: "pre-itv",
     },
     {
       id: "neumaticos",
@@ -492,6 +495,7 @@ export const tallerConfig: DemoConfig = {
       category: "Neumáticos",
       featured: false,
       icon: "tires",
+      bookingSlug: "neumaticos",
     },
     {
       id: "frenos",
@@ -504,6 +508,7 @@ export const tallerConfig: DemoConfig = {
       category: "Seguridad",
       featured: true,
       icon: "brakes",
+      bookingSlug: "frenos",
     },
     {
       id: "diagnosis",
@@ -516,6 +521,7 @@ export const tallerConfig: DemoConfig = {
       category: "Diagnosis",
       featured: true,
       icon: "diagnosis",
+      bookingSlug: "diagnosis",
     },
   ],
 
@@ -657,6 +663,27 @@ export const tallerConfig: DemoConfig = {
     { label: "Privacidad", href: "/privacidad" },
     { label: "Cookies", href: "/cookies" },
   ],
+
+  ownerPanel: {
+    eyebrow: "Tu negocio",
+    title: "Tu negocio, bajo control.",
+    description:
+      "La agenda del día, los clientes y los servicios viven en el mismo panel. Las capturas son la pantalla real de Motorline.",
+    shots: [
+      {
+        src: "/images/taller/panel-dashboard.webp",
+        label: "Dashboard",
+        caption: "Resumen del día: citas, clientes y servicios.",
+        alt: "Panel de Motorline en la pantalla de inicio, con el resumen del día.",
+      },
+      {
+        src: "/images/taller/panel-agenda.webp",
+        label: "Agenda",
+        caption: "Calendario de citas del taller.",
+        alt: "Panel de Motorline en la agenda, con el calendario de citas.",
+      },
+    ],
+  },
 
   footer: {
     copyright: `© ${new Date().getFullYear()} Motorline Taller. Todos los derechos reservados.`,

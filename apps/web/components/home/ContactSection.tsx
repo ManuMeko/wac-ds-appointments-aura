@@ -128,18 +128,25 @@ export function ContactSection() {
                 {/* =============================================
                     CTAs
                 ============================================== */}
-                <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                   <a
-                    href={whatsappHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="/reservar"
                     className="group inline-flex h-14 items-center justify-center gap-3 rounded-full bg-(--p-2e2824) px-8 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--on-inverse) shadow-[0_12px_30px_rgba(46,40,36,0.12)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4b3e35) hover:shadow-[0_16px_36px_rgba(46,40,36,0.18)]"
                   >
-                    {business.contactSection.whatsappCta.label}
+                    {business.header.bookingCta}
 
                     <span className="transition-transform duration-300 group-hover:translate-x-1">
                       <ArrowIcon />
                     </span>
+                  </a>
+
+                  <a
+                    href={whatsappHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex h-14 items-center justify-center gap-2 rounded-full border border-(--p-3e352f)/20 bg-transparent px-8 text-[11px] font-semibold uppercase tracking-[0.18em] text-(--p-413730) transition-all duration-300 hover:-translate-y-0.5 hover:border-(--p-3e352f)/35 hover:bg-(--p-ebe1d8)"
+                  >
+                    {business.contactSection.whatsappCta.label}
                   </a>
 
                   <a

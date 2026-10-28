@@ -94,6 +94,7 @@ type CalendarDatePickerProps = {
   minDate: string;
   maxDate: string;
   disabled?: boolean;
+  openDates?: ReadonlySet<string>;
   onChange: (date: string) => void;
 };
 
@@ -152,6 +153,12 @@ function parseLocalDate(value: string): Date {
 
 function getTodayLocalDate(): string {
   return dateToLocalIso(new Date());
+}
+
+function addDaysIso(value: string, days: number): string {
+  const date = parseLocalDate(value);
+  date.setDate(date.getDate() + days);
+  return dateToLocalIso(date);
 }
 
 function getMaximumDate(): string {
@@ -471,6 +478,7 @@ function CalendarDatePicker({
   minDate,
   maxDate,
   disabled = false,
+  openDates,
   onChange,
 }: CalendarDatePickerProps) {
   const today = getTodayLocalDate();
@@ -590,6 +598,9 @@ function CalendarDatePicker({
             date < minDate ||
             date > maxDate;
 
+          const hasOpenings = openDates?.has(date) === true;
+          const tallerCalendar = business.theme === "taller";
+
           return (
             <button
               key={day.key}
@@ -615,6 +626,16 @@ function CalendarDatePicker({
               ].join(" ")}
             >
               {day.dayNumber}
+              {hasOpenings && !isSelected ? (
+                <span
+                  aria-hidden="true"
+                  className={
+                    tallerCalendar
+                      ? "absolute bottom-[5px] h-1 w-1 rounded-full bg-[#c2410c]"
+                      : "absolute bottom-[5px] h-1 w-1 rounded-full bg-(--accent)"
+                  }
+                />
+              ) : null}
             </button>
           );
         })}
@@ -654,6 +675,10 @@ export default function ManageBookingPage() {
 
   const [selectedSlot, setSelectedSlot] =
     useState<AvailabilitySlot | null>(null);
+
+  const [openDates, setOpenDates] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  );
 
   const rescheduleSectionRef = useRef<HTMLDivElement | null>(
     null
@@ -815,6 +840,65 @@ export default function ManageBookingPage() {
 
     return () => window.cancelAnimationFrame(frame);
   }, [rescheduling]);
+
+  /* =======================================================
+     NEXT SEVEN DAYS
+  ======================================================== */
+
+  useEffect(() => {
+    const professionalId = booking?.professionalId;
+    const serviceId = booking?.serviceId;
+
+    if (!rescheduling || !professionalId || !serviceId) {
+      return;
+    }
+
+    const controller = new AbortController();
+    const start = getTodayLocalDate();
+
+    void (async () => {
+      const open = new Set<string>();
+
+      await Promise.all(
+        Array.from({ length: 7 }, (_, index) => addDaysIso(start, index)).map(
+          async (date) => {
+            try {
+              const params = new URLSearchParams({
+                professionalId: String(professionalId),
+                serviceId: String(serviceId),
+                date,
+              });
+              const response = await fetch(
+                `${API_BASE_URL}/api/v1/public/availability-slots?${params.toString()}`,
+                {
+                  method: "GET",
+                  headers: { Accept: "application/json" },
+                  cache: "no-store",
+                  signal: controller.signal,
+                },
+              );
+
+              if (!response.ok) return;
+
+              const payload = (await response.json()) as DailyAvailabilityResponse;
+
+              if (payload.totalSlots > 0) {
+                open.add(date);
+              }
+            } catch {
+              // Un día sin respuesta no se marca.
+            }
+          },
+        ),
+      );
+
+      if (!controller.signal.aborted) {
+        setOpenDates(open);
+      }
+    })();
+
+    return () => controller.abort();
+  }, [booking?.professionalId, booking?.serviceId, rescheduling]);
 
   /* =======================================================
      LOAD AVAILABILITY
@@ -1336,6 +1420,7 @@ export default function ManageBookingPage() {
                         disabled={cancelling || loadingAvailability}
                         onClick={() => {
                           setRescheduling(true);
+                          setOpenDates(new Set());
                           setShowCancelConfirm(false);
                           setError(null);
                         }}
@@ -1431,8 +1516,25 @@ export default function ManageBookingPage() {
                   ref={rescheduleSectionRef}
                   tabIndex={-1}
                   aria-label={copy.rescheduleRegionLabel}
-                  className="scroll-mt-24 rounded-[2rem] border border-(--p-3b332e)/10 bg-white/60 p-6 outline-none sm:p-8"
+                  className="booking-step-in scroll-mt-24 rounded-[2rem] border border-(--p-3b332e)/10 bg-white/60 p-6 outline-none sm:p-8"
                 >
+                  <div className="mb-6 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRescheduling(false);
+                        setError(null);
+                      }}
+                      className="rounded-full border border-(--inverse)/15 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-(--heading)"
+                    >
+                      Tu cita
+                    </button>
+                    <span className="rounded-full bg-(--p-302924) px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-white">
+                      Nueva hora
+                    </span>
+                  </div>
+                  <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start lg:gap-8">
+                  <div className="min-w-0">
                   <div className="mb-7">
                     <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-(--p-927663)">
                       {copy.newDateEyebrow}
@@ -1460,6 +1562,7 @@ export default function ManageBookingPage() {
                         value={rescheduleDate}
                         minDate={today}
                         maxDate={maximumDate}
+                        openDates={openDates}
                         disabled={loadingAvailability}
                         onChange={date =>
                           void loadAvailability(date)
@@ -1558,6 +1661,27 @@ export default function ManageBookingPage() {
                       {loadingAvailability && <LoadingSpinner />}
                       {copy.confirmNewTime}
                     </button>
+                  </div>
+                  </div>
+                  <aside className="mt-8 hidden rounded-[1.5rem] border border-(--inverse)/10 bg-white/80 p-6 shadow-[0_18px_50px_rgba(57,47,41,0.06)] lg:sticky lg:top-[120px] lg:mt-0 lg:block lg:self-start">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-(--p-8b725f)">
+                      {copy.summaryEyebrow}
+                    </p>
+                    <p className="mt-3 font-serif text-2xl text-(--heading)">
+                      {booking.serviceName}
+                    </p>
+                    <p className="mt-2 text-sm text-(--ink-muted)">
+                      {booking.professionalName}
+                    </p>
+                    <p className="mt-2 text-sm text-(--ink-muted)">
+                      {formatDateTime(booking.startAt)}
+                    </p>
+                    {selectedSlot ? (
+                      <p className="mt-4 text-sm font-medium text-(--heading)">
+                        {formatTime(selectedSlot.startTime)}
+                      </p>
+                    ) : null}
+                  </aside>
                   </div>
                 </div>
               )}

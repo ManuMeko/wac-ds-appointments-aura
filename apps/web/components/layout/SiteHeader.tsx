@@ -4,6 +4,7 @@
 
 import { useState, useSyncExternalStore } from "react";
 
+import { SlotCount } from "@/components/home/SlotCount";
 import { business } from "@/config/business";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
 
@@ -208,6 +209,7 @@ export function SiteHeader() {
             DESKTOP CTA
         ====================================================== */}
         <div className="hidden items-center gap-3 sm:flex">
+          <SlotCount onVideo={onVideo} />
           <a
             href={PUBLIC_BOOKING_HREF}
             className="group inline-flex h-11 items-center justify-center gap-2 rounded-full bg-(--button-bg) px-6 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--button-text) shadow-[0_8px_24px_rgba(44,38,34,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4b3d34) hover:shadow-[0_12px_30px_rgba(44,38,34,0.20)]"
@@ -274,6 +276,9 @@ export function SiteHeader() {
             ))}
           </nav>
 
+          <div className="mt-6">
+            <SlotCount />
+          </div>
           <a
             href={PUBLIC_BOOKING_HREF}
             onClick={closeMobileMenu}

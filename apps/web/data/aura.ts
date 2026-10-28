@@ -235,8 +235,8 @@ export const auraServicesIntro = {
   featuredLabel: "Destacado",
 
   cta: {
-    label: "Consultar todos los tratamientos",
-    href: "#contacto",
+    label: "Reservar un tratamiento",
+    href: "/reservar",
   },
 } as const;
 
@@ -251,6 +251,7 @@ export const auraServices = [
     price: "49 €",
     category: "Facial",
     featured: true,
+    bookingSlug: "tratamiento-facial",
   },
   {
     id: "deep-cleansing",
@@ -262,6 +263,7 @@ export const auraServices = [
     price: "65 €",
     category: "Facial",
     featured: true,
+    bookingSlug: "limpieza-facial",
   },
   {
     id: "relaxing-massage",
@@ -273,6 +275,7 @@ export const auraServices = [
     price: "55 €",
     category: "Bienestar",
     featured: true,
+    bookingSlug: "masaje",
   },
   {
     id: "premium-manicure",
@@ -848,6 +851,27 @@ export const auraConfig: DemoConfig = {
   socialLinks: auraSocialLinks,
 
   legalLinks: auraLegalLinks,
+
+  ownerPanel: {
+    eyebrow: "Tu negocio",
+    title: "Tu negocio, bajo control.",
+    description:
+      "La agenda del día, los clientes y los servicios viven en el mismo panel. Las capturas son la pantalla real de Aura Studio.",
+    shots: [
+      {
+        src: "/images/aura/panel-dashboard.webp",
+        label: "Dashboard",
+        caption: "Resumen del día: citas, clientes y servicios.",
+        alt: "Panel de Aura Studio en la pantalla de inicio, con el resumen del día.",
+      },
+      {
+        src: "/images/aura/panel-agenda.webp",
+        label: "Agenda",
+        caption: "Calendario de citas del negocio.",
+        alt: "Panel de Aura Studio en la agenda, con el calendario de citas.",
+      },
+    ],
+  },
 
   footer: auraFooter,
 };

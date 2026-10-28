@@ -37,6 +37,22 @@ export type Service = {
   category: string;
   featured: boolean;
   icon?: TradeIconName;
+  /** Slug del servicio en el seed. Sin este campo la fila abre /reservar en el paso 1. */
+  bookingSlug?: string;
+};
+
+export type OwnerPanelShot = {
+  src: string;
+  label: string;
+  caption: string;
+  alt: string;
+};
+
+export type OwnerPanelCopy = {
+  eyebrow: string;
+  title: string;
+  description: string;
+  shots: readonly OwnerPanelShot[];
 };
 
 export type Professional = {
@@ -476,6 +492,7 @@ export type DemoConfig = {
   };
   socialLinks: readonly SocialLink[];
   legalLinks: readonly LegalLink[];
+  ownerPanel: OwnerPanelCopy;
   footer: {
     copyright: string;
     credit: string;

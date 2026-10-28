@@ -5,6 +5,7 @@ import {
   type FormEvent,
   type ReactNode,
   type RefObject,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -164,6 +165,7 @@ type CalendarDatePickerProps = {
   minDate: string;
   maxDate: string;
   disabled?: boolean;
+  openDates?: ReadonlySet<string>;
   onChange: (date: string) => void;
 };
 
@@ -244,6 +246,12 @@ function getTodayLocalDate(): string {
   return dateToLocalIso(
     new Date()
   );
+}
+
+function addDaysIso(value: string, days: number): string {
+  const date = parseLocalDate(value);
+  date.setDate(date.getDate() + days);
+  return dateToLocalIso(date);
 }
 
 function getMaximumDate(): string {
@@ -641,6 +649,7 @@ function CalendarDatePicker({
   minDate,
   maxDate,
   disabled = false,
+  openDates,
   onChange,
 }: CalendarDatePickerProps) {
   const tallerCalendar =
@@ -906,6 +915,8 @@ function CalendarDatePicker({
               isPast ||
               day.date > maxDate;
 
+            const hasOpenings = openDates?.has(day.date) === true;
+
             return (
               <button
                 key={
@@ -960,13 +971,25 @@ function CalendarDatePicker({
                   day.dayNumber
                 }
 
+                {hasOpenings && !isSelected ? (
+                  <span
+                    aria-hidden="true"
+                    className={
+                      tallerCalendar
+                        ? "absolute bottom-[5px] h-1 w-1 rounded-full bg-[#c2410c]"
+                        : "absolute bottom-[5px] h-1 w-1 rounded-full bg-(--accent)"
+                    }
+                  />
+                ) : null}
+
                 {isToday &&
-                  !isSelected && (
+                  !isSelected &&
+                  !hasOpenings && (
                     <span
                       aria-hidden="true"
                       className={
                         tallerCalendar
-                          ? "absolute bottom-[5px] h-1 w-1 rounded-full bg-[#c2410c]"
+                          ? "absolute bottom-[5px] h-1 w-1 rounded-full bg-[#a8a29e]"
                           : "absolute bottom-[5px] h-1 w-1 rounded-full bg-(--p-92725d)"
                       }
                     />
@@ -1642,6 +1665,10 @@ export default function PublicBookingPage() {
       AvailabilitySlot | null
     >(null);
 
+  const [openDates, setOpenDates] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  );
+
   const [
     customerForm,
     setCustomerForm,
@@ -1677,6 +1704,10 @@ export default function PublicBookingPage() {
     setLoadingServices,
   ] =
     useState(true);
+
+  const selectServiceRef = useRef<
+    (service: PublicCatalogService) => Promise<void>
+  >(async () => {});
 
   const [
     loadingProfessionals,
@@ -1766,13 +1797,19 @@ export default function PublicBookingPage() {
             (await response.json()) as PublicCatalogService[];
 
           if (!cancelled) {
-            setServices(
-              Array.isArray(
-                payload
-              )
-                ? payload
-                : []
-            );
+            const list = Array.isArray(payload) ? payload : [];
+            setServices(list);
+
+            const slug = new URLSearchParams(window.location.search)
+              .get("servicio")
+              ?.trim();
+            const match = slug
+              ? list.find((service) => service.slug === slug)
+              : undefined;
+
+            if (match) {
+              await selectServiceRef.current(match);
+            }
           }
         } catch (cause) {
           if (!cancelled) {
@@ -1805,7 +1842,8 @@ export default function PublicBookingPage() {
      LOAD PROFESSIONALS
   ======================================================== */
 
-  async function selectService(
+  const selectService = useCallback(
+    async function selectService(
     service:
       PublicCatalogService
   ) {
@@ -1828,6 +1866,8 @@ export default function PublicBookingPage() {
     setAvailability(
       null
     );
+
+    setOpenDates(new Set());
 
     setProfessionals(
       []
@@ -1892,7 +1932,68 @@ export default function PublicBookingPage() {
         false
       );
     }
-  }
+  },
+    []
+  );
+
+  useEffect(() => {
+    selectServiceRef.current = selectService;
+  }, [selectService]);
+
+  useEffect(() => {
+    const serviceId = selectedService?.id;
+    const professionalId = selectedProfessional?.id;
+
+    if (!serviceId || !professionalId) {
+      return;
+    }
+
+    const controller = new AbortController();
+    const start = getTodayLocalDate();
+
+    void (async () => {
+      const open = new Set<string>();
+
+      await Promise.all(
+        Array.from({ length: 7 }, (_, index) => addDaysIso(start, index)).map(
+          async (date) => {
+            try {
+              const params = new URLSearchParams({
+                professionalId: String(professionalId),
+                serviceId: String(serviceId),
+                date,
+              });
+              const response = await fetch(
+                `${API_BASE_URL}/api/v1/public/availability-slots?${params.toString()}`,
+                {
+                  method: "GET",
+                  headers: { Accept: "application/json" },
+                  cache: "no-store",
+                  signal: controller.signal,
+                },
+              );
+
+              if (!response.ok) return;
+
+              const payload = (await response.json()) as DailyAvailabilityResponse;
+
+              if (payload.totalSlots > 0) {
+                open.add(date);
+              }
+            } catch {
+              // Un día sin respuesta no se marca.
+            }
+          },
+        ),
+      );
+
+      if (!controller.signal.aborted) {
+        setOpenDates(open);
+      }
+    })();
+
+    return () => controller.abort();
+  }, [selectedProfessional?.id, selectedService?.id]);
 
   /* =======================================================
      SELECT PROFESSIONAL
@@ -1917,6 +2018,8 @@ export default function PublicBookingPage() {
     setAvailability(
       null
     );
+
+    setOpenDates(new Set());
 
     setError(
       null
@@ -2404,6 +2507,32 @@ export default function PublicBookingPage() {
     }, 2000);
   }
 
+  const sideSummary = selectedService ? (
+    <aside className="booking-summary-scroll mt-8 hidden lg:sticky lg:top-[120px] lg:mt-0 lg:block lg:max-h-[calc(100dvh-140px)] lg:self-start lg:overflow-y-auto">
+      <div className="rounded-[1.5rem] border border-(--inverse)/10 bg-white/80 p-6 shadow-[0_18px_50px_rgba(57,47,41,0.06)]">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-(--p-8b725f)">
+          {copy.summaryEyebrow}
+        </p>
+        <p className="mt-3 font-serif text-2xl text-(--heading)">{selectedService.name}</p>
+        <p className="mt-2 text-sm text-(--ink-muted)">
+          {selectedService.durationMinutes} {copy.minutes}
+          {" · "}
+          {formatMoney(Number(selectedService.price), selectedService.currency)}
+        </p>
+        {selectedProfessional ? (
+          <p className="mt-4 text-sm font-medium text-(--heading)">
+            {selectedProfessional.displayName}
+          </p>
+        ) : null}
+        {selectedDate && selectedSlot ? (
+          <p className="mt-2 text-sm text-(--ink-muted)">
+            {formatSummaryDay(selectedDate)} · {formatTime(selectedSlot.startTime)}
+          </p>
+        ) : null}
+      </div>
+    </aside>
+  ) : null;
+
   return (
     <div className="min-h-screen bg-(--canvas) text-(--p-2d2723)">
       <SiteHeader />
@@ -2477,6 +2606,27 @@ export default function PublicBookingPage() {
                         }
                         className="flex flex-1 items-center"
                       >
+                        {completed ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const next = stepOrder[index];
+                              if (!next) return;
+                              setStep(next);
+                              setError(null);
+                            }}
+                            className="flex items-center gap-3 rounded-full text-left transition hover:opacity-80 motion-reduce:transition-none"
+                          >
+                            <StepNumber
+                              number={index + 1}
+                              active={active}
+                              completed={completed}
+                            />
+                            <span className="text-xs font-semibold uppercase tracking-[0.13em] text-(--p-39302a)">
+                              {label}
+                            </span>
+                          </button>
+                        ) : (
                         <div className="flex items-center gap-3">
                           <StepNumber
                             number={
@@ -2504,6 +2654,7 @@ export default function PublicBookingPage() {
                             }
                           </span>
                         </div>
+                        )}
 
                         {index <
                           3 && (
@@ -2540,7 +2691,7 @@ export default function PublicBookingPage() {
 
           {step ===
             "service" && (
-            <div>
+            <div className="booking-step-in">
               <StepHeading
                 taller={taller}
                 index={0}
@@ -2681,7 +2832,8 @@ export default function PublicBookingPage() {
           {step ===
             "professional" &&
             selectedService && (
-              <div>
+              <div className="booking-step-in lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start lg:gap-8">
+              <div className="min-w-0">
                 {!taller && (
                 <button
                   type="button"
@@ -2785,6 +2937,8 @@ export default function PublicBookingPage() {
                   </div>
                 )}
               </div>
+              {sideSummary}
+              </div>
             )}
 
           {/* =================================================
@@ -2795,7 +2949,8 @@ export default function PublicBookingPage() {
             "datetime" &&
             selectedService &&
             selectedProfessional && (
-              <div>
+              <div className="booking-step-in lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start lg:gap-8">
+              <div className="min-w-0">
                 {!taller && (
                 <button
                   type="button"
@@ -2864,6 +3019,7 @@ export default function PublicBookingPage() {
                       maxDate={
                         maximumDate
                       }
+                      openDates={openDates}
                       disabled={
                         loadingAvailability
                       }
@@ -3033,6 +3189,8 @@ export default function PublicBookingPage() {
                   </button>
                 </div>
               </div>
+              {sideSummary}
+              </div>
             )}
 
           {/* =================================================
@@ -3045,7 +3203,7 @@ export default function PublicBookingPage() {
             selectedProfessional &&
             selectedSlot &&
             availability && (
-              <div>
+              <div className="booking-step-in">
                 {!taller && (
                 <button
                   type="button"
@@ -3064,8 +3222,8 @@ export default function PublicBookingPage() {
                 </button>
                 )}
 
-                <div className="grid min-w-0 grid-cols-1 items-start gap-8 md:grid-cols-[minmax(0,1fr)_360px] md:gap-10">
-                  <div className="order-2 min-w-0 md:order-1">
+                <div className="grid min-w-0 grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10">
+                  <div className="order-2 min-w-0 lg:order-1">
                     <StepHeading
                       taller={taller}
                       index={3}
@@ -3471,10 +3629,10 @@ export default function PublicBookingPage() {
 
                   {/* SUMMARY */}
 
-                  <aside className="booking-summary-scroll order-1 min-w-0 md:sticky md:top-[120px] md:order-2 md:max-h-[calc(100dvh-140px)] md:self-start md:overflow-y-auto">
+                  <aside className="booking-summary-scroll order-1 min-w-0 lg:sticky lg:top-[120px] lg:order-2 lg:max-h-[calc(100dvh-140px)] lg:self-start lg:overflow-y-auto">
                     <button
                       type="button"
-                      className="mb-3 flex w-full items-center justify-between rounded-2xl border border-(--p-3b332e)/10 bg-white/80 px-4 py-3 text-(--heading) md:hidden"
+                      className="mb-3 flex w-full items-center justify-between rounded-2xl border border-(--p-3b332e)/10 bg-white/80 px-4 py-3 text-(--heading) lg:hidden"
                       style={{ fontSize: "14px", fontWeight: 600 }}
                       aria-expanded={summaryOpen}
                       aria-controls="booking-summary-panel"
@@ -3493,7 +3651,7 @@ export default function PublicBookingPage() {
                         <path d="m6 9 6 6 6-6" />
                       </svg>
                     </button>
-                    <div id="booking-summary-panel" className={summaryOpen ? "block" : "hidden md:block"}>
+                    <div id="booking-summary-panel" className={summaryOpen ? "block" : "hidden lg:block"}>
                     {taller ? (
                       <div className="booking-summary">
                         {sequence ? (
@@ -3667,7 +3825,7 @@ export default function PublicBookingPage() {
           {step ===
             "success" &&
             bookingResult && (
-              <div className={taller && sequence ? "booking-success-in mx-auto max-w-[880px]" : "mx-auto max-w-[760px]"}>
+              <div className={taller && sequence ? "booking-success-in mx-auto max-w-[880px]" : "booking-step-in mx-auto max-w-[760px]"}>
                 {taller && sequence && copy.successVisualTitle ? (
                   <div className="mb-6 overflow-hidden rounded-[1.75rem] bg-[#1c1917]">
                     <div className="relative h-64 sm:h-72">
@@ -3685,128 +3843,17 @@ export default function PublicBookingPage() {
                     </div>
                   </div>
                 ) : null}
-                <div className={taller && sequence ? "rounded-[2rem] border border-(--inverse)/10 border-t-2 border-t-[#f97316] bg-white p-7 text-left shadow-[0_28px_80px_rgba(28,25,23,0.12)] sm:p-10" : "rounded-[2rem] border border-(--p-3b332e)/10 bg-white/60 p-7 text-center shadow-[0_24px_70px_rgba(56,46,40,0.08)] sm:p-10"}>
-                  {taller ? (
-                    <TallerConfirmation
-                      booking={bookingResult}
-                      emailed={customerForm.email.trim().length > 0}
-                      managementHref={managementHref}
-                      copied={referenceCopied}
-                      onCopy={() => {
-                        void copyAppointmentReference();
-                      }}
-                      onReset={resetBooking}
-                    />
-                  ) : (
-                  <>
-                  <div className={taller && sequence ? "flex h-16 w-16 items-center justify-center rounded-full bg-[#1c1917] text-2xl text-[#f97316]" : "mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-(--p-ded2c6) text-2xl text-(--p-4f4036)"}>
-                    ✓
-                  </div>
-
-                  <p className="mt-7 text-[10px] font-semibold uppercase tracking-[0.22em] text-(--p-987e6c)">
-                    {copy.successEyebrow}
-                  </p>
-
-                  <h2 className="mt-3 font-serif text-4xl text-(--p-302924) sm:text-5xl">
-                    {copy.successTitle}
-                  </h2>
-
-                  <p className="mx-auto mt-5 max-w-[560px] text-sm leading-7 text-(--p-756960)">
-                    {bookingResult.message || copy.successFallback}
-                  </p>
-
-                  <div className="mt-8 rounded-[1.5rem] bg-(--surface-muted) p-6 text-left">
-                    <div className="grid gap-5 sm:grid-cols-2">
-                      <div>
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-(--p-917b6b)">
-                          {copy.successService}
-                        </p>
-
-                        <p className="mt-1 font-medium text-(--p-3f352f)">
-                          {
-                            bookingResult.serviceName
-                          }
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-(--p-917b6b)">
-                          {copy.successProfessional}
-                        </p>
-
-                        <p className="mt-1 font-medium text-(--p-3f352f)">
-                          {
-                            bookingResult.professionalName
-                          }
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-(--p-917b6b)">
-                          {copy.successDateTime}
-                        </p>
-
-                        <p className="mt-1 font-medium text-(--p-3f352f)">
-                          {formatBookingDateTime(
-                            bookingResult.startAt
-                          )}
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-(--p-917b6b)">
-                          {copy.successStatus}
-                        </p>
-
-                        <p className="mt-1 font-medium text-(--p-3f352f)">
-                          {getStatusLabel(
-                            bookingResult.status
-                          )}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="mt-5 border-t border-(--p-3b332e)/10 pt-5">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-(--p-917b6b)">
-                        {copy.successReference}
-                      </p>
-
-                      <p className="mt-1 font-medium text-(--p-3f352f)">
-                        {copy.appointmentRef}{" "}
-                        {bookingResult.appointmentId}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
-                    <Link
-                      href={managementHref}
-                      className="inline-flex min-h-13 items-center justify-center rounded-full bg-(--p-302924) px-7 py-3 text-center text-xs font-semibold uppercase tracking-[0.15em] !text-(--p-fffaf5) no-underline shadow-[0_10px_26px_rgba(48,41,36,0.16)] transition hover:-translate-y-0.5 hover:bg-(--p-4b3d34) hover:!text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--accent)"
-                    >
-                      <span style={{ color: "var(--p-fffaf5)", WebkitTextFillColor: "var(--p-fffaf5)" }}>
-                        {copy.manageCta}
-                      </span>
-                    </Link>
-
-                    <button
-                      type="button"
-                      onClick={
-                        resetBooking
-                      }
-                      className="inline-flex h-13 items-center justify-center rounded-full border border-(--p-3b332e)/15 bg-white px-7 text-xs font-semibold uppercase tracking-[0.15em] text-(--p-403630) transition hover:bg-(--p-f5eee8)"
-                    >
-                      {copy.bookAnother}
-                    </button>
-
-                    <Link
-                      href="/"
-                      className="inline-flex h-13 items-center justify-center rounded-full px-7 text-xs font-semibold uppercase tracking-[0.15em] text-(--p-6f6259) transition hover:bg-(--surface-muted)/70 hover:text-(--p-302924)"
-                    >
-                      {copy.backPrefix} {business.brand.shortName}
-                    </Link>
-                  </div>
-                  </>
-                  )}
+                <div className={taller && sequence ? "rounded-[2rem] border border-(--inverse)/10 border-t-2 border-t-[#f97316] bg-white p-7 text-left shadow-[0_28px_80px_rgba(28,25,23,0.12)] sm:p-10" : "rounded-[2rem] border border-(--p-3b332e)/10 bg-white/80 p-7 text-left shadow-[0_24px_70px_rgba(56,46,40,0.08)] sm:p-10"}>
+                  <TallerConfirmation
+                    booking={bookingResult}
+                    emailed={customerForm.email.trim().length > 0}
+                    managementHref={managementHref}
+                    copied={referenceCopied}
+                    onCopy={() => {
+                      void copyAppointmentReference();
+                    }}
+                    onReset={resetBooking}
+                  />
                 </div>
               </div>
             )}
