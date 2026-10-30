@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 
 import {
   type FrameStatus,
@@ -117,30 +117,57 @@ function pinStage(
   stage.style.bottom = "0px";
 }
 
-function neutralFill(section: HTMLElement, preferDark: boolean) {
-  const token = preferDark ? "--inverse" : "--hero-bg";
+function neutralFill(
+  section: HTMLElement,
+  preferDark: boolean,
+  tokenOverride?: string,
+) {
+  const token = tokenOverride ?? (preferDark ? "--inverse" : "--hero-bg");
   const value = getComputedStyle(section).getPropertyValue(token).trim();
   return value || (preferDark ? "#1c1917" : "#d6d3d1");
 }
 
+type ScrollSkin = "aura" | "taller";
+
+export type ScrollSequenceHandle = {
+  setProgress: (progress: number) => void;
+};
+
 type ScrollSequenceProps = {
   sequence: ScrollSequenceConfig;
   lead?: ScrollSequenceLead;
+  /** Aura usa cristal crema. Sin este prop, el bloque sigue el de taller. */
+  skin?: ScrollSkin;
+  /**
+   * Solo el lienzo, sin sección, pin ni textos.
+   * El padre lleva el scroll y llama a setProgress.
+   * Con load en false no se pide ningún fotograma.
+   */
+  backdrop?: boolean;
+  load?: boolean;
+  filmRef?: RefObject<ScrollSequenceHandle | null>;
 };
 
 function OverlayCopy({
   overlay,
   onDark,
+  skin = "taller",
 }: {
   overlay: ScrollSequenceOverlay;
   onDark: boolean;
+  skin?: ScrollSkin;
 }) {
   const Heading = overlay.level === "h1" ? "h1" : "h2";
   const end = overlay.align === "end";
-  const titleClass = onDark
+  const aura = skin === "aura";
+  const titleClass = aura
+    ? "max-w-[14ch] font-serif text-[clamp(2.05rem,5.4vh,4.35rem)] leading-[0.9] tracking-[-0.035em] text-(--ink)"
+    : onDark
     ? "max-w-[18ch] font-serif text-[clamp(1.7rem,4.8vh,3.35rem)] leading-[0.95] tracking-[-0.04em] text-white"
     : "max-w-[18ch] font-serif text-4xl leading-[1.02] tracking-[-0.03em] text-(--ink) sm:text-5xl";
-  const bodyClass = onDark
+  const bodyClass = aura
+    ? "mt-4 max-w-[28rem] text-[0.98rem] font-light leading-7 text-(--ink)"
+    : onDark
     ? "mt-4 max-w-[28rem] text-sm leading-6 text-white/88 sm:text-base sm:leading-7"
     : "mt-4 max-w-[34rem] text-base leading-7 text-(--ink-muted) sm:text-lg";
   const secondaryClass = onDark
@@ -154,7 +181,14 @@ function OverlayCopy({
           onDark ? "mb-5 h-px w-12 bg-(--accent-line)" : "mb-5 h-px w-12 bg-(--accent)"
         }
       />
-      <Heading className={titleClass}>{overlay.title}</Heading>
+      <Heading className={titleClass}>
+        {overlay.title}
+        {overlay.italic ? (
+          <span className="mt-[0.06em] block font-medium italic tracking-[-0.03em]">
+            {overlay.italic}
+          </span>
+        ) : null}
+      </Heading>
       {overlay.text ? <p className={bodyClass}>{overlay.text}</p> : null}
       {overlay.primaryCta || overlay.secondaryCta ? (
         <div
@@ -163,7 +197,8 @@ function OverlayCopy({
           {overlay.primaryCta ? (
             <a
               href={overlay.primaryCta.href}
-              className="group inline-flex h-12 items-center justify-center gap-3 rounded-full bg-(--button-bg) px-7 text-[11px] font-semibold uppercase !text-(--button-text) transition-transform duration-200 hover:-translate-y-0.5"
+              data-magnetic={aura ? "" : undefined}
+              className={`group inline-flex h-12 items-center justify-center gap-3 rounded-full bg-(--button-bg) px-7 text-[11px] font-semibold uppercase !text-(--button-text) transition-transform duration-200 hover:-translate-y-0.5${aura ? " aura-scroll-pill" : ""}`}
             >
               {overlay.primaryCta.label}
               <span className="transition-transform duration-300 group-hover:translate-x-0.5">
@@ -251,7 +286,14 @@ function LeadCopy({
   );
 }
 
-export function ScrollSequence({ sequence, lead }: ScrollSequenceProps) {
+export function ScrollSequence({
+  sequence,
+  lead,
+  skin = "taller",
+  backdrop = false,
+  load = true,
+  filmRef,
+}: ScrollSequenceProps) {
   const reducedMotion = usePrefersReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -269,6 +311,51 @@ export function ScrollSequence({ sequence, lead }: ScrollSequenceProps) {
   const onVideo = Boolean(lead) || overlays.length > 0;
 
   useEffect(() => {
+    if (backdrop) {
+      const paint = () => {
+        const stage = stageRef.current;
+        const canvas = canvasRef.current;
+        if (!stage || !canvas) return;
+
+        paintCanvasFrame(
+          canvas,
+          imagesRef.current,
+          statusRef.current,
+          reducedMotion ? 0 : progressRef.current,
+          sequence.frameCount,
+          neutralFill(stage, false, "--canvas"),
+        );
+      };
+
+      paintRef.current = paint;
+      paint();
+
+      const stage = stageRef.current;
+      const observer = new ResizeObserver(() => {
+        paint();
+      });
+      if (stage) observer.observe(stage);
+
+      let pixelRatioQuery = window.matchMedia(
+        `(resolution: ${window.devicePixelRatio || 1}dppx)`,
+      );
+      const onPixelRatio = () => {
+        pixelRatioQuery.removeEventListener("change", onPixelRatio);
+        paint();
+        pixelRatioQuery = window.matchMedia(
+          `(resolution: ${window.devicePixelRatio || 1}dppx)`,
+        );
+        pixelRatioQuery.addEventListener("change", onPixelRatio);
+      };
+      pixelRatioQuery.addEventListener("change", onPixelRatio);
+
+      return () => {
+        paintRef.current = () => {};
+        observer.disconnect();
+        pixelRatioQuery.removeEventListener("change", onPixelRatio);
+      };
+    }
+
     const paint = () => {
       const section = sectionRef.current;
       const stage = stageRef.current;
@@ -372,13 +459,35 @@ export function ScrollSequence({ sequence, lead }: ScrollSequenceProps) {
       window.removeEventListener("resize", onScroll);
       pixelRatioQuery.removeEventListener("change", onPixelRatio);
     };
-  }, [holdVh, lead, overlays, reducedMotion, sequence.frameCount]);
+  }, [backdrop, holdVh, lead, overlays, reducedMotion, sequence.frameCount]);
 
   useEffect(() => {
     paintRef.current();
   });
 
   useEffect(() => {
+    if (!backdrop || !filmRef) return;
+
+    const handle: ScrollSequenceHandle = {
+      setProgress(progress: number) {
+        progressRef.current = Math.min(1, Math.max(0, progress));
+        paintRef.current();
+      },
+    };
+    filmRef.current = handle;
+
+    return () => {
+      if (filmRef.current === handle) filmRef.current = null;
+    };
+  }, [backdrop, filmRef]);
+
+  useEffect(() => {
+    if (backdrop && !load) {
+      imagesRef.current = [];
+      statusRef.current = [];
+      return;
+    }
+
     const count = Math.max(
       0,
       Math.floor(reducedMotion ? 1 : sequence.frameCount),
@@ -397,14 +506,32 @@ export function ScrollSequence({ sequence, lead }: ScrollSequenceProps) {
       fileExtension: sequence.fileExtension,
       images,
       statuses,
+      eagerFirst: !backdrop,
       onUpdate: () => paintRef.current(),
     });
   }, [
+    backdrop,
+    load,
     reducedMotion,
     sequence.basePath,
     sequence.fileExtension,
     sequence.frameCount,
   ]);
+
+  if (backdrop) {
+    return (
+      <div
+        ref={stageRef}
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-(--canvas)"
+      >
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 block h-full w-full"
+        />
+      </div>
+    );
+  }
 
   const stageClass = onVideo
     ? reducedMotion
@@ -438,7 +565,11 @@ export function ScrollSequence({ sequence, lead }: ScrollSequenceProps) {
         {onVideo ? (
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-28 bg-gradient-to-b from-black/60 to-transparent"
+            className={
+              skin === "aura"
+                ? "pointer-events-none absolute inset-x-0 top-0 z-[1] h-32 bg-gradient-to-b from-[#29231f]/50 to-transparent"
+                : "pointer-events-none absolute inset-x-0 top-0 z-[1] h-28 bg-gradient-to-b from-black/60 to-transparent"
+            }
           />
         ) : null}
 
@@ -472,15 +603,27 @@ export function ScrollSequence({ sequence, lead }: ScrollSequenceProps) {
                     opacity: overlayOpacity(0, overlay.from, overlay.to),
                   }}
                 >
-                  <div className="scroll-overlay-card m-5 max-w-xl backdrop-blur-[12px] sm:m-8 lg:m-12">
-                    <OverlayCopy overlay={overlay} onDark />
+                  <div
+                    className={`m-5 max-w-xl backdrop-blur-[12px] sm:m-8 lg:m-12 ${
+                      skin === "aura" ? "aura-scroll-card" : "scroll-overlay-card"
+                    }`}
+                  >
+                    <OverlayCopy
+                      overlay={overlay}
+                      onDark={skin !== "aura"}
+                      skin={skin}
+                    />
                   </div>
                 </div>
               );
             })}
 
         {reducedMotion || !onVideo ? null : (
-          <div data-scroll-hint className="scroll-hint" aria-hidden="true">
+          <div
+            data-scroll-hint
+            className={skin === "aura" ? "scroll-hint aura-scroll-hint" : "scroll-hint"}
+            aria-hidden="true"
+          >
             <span>Desliza</span>
             <span className="scroll-hint-line" />
           </div>
@@ -495,7 +638,7 @@ export function ScrollSequence({ sequence, lead }: ScrollSequenceProps) {
               key={`${overlay.from}-${overlay.to}-${overlay.title}`}
               className="max-w-[720px]"
             >
-              <OverlayCopy overlay={overlay} onDark={false} />
+              <OverlayCopy overlay={overlay} onDark={false} skin={skin} />
             </div>
           ))}
         </div>

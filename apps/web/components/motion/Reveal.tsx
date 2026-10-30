@@ -4,7 +4,7 @@ import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 
 import { business } from "@/config/business";
 
-type RevealVariant = "fade-up" | "fade-left" | "fade-right" | "scale-in" | "draw";
+type RevealVariant = "fade-up" | "fade-left" | "fade-right" | "scale-in" | "draw" | "zoom";
 
 export function Reveal({
   children = null,
@@ -22,6 +22,7 @@ export function Reveal({
   useEffect(() => {
     const node = ref.current;
     if (!node) return;
+    if (business.theme !== "taller" && business.theme !== "aura") return;
 
     const reveal = () => node.classList.add("is-visible");
 
@@ -42,6 +43,19 @@ export function Reveal({
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
+
+  if (business.theme === "aura") {
+    return (
+      <div
+        ref={ref}
+        data-reveal={variant}
+        className={`aura-reveal aura-reveal-${variant} ${className}`.trim()}
+        style={{ "--reveal-delay": `${delay}ms` } as CSSProperties}
+      >
+        {children}
+      </div>
+    );
+  }
 
   if (business.theme !== "taller") return children;
 

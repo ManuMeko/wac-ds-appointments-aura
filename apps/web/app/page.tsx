@@ -2,6 +2,8 @@
 
 import type { Metadata } from "next";
 
+import { AuraAtmosphere } from "@/components/home/AuraAtmosphere";
+import { AuraOpening } from "@/components/home/AuraOpening";
 import { ContactSection } from "@/components/home/ContactSection";
 import { ExperienceSection } from "@/components/home/ExperienceSection";
 import { HeroSection } from "@/components/home/HeroSection";
@@ -12,11 +14,13 @@ import { ReviewsSection } from "@/components/home/ReviewsSection";
 import { ScrollSequence } from "@/components/home/ScrollSequence";
 import { ServicesSection } from "@/components/home/ServicesSection";
 import { StatBand } from "@/components/home/StatBand";
+import { StudioPin } from "@/components/home/StudioPin";
 import { TeamSection } from "@/components/home/TeamSection";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { business } from "@/config/business";
+import { scrollSequenceReady } from "@/lib/scrollFrames";
 
 export const metadata: Metadata = {
   title: { absolute: business.seo.defaultTitle },
@@ -55,22 +59,37 @@ export const metadata: Metadata = {
 ========================================================= */
 
 export default function Home() {
+  const aura = business.theme === "aura";
   const sequence = business.scrollSequence;
-  const firstFrame = sequence
-    ? `${sequence.basePath.replace(/\/$/, "")}/frame_0001.${sequence.fileExtension}`
-    : null;
+  const framesReady = aura ? scrollSequenceReady(sequence) : Boolean(sequence);
+  const studioFramesReady = aura
+    ? scrollSequenceReady(business.studioPin?.sequence)
+    : false;
+  const firstFrame =
+    framesReady && sequence
+      ? `${sequence.basePath.replace(/\/$/, "")}/frame_0001.${sequence.fileExtension}`
+      : null;
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-(--canvas) text-(--inverse)">
+    <div
+      className={`min-h-screen overflow-x-hidden bg-(--canvas) text-(--inverse)${aura ? " aura-home" : ""}`}
+    >
       <JsonLd />
       {firstFrame ? (
         <link rel="preload" as="image" href={firstFrame} fetchPriority="high" />
       ) : null}
-      <SiteHeader />
+      <SiteHeader overSequence={aura && framesReady} />
 
       <main>
-        {sequence ? <ScrollSequence sequence={sequence} /> : <HeroSection />}
+        {aura ? (
+          <AuraOpening ready={framesReady} sequence={sequence} />
+        ) : sequence ? (
+          <ScrollSequence sequence={sequence} />
+        ) : (
+          <HeroSection />
+        )}
         <PhilosophySection />
+        {aura ? <StudioPin framesReady={studioFramesReady} /> : null}
         <ServicesSection />
         <LiveSlots />
         <ExperienceSection />
@@ -82,6 +101,7 @@ export default function Home() {
       </main>
 
       <SiteFooter />
+      {aura ? <AuraAtmosphere /> : null}
     </div>
   );
 }

@@ -16,7 +16,7 @@ export function HeroSection() {
   return (
     <section
       id="inicio"
-      className="relative isolate overflow-hidden"
+      className={`relative isolate overflow-hidden${business.theme === "aura" ? " pt-[76px]" : ""}`}
     >
       {/* =====================================================
           BACKGROUND
@@ -62,6 +62,7 @@ export function HeroSection() {
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <a
                 href={PUBLIC_BOOKING_HREF}
+                data-magnetic={business.theme === "aura" ? "" : undefined}
                 className="group inline-flex h-14 items-center justify-center gap-3 rounded-full bg-(--p-2b2521) px-8 text-[11px] font-semibold uppercase tracking-[0.2em] !text-(--on-inverse) shadow-[0_12px_30px_rgba(43,37,33,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4c3f36) hover:shadow-[0_16px_36px_rgba(43,37,33,0.20)]"
               >
                 {business.hero.primaryCta.label}

@@ -1,7 +1,7 @@
 // apps/web/app/layout.tsx
 
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Geist } from "next/font/google";
+import { Cormorant_Garamond, Geist, Outfit } from "next/font/google";
 
 import { business } from "@/config/business";
 import { getSiteUrl } from "@/lib/site";
@@ -46,6 +46,16 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
   weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
+});
+
+/**
+ * Sans fina de la home de Aura. Motorline sigue en Geist.
+ */
+const outfit = Outfit({
+  variable: "--font-aura-sans",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["300", "400", "500"],
 });
 
 /* =========================================================
@@ -262,7 +272,7 @@ export default function RootLayout({
     <html
       lang={business.seo.language}
       data-theme={business.theme}
-      className={`${geistSans.variable} ${cormorant.variable}`}
+      className={`${geistSans.variable} ${cormorant.variable} ${outfit.variable}`}
       suppressHydrationWarning
     >
       <body className="min-h-screen bg-background font-sans text-foreground antialiased">

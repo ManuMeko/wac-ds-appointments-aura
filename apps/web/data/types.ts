@@ -372,11 +372,29 @@ export type ScrollSequenceOverlay = {
   from: number;
   to: number;
   title: string;
+  /** Segunda línea, en itálica. Si no está, el titular es una sola frase. */
+  italic?: string;
   text?: string;
   align?: "start" | "end";
   level?: "h1" | "h2";
   primaryCta?: { label: string; href: string };
   secondaryCta?: { label: string; href: string };
+};
+
+export type StudioPinKey = {
+  id: string;
+  title: string;
+  text: string;
+};
+
+/** Titular fijo y claves que pasan con el scroll. Solo lo usa Aura. */
+export type StudioPin = {
+  eyebrow: string;
+  title: string;
+  italic: string;
+  keys: readonly StudioPinKey[];
+  /** Película de fondo. Sin fotogramas, el bloque enseña un still y la lista. */
+  sequence?: ScrollSequenceConfig;
 };
 
 export type ScrollSequenceConfig = {
@@ -493,6 +511,8 @@ export type DemoConfig = {
   socialLinks: readonly SocialLink[];
   legalLinks: readonly LegalLink[];
   ownerPanel: OwnerPanelCopy;
+  /** Bloque editorial con el titular quieto. Si no se define, no se monta. */
+  studioPin?: StudioPin;
   footer: {
     copyright: string;
     credit: string;

@@ -2,7 +2,10 @@
 
 "use client";
 
+import Image from "next/image";
+
 import { PinAside } from "@/components/home/PinAside";
+import { MaskLines } from "@/components/motion/MaskLines";
 import { Reveal } from "@/components/motion/Reveal";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
 import { TradeIcon } from "@/components/ui/TradeIcon";
@@ -16,6 +19,25 @@ import {
    WAC DS · MODEL 01 · APPOINTMENTS
    Aura Studio · Services Section
 ========================================================= */
+
+const AURA_SERVICE_STILLS: Record<string, { src: string; alt: string }> = {
+  "facial-treatment": {
+    src: "/images/aura/hero-aura-studio.png",
+    alt: "Cabina de tratamiento de Aura Studio",
+  },
+  "deep-cleansing": {
+    src: "/images/aura/experience-aura-studio.png",
+    alt: "Detalle de cosmética y textiles en Aura Studio",
+  },
+  "relaxing-massage": {
+    src: "/images/aura/sequence/frame_0048.webp",
+    alt: "Sesión de bienestar en Aura Studio",
+  },
+  "premium-manicure": {
+    src: "/images/aura/sequence/frame_0072.webp",
+    alt: "Detalle de cuidado en Aura Studio",
+  },
+};
 
 export function ServicesSection() {
   const taller = business.theme === "taller";
@@ -46,8 +68,12 @@ export function ServicesSection() {
       </p>
 
       <Reveal variant="fade-up">
-        <h2 className="mt-5 max-w-[430px] font-serif text-5xl leading-[0.96] tracking-[-0.035em] text-(--ink) sm:text-6xl">
-          {business.servicesIntro.title}
+        <h2 className="aura-display mt-5 max-w-[12ch] font-serif text-5xl leading-[0.96] tracking-[-0.035em] text-(--ink) sm:text-6xl">
+          {taller ? (
+            business.servicesIntro.title
+          ) : (
+            <MaskLines text={business.servicesIntro.title} />
+          )}
         </h2>
       </Reveal>
 
@@ -67,7 +93,7 @@ export function ServicesSection() {
             <div>{intro}</div>
           )}
 
-          <div className={taller ? "min-w-0" : "border-t border-(--p-342d28)/15"}>
+          <div className={taller ? "min-w-0" : "aura-service-grid"}>
             {business.services.map((service, index) => {
               const meta = liveMeta(service.bookingSlug, {
                 duration: service.duration,
@@ -78,54 +104,47 @@ export function ServicesSection() {
                 : "/reservar";
 
               if (!taller) {
+                const still = AURA_SERVICE_STILLS[service.id];
                 return (
-                  <a
-                    key={service.id}
-                    href={bookingHref}
-                    className="group grid gap-5 border-b border-(--p-342d28)/15 py-7 transition-all duration-300 sm:grid-cols-[60px_1fr_auto] sm:items-center"
-                  >
-                    <span className="font-serif text-lg text-(--p-a08a79)">
-                      {service.number}
-                    </span>
-
-                    <div>
-                      <div className="flex flex-wrap items-center gap-3">
-                        {service.icon ? (
-                          <TradeIcon
-                            name={service.icon}
-                            className="h-5 w-5 shrink-0 text-(--accent)"
+                  <Reveal key={service.id} delay={index * 80}>
+                    <a href={bookingHref} className="aura-service group">
+                      <div className="aura-service-media">
+                        {still ? (
+                          <Image
+                            src={still.src}
+                            alt={still.alt}
+                            fill
+                            sizes="(min-width: 1024px) 28vw, (min-width: 768px) 46vw, 100vw"
+                            className="aura-service-photo object-cover"
                           />
                         ) : null}
-                        <h3 className="font-serif text-2xl text-(--p-2f2925) transition-colors duration-300 group-hover:text-(--accent-line)">
+                        <div className="aura-service-veil">
+                          <span className="aura-rule" aria-hidden="true" />
+                          <strong className="mt-4 font-serif text-3xl font-medium tracking-[-0.03em]">
+                            {meta.price}
+                          </strong>
+                          <span className="mt-1 text-[11px] font-medium uppercase tracking-[0.22em]">
+                            {meta.duration}
+                          </span>
+                          <span className="mt-4 text-[10px] font-semibold uppercase tracking-[0.2em]">
+                            Reservar cita
+                          </span>
+                        </div>
+                      </div>
+                      <div className="px-1 pt-5">
+                        <p className="text-[10px] font-medium uppercase tracking-[0.26em] text-(--accent)">
+                          {service.number}
+                          {service.category ? ` · ${service.category}` : ""}
+                        </p>
+                        <h3 className="mt-2 font-serif text-[clamp(1.6rem,2vw,2rem)] leading-none tracking-[-0.03em] text-(--ink)">
                           {service.name}
                         </h3>
-
-                        {service.featured && (
-                          <span className="rounded-full border border-(--accent-line)/20 bg-(--accent-line)/[0.06] px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.14em] text-(--accent-strong)">
-                            {business.servicesIntro.featuredLabel}
-                          </span>
-                        )}
+                        <p className="mt-3 text-sm font-light leading-6 text-(--ink-muted)">
+                          {service.description}
+                        </p>
                       </div>
-
-                      <p className="mt-2 max-w-[620px] text-sm leading-6 text-(--p-756a61)">
-                        {service.description}
-                      </p>
-
-                      <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-(--p-9b897b)">
-                        {service.category}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-6 sm:flex-col sm:items-end sm:gap-1">
-                      <span className="text-sm text-(--p-665a52)">
-                        {meta.duration}
-                      </span>
-
-                      <strong className="font-serif text-xl font-normal text-(--p-302925)">
-                        {meta.price}
-                      </strong>
-                    </div>
-                  </a>
+                    </a>
+                  </Reveal>
                 );
               }
 
@@ -190,7 +209,8 @@ export function ServicesSection() {
             ) : (
               <a
                 href={business.servicesIntro.cta.href}
-                className="group mt-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-(--p-463a32) transition-colors duration-300 hover:text-(--accent-line)"
+                data-magnetic=""
+                className="group col-span-full mt-4 inline-flex h-12 w-fit items-center gap-3 justify-self-start rounded-full bg-(--button-bg) px-7 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--button-text)"
               >
                 {business.servicesIntro.cta.label}
 

@@ -118,6 +118,8 @@ type LoadOptions = {
   onUpdate: () => void;
   stride?: number;
   priorityIndexes?: readonly number[];
+  /** El primer fotograma de la apertura va en alta prioridad. Un fondo diferido no. */
+  eagerFirst?: boolean;
 };
 
 export function loadFrameSequence({
@@ -129,6 +131,7 @@ export function loadFrameSequence({
   onUpdate,
   stride = 1,
   priorityIndexes = [],
+  eagerFirst = true,
 }: LoadOptions) {
   let cancelled = false;
   const count = Math.max(0, Math.floor(frameCount));
@@ -162,7 +165,7 @@ export function loadFrameSequence({
 
       const image = new Image();
       image.decoding = "async";
-      image.fetchPriority = index === 0 ? "high" : "low";
+      image.fetchPriority = index === 0 && eagerFirst ? "high" : "low";
 
       const settle = (status: FrameStatus) => {
         if (!cancelled) {

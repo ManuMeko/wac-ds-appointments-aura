@@ -27,7 +27,7 @@ export function TeamSection() {
             </p>
 
             <Reveal variant="fade-up">
-              <h2 className="mt-5 max-w-[650px] font-serif text-5xl leading-[0.97] tracking-[-0.035em] text-(--p-2d2723) sm:text-6xl">
+              <h2 className="aura-display mt-5 max-w-[14ch] font-serif text-5xl leading-[0.97] tracking-[-0.035em] text-(--p-2d2723) sm:text-6xl">
                 {business.teamIntro.title}
               </h2>
             </Reveal>
@@ -137,12 +137,14 @@ export function TeamSection() {
               </article>
             );
 
-            return taller ? (
-              <Reveal key={professional.id} variant="scale-in" delay={index * 80}>
+            return (
+              <Reveal
+                key={professional.id}
+                variant={taller ? "scale-in" : "zoom"}
+                delay={index * 80}
+              >
                 {card}
               </Reveal>
-            ) : (
-              card
             );
           })}
         </div>

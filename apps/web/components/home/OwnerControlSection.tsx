@@ -24,7 +24,7 @@ export function OwnerControlSection() {
         <p className="text-[10px] font-semibold uppercase tracking-[0.27em] text-(--p-8b725f)">
           {panel.eyebrow}
         </p>
-        <h2 className="mt-5 max-w-[16ch] font-serif text-5xl leading-[0.96] tracking-[-0.035em] text-(--ink) sm:text-6xl">
+        <h2 className="aura-display mt-5 max-w-[14ch] font-serif text-5xl leading-[0.96] tracking-[-0.035em] text-(--ink) sm:text-6xl">
           {panel.title}
         </h2>
         <p className="mt-6 max-w-[38rem] text-sm leading-7 text-(--ink-muted) sm:text-base">

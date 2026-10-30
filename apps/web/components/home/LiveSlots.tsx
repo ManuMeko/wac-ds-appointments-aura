@@ -56,7 +56,7 @@ export function LiveSlots() {
         <p className="text-[10px] font-semibold uppercase tracking-[0.27em] text-(--p-8b725f)">
           Disponibilidad
         </p>
-        <h2 className="mt-4 font-serif text-4xl leading-[0.98] tracking-[-0.03em] text-(--ink) sm:text-5xl">
+        <h2 className="aura-display mt-4 max-w-[12ch] font-serif text-4xl leading-[0.98] tracking-[-0.03em] text-(--ink) sm:text-5xl">
           Próximos huecos
         </h2>
         <p className="mt-4 max-w-[36rem] text-sm leading-7 text-(--ink-muted)">

@@ -1,6 +1,7 @@
 // apps/web/components/home/PhilosophySection.tsx
 
 import { Noise } from "@/components/motion/Noise";
+import { MaskLines } from "@/components/motion/MaskLines";
 import { Reveal } from "@/components/motion/Reveal";
 import { TradeIcon } from "@/components/ui/TradeIcon";
 import { business } from "@/config/business";
@@ -31,13 +32,13 @@ export function PhilosophySection() {
 
         <div>
           <Reveal variant="fade-up">
-            <h2 className="max-w-[840px] font-serif text-4xl leading-[1.05] tracking-[-0.03em] text-(--p-f3ece5) sm:text-5xl lg:text-6xl">
-              {business.philosophy.title}
-
-              <span className="text-(--p-bda08a)">
-                {" "}
-                {business.philosophy.highlightedTitle}
-              </span>
+            <h2 className="aura-display max-w-[16ch] font-serif text-4xl leading-[1.05] tracking-[-0.03em] text-(--p-f3ece5) sm:text-5xl lg:text-6xl">
+              <MaskLines text={business.philosophy.title} />
+              <MaskLines
+                text={business.philosophy.highlightedTitle}
+                italic
+                className="text-(--p-bda08a)"
+              />
             </h2>
           </Reveal>
 

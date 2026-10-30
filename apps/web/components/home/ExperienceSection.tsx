@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 import { LiftVisual } from "@/components/home/LiftVisual";
+import { MaskLines } from "@/components/motion/MaskLines";
 import { Reveal } from "@/components/motion/Reveal";
 import { CheckIcon } from "@/components/ui/CheckIcon";
 import { TradeIcon } from "@/components/ui/TradeIcon";
@@ -35,6 +36,7 @@ export function ExperienceSection() {
               />
             </Reveal>
           ) : (
+          <Reveal variant="zoom">
           <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/25 bg-(--p-bda693) shadow-[0_30px_80px_rgba(72,56,45,0.14)] sm:aspect-[4/3] lg:aspect-[4/5] xl:aspect-[5/6]">
             <Image
               src={business.assets.experience}
@@ -73,6 +75,7 @@ export function ExperienceSection() {
               </p>
             </div>
           </div>
+          </Reveal>
           )}
 
           {/* =====================================================
@@ -99,8 +102,12 @@ export function ExperienceSection() {
 
             {/* Heading */}
             <Reveal variant="fade-left">
-              <h2 className="mt-5 max-w-[600px] font-serif text-5xl leading-[0.97] tracking-[-0.035em] text-(--p-2d2723) sm:text-6xl">
-                {business.experience.title}
+              <h2 className="aura-display mt-5 max-w-[14ch] font-serif text-5xl leading-[0.97] tracking-[-0.035em] text-(--p-2d2723) sm:text-6xl">
+                {liftCard ? (
+                  business.experience.title
+                ) : (
+                  <MaskLines text={business.experience.title} />
+                )}
               </h2>
             </Reveal>
 

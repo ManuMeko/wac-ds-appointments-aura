@@ -40,7 +40,7 @@ export function ReviewsSection() {
             </p>
 
             <Reveal variant="fade-up">
-              <h2 className="mt-5 font-serif text-5xl leading-[0.97] tracking-[-0.035em] text-(--p-f5eee8) sm:text-6xl">
+              <h2 className="aura-display mt-5 max-w-[14ch] font-serif text-5xl leading-[0.97] tracking-[-0.035em] text-(--p-f5eee8) sm:text-6xl">
                 {business.reviewsIntro.title}
               </h2>
             </Reveal>

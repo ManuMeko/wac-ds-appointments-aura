@@ -116,7 +116,7 @@ export function ContactSection() {
                 </p>
 
                 <Reveal variant="fade-up">
-                  <h2 className="mt-5 max-w-[650px] font-serif text-5xl leading-[0.95] tracking-[-0.04em] text-(--p-2d2723) sm:text-6xl">
+                  <h2 className="aura-display mt-5 max-w-[14ch] font-serif text-5xl leading-[0.95] tracking-[-0.04em] text-(--p-2d2723) sm:text-6xl">
                     {business.contactSection.title}
                   </h2>
                 </Reveal>
@@ -131,6 +131,7 @@ export function ContactSection() {
                 <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                   <a
                     href="/reservar"
+                    data-magnetic={business.theme === "aura" ? "" : undefined}
                     className="group inline-flex h-14 items-center justify-center gap-3 rounded-full bg-(--p-2e2824) px-8 text-[11px] font-semibold uppercase tracking-[0.18em] !text-(--on-inverse) shadow-[0_12px_30px_rgba(46,40,36,0.12)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-(--p-4b3e35) hover:shadow-[0_16px_36px_rgba(46,40,36,0.18)]"
                   >
                     {business.header.bookingCta}

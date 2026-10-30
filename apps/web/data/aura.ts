@@ -172,8 +172,8 @@ export const auraHero = {
     "Un estudio de estética y bienestar donde cada tratamiento comienza escuchándote. Belleza personalizada, atención honesta y tiempo dedicado exclusivamente a ti.",
 
   primaryCta: {
-    label: "Solicitar cita",
-    href: "#contacto",
+    label: "Reservar cita",
+    href: "/reservar",
   },
 
   secondaryCta: {
@@ -235,7 +235,7 @@ export const auraServicesIntro = {
   featuredLabel: "Destacado",
 
   cta: {
-    label: "Reservar un tratamiento",
+    label: "Reservar cita",
     href: "/reservar",
   },
 } as const;
@@ -580,7 +580,7 @@ const auraVocabulary = {
 } as const;
 
 const auraHeader = {
-  bookingCta: "Pedir cita",
+  bookingCta: "Reservar cita",
 } as const;
 
 const auraImageAlts = {
@@ -822,6 +822,63 @@ export const auraConfig: DemoConfig = {
 
   hero: auraHero,
 
+  /**
+   * Misma película que Essentials: 96 fotogramas y los cinco
+   * rangos de fundido. Los textos son propios de Business.
+   * Si falta frame_0001.webp, la home pinta HeroSection.
+   */
+  scrollSequence: {
+    basePath: "/images/aura/sequence",
+    frameCount: 96,
+    fileExtension: "webp",
+    heightVh: 280,
+    holdVh: 10,
+    overlays: [
+      {
+        from: 0,
+        to: 0.24,
+        align: "start",
+        level: "h1",
+        title: "El silencio también",
+        italic: "se reserva.",
+        text: "Un estudio donde la belleza no se aplica en serie. El tiempo es de una sola persona, y empieza escuchando.",
+        primaryCta: { label: "Reservar cita", href: "/reservar" },
+        secondaryCta: { label: "Ver tratamientos", href: "#servicios" },
+      },
+      {
+        from: 0.16,
+        to: 0.44,
+        align: "end",
+        title: "Nada aquí es un protocolo.",
+        text: "Cada experiencia empieza por una conversación. La piel, el momento y lo que de verdad hace falta.",
+      },
+      {
+        from: 0.36,
+        to: 0.64,
+        align: "start",
+        title: "Menos ruido.",
+        italic: "Más cuidado.",
+        text: "Un entorno pensado para desconectar del exterior durante un rato. Sin ruido de más y sin nada que demostrar.",
+      },
+      {
+        from: 0.56,
+        to: 0.84,
+        align: "end",
+        title: "El detalle no es un extra.",
+        text: "Desde la primera consulta hasta el último minuto, cada paso tiene sentido. Sin prisas y sin lo que no hace falta.",
+      },
+      {
+        from: 0.76,
+        to: 1,
+        align: "start",
+        title: "Cuidarte es",
+        italic: "una forma de parar.",
+        text: "Tu cita empieza con una conversación, no con un tratamiento.",
+        primaryCta: { label: "Reservar cita", href: "/reservar" },
+      },
+    ],
+  },
+
   stats: auraStats,
 
   philosophy: auraPhilosophy,
@@ -851,6 +908,41 @@ export const auraConfig: DemoConfig = {
   socialLinks: auraSocialLinks,
 
   legalLinks: auraLegalLinks,
+
+  studioPin: {
+    eyebrow: "El estudio",
+    title: "Lo que no se ve",
+    italic: "también se siente.",
+    sequence: {
+      basePath: "/images/aura/studio-sequence",
+      frameCount: 96,
+      fileExtension: "webp",
+      heightVh: 300,
+      holdVh: 16,
+    },
+    keys: [
+      {
+        id: "cabina",
+        title: "Cabina privada",
+        text: "Cada sesión está diseñada para que el tratamiento empiece antes incluso de entrar en cabina.",
+      },
+      {
+        id: "cosmetica",
+        title: "Cosmética profesional",
+        text: "Protocolos personalizados y productos seleccionados, con el tiempo necesario para hacer las cosas bien.",
+      },
+      {
+        id: "trato",
+        title: "Trato personal",
+        text: "Analizamos, escuchamos y diseñamos un tratamiento adaptado a tu piel, tus objetivos y tu momento.",
+      },
+      {
+        id: "sin-prisas",
+        title: "Atención sin prisas",
+        text: "Sin prisas, sin protocolos impersonales y sin tratamientos innecesarios.",
+      },
+    ],
+  },
 
   ownerPanel: {
     eyebrow: "Tu negocio",

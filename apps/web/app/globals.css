@@ -4350,3 +4350,315 @@ button:focus-visible {
     transition: none;
   }
 }
+
+/* =========================================================
+   AURA HOME
+   Lujo editorial. Motorline no usa .aura-home.
+========================================================= */
+
+.aura-home {
+  font-family: var(--font-aura-sans), "Segoe UI", sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.011em;
+}
+
+.aura-home .aura-display {
+  font-family: var(--font-aura-serif), Georgia, "Times New Roman", serif;
+  font-weight: 500;
+  font-size: clamp(2.55rem, 5.6vw, 5.35rem);
+  line-height: 0.9;
+  letter-spacing: -0.036em;
+}
+
+.aura-home :is(#inicio, #experiencia, #estudio, #servicios, #equipo, #opiniones, #contacto, #panel) {
+  scroll-margin-top: 5.5rem;
+}
+
+.aura-home :is(#servicios, #equipo, #contacto, #panel) {
+  box-shadow: inset 0 1px 0 rgba(198, 163, 122, 0.55);
+}
+
+.aura-rule {
+  display: block;
+  width: 3.25rem;
+  height: 1px;
+  background: linear-gradient(90deg, #c6a37a, #8b6d59 70%, transparent);
+}
+
+.aura-studio-veil {
+  background: rgba(248, 245, 240, 0.78);
+}
+
+.aura-studio-still {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (min-width: 1024px) {
+  .aura-studio-veil {
+    background: linear-gradient(
+      90deg,
+      rgba(248, 245, 240, 0.9) 0%,
+      rgba(248, 245, 240, 0.76) 42%,
+      rgba(248, 245, 240, 0.66) 100%
+    );
+  }
+}
+
+.aura-reveal {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition:
+    opacity 800ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.aura-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.aura-reveal-zoom {
+  opacity: 0;
+  transform: none;
+}
+
+.aura-reveal-zoom img {
+  transform: scale(1.08);
+  transition: transform 1400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.aura-reveal-zoom.is-visible {
+  opacity: 1;
+}
+
+.aura-reveal-zoom.is-visible img {
+  transform: scale(1);
+}
+
+.aura-reveal-zoom.is-visible:hover img {
+  transform: scale(1.045);
+}
+
+.aura-mask {
+  display: block;
+}
+
+.aura-mask-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+}
+
+.aura-mask-line > span {
+  display: block;
+  transform: translate3d(0, 115%, 0);
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--mask-index, 0) * 110ms);
+}
+
+.aura-mask.is-visible .aura-mask-line > span {
+  transform: translate3d(0, 0, 0);
+}
+
+.aura-service-grid {
+  display: grid;
+  gap: 1.75rem 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .aura-service-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.aura-service-media {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  background: #e7d9cc;
+  box-shadow: 0 24px 60px rgba(54, 43, 35, 0.1);
+}
+
+.aura-service-photo {
+  transform: scale(1.001);
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.aura-service:hover .aura-service-photo,
+.aura-service:focus-visible .aura-service-photo {
+  transform: scale(1.07);
+}
+
+.aura-service-veil {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.4rem 1.45rem 1.5rem;
+  background: linear-gradient(
+    to top,
+    rgba(41, 35, 31, 0.78) 0%,
+    rgba(41, 35, 31, 0.18) 48%,
+    transparent 72%
+  );
+  color: #fffaf6;
+  opacity: 0;
+  transition: opacity 420ms ease;
+}
+
+.aura-service-veil .aura-rule {
+  background: linear-gradient(90deg, #e6d3be, transparent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .aura-service:hover .aura-service-veil,
+  .aura-service:focus-visible .aura-service-veil {
+    opacity: 1;
+  }
+}
+
+@media (hover: none) {
+  .aura-service-veil {
+    opacity: 1;
+  }
+}
+
+.aura-home [data-magnetic] {
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 280ms ease,
+    background-color 280ms ease;
+}
+
+.aura-home [data-magnetic]:active {
+  box-shadow: 0 6px 16px rgba(44, 38, 34, 0.12);
+}
+
+.aura-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.045;
+  mix-blend-mode: multiply;
+}
+
+.aura-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 70;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 1px solid rgba(139, 109, 89, 0.9);
+  border-radius: 999px;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: multiply;
+  transition:
+    width 220ms ease,
+    height 220ms ease,
+    margin 220ms ease,
+    opacity 180ms ease;
+}
+
+.aura-cursor.is-hot {
+  width: 42px;
+  height: 42px;
+  margin: -21px 0 0 -21px;
+  background: rgba(198, 163, 122, 0.2);
+}
+
+.aura-scroll-card {
+  background: rgba(248, 241, 233, 0.9);
+  border: 1px solid rgba(198, 163, 122, 0.85);
+  border-radius: 1.5rem;
+  padding: 1.7rem 1.6rem 1.55rem;
+  color: #29231f;
+  box-shadow: 0 22px 60px rgba(45, 34, 27, 0.16);
+}
+
+.aura-scroll-card :is(h1, h2) {
+  font-family: var(--font-aura-serif), Georgia, "Times New Roman", serif;
+  color: #29231f;
+}
+
+.aura-scroll-card p {
+  color: #3a312b;
+}
+
+.aura-scroll-card .aura-scroll-pill {
+  background: #2b2521;
+  color: #fffaf6;
+  -webkit-text-fill-color: #fffaf6;
+}
+
+.aura-scroll-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #f8f1e9;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+  pointer-events: none;
+  transition: opacity 280ms ease;
+}
+
+.aura-scroll-hint .scroll-hint-line {
+  display: block;
+  width: 1px;
+  height: 42px;
+  background: #c6a37a;
+  transform-origin: top center;
+  animation: scroll-hint-line 1.6s ease-in-out infinite;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .aura-cursor {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aura-reveal,
+  .aura-reveal-zoom,
+  .aura-reveal-zoom img,
+  .aura-mask-line > span,
+  .aura-service-photo,
+  .aura-service-veil,
+  .aura-home [data-magnetic] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+
+  .aura-scroll-hint .scroll-hint-line {
+    animation: none;
+  }
+
+  .aura-cursor {
+    display: none;
+  }
+}
